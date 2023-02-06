@@ -20,6 +20,10 @@ Here are some of the tables gathered from the travel source systems (databases, 
 - Flight Promotion
 - Holiday data
 - Airline data
+- Sales agent data
+- Ticket sales data 
+- Flight bookings data 
+- Fight destination revenue
 
 
 ## Layers 
@@ -47,6 +51,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 
 
 ### Micro tasks
+
 
 
 ***
