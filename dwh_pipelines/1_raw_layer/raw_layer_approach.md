@@ -4,9 +4,9 @@
 ## Acceptance criteria 
 
 - The raw layer must extract data from various source systems with no issues
-- A program must log the events for the extraction process (and other processes supporting extraction) to a file and console
+- An internal program must log the events for the extraction process (and other processes supporting extraction) to a file and console
 - Sensitive fields and records must be highlighted to determine the appropriate treatment required
-- Data profiling metrics must be logged to a file and console to understand the raw data’s properties and structure
+- Data profiling metrics must be logged to a file and console to understand the raw data’s properties and structure during each load process
 
 
 ### Completion 
@@ -14,7 +14,7 @@
 Once the acceptance criteria is 100% covered and satisfied, the raw layer’s tasks are officially completed.
 
 
-*** 
+<!-- ***  -->
 
 
 
