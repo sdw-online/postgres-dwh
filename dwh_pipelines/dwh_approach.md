@@ -30,7 +30,7 @@ Here are some of the tables gathered from the travel source systems (databases, 
 * Semantic layer - for pre-computing staged data with business logic to create single version of truth 
 * Data warehouse layer - for exposing single version of truth to downstream users as the DWH
 * Governance layer - for establishing processes, practices and policies for managing the DWH's data  
-* Orchestration layer - for scheduling pipeline tasks and managing their dependencies 
+* Orchestration layer - for scheduling and managing pipeline tasks and their dependencies 
 
 
 
