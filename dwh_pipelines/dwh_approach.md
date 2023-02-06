@@ -1,16 +1,41 @@
+# Approach 
 
 
 
-# Plan 
+# Objective 
+
+To create a centralized platform for the analytics team to analyze customer and flight information. This platform aims to provide insights that will support the team in making informed decisions for enhancing the customer's travel experience. This means the analytics team will require access to a wealth of data from one location (i.e. the data warehouse) allowing them to make data-driven decisions that benefit the company, resulting in a more efficient process that improves customer satisfaction. 
+
+## Source data 
+
+Here are some of the tables gathered from the travel source systems (databases, CRMs and other tools):
+
+- Customer information
+- Flight schedules
+- Customer feedback
+- Ticket price data
+- Raw customer demographic data
+- Flight destination information
+- Flight ticket sales
+- Flight Promotion
+- Holiday data
+- Airline data
+- Sales agent data
+- Ticket sales data 
+- Flight bookings data 
+- Fight destination revenue
 
 
+## Layers 
 
-* Raw layer
-* Staging layer 
-* Semantic layer 
-* Data warehouse layer
-* Governance layer
-* Orchestration layer
+Here are the different layers that make up the proposed data warehouse solution in Postgres:
+
+* Raw layer - for storing source data in its original state 
+* Staging layer - for cleaning and framing raw data in a suitable format for pre-computing
+* Semantic layer - for pre-computing staged data with business logic to create single version of truth 
+* Data warehouse layer - for displaying the single version of truth in a unified manner to the downstream users 
+* Governance layer - for establishing processes, practices and policies for managing the DWH's data  
+* Orchestration layer - for scheduling and managing pipeline tasks and their dependencies 
 
 
 
@@ -26,6 +51,7 @@
 
 
 ### Micro tasks
+
 
 
 ***
