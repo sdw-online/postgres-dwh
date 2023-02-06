@@ -9,3 +9,7 @@ def send_a_greeting():
 
 if __name__ == "__main__":
     send_a_greeting()
+
+
+
+    """Formatting Inspiration - https://github.com/PrefectHQ/prefect/blob/main/src/prefect/logging  """
