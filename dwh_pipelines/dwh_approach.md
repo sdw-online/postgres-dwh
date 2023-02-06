@@ -3,6 +3,24 @@
 
 
 
+## Source data 
+
+Here are some of the tables gathered from the travel source systems (databases, CRMs and other tools):
+
+- Customer information
+- Flight schedules
+- Customer feedback
+- Ticket price data
+- Raw customer demographic data
+- Flight destination information
+- Flight ticket sales
+- Flight Promotion
+- Holiday data
+- Airline data
+
+
+## Layers 
+
 * Raw layer - for storing source data in its original state 
 * Staging layer - for cleaning and framing raw data in a suitable format for pre-computing
 * Semantic layer - for pre-computing staged data with business logic to create single version of truth 
