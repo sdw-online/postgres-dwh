@@ -2,6 +2,10 @@
 
 
 
+# Objective 
+
+To create a central platform for the analytics team to conduct analysis that will aid their understanding on customer and flight information. By achieving this, they will be better positioned to make more informed decisions for improving the customer experience.  
+
 
 ## Source data 
 
