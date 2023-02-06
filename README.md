@@ -63,7 +63,9 @@
 ## Data warehouse layer 
 
 ### Macro tasks
-
+- Create aggregated views using the fact and dimension tables
+- Document the code in each layer to reduce single point of failure risk
+- Conduct regular maintenance activities e.g. performance tuning, backups, system updates
 
 ### Micro tasks
 
