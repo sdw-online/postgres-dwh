@@ -1,16 +1,14 @@
-
-
-
 # Approach 
 
 
 
-* Raw layer
-* Staging layer 
-* Semantic layer 
-* Data warehouse layer
-* Governance layer
-* Orchestration layer
+
+* Raw layer - for storing source data in its original state 
+* Staging layer - for cleaning and framing raw data in a suitable format for pre-computing
+* Semantic layer - for pre-computing staged data with business logic to create single version of truth 
+* Data warehouse layer - for exposing single version of truth to downstream users as the DWH
+* Governance layer - for establishing processes, practices and policies for managing the DWH's data  
+* Orchestration layer - for scheduling pipeline tasks and managing their dependencies 
 
 
 
