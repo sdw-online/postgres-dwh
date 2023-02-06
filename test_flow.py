@@ -1,4 +1,4 @@
-from prefect import flow
+from prefect import flow, Task
 
 
 @flow(log_prints=True)
