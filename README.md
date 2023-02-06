@@ -49,7 +49,11 @@
 ## Semantic layer  
 
 ### Macro tasks
-
+- Load staging to semantic tables
+- Add business rules to semantic tables
+- Create fact and dimension tables
+- Define cardinality between tables (via ERD if possible)
+- Create data dictionary for the tables
 
 ### Micro tasks
 
