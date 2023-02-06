@@ -7,6 +7,5 @@
 
 
 # Folders 
-
-/src_data
-/logs
+/src_data_generator/src_data
+# /logs
