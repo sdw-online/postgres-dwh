@@ -19,6 +19,11 @@
 
 ### Macro tasks
 
+- Load source tables into raw tables
+- Highlight sensitive fields
+- Add event logging
+- Run data profiling checks
+
 
 ### Micro tasks
 
