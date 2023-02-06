@@ -1,0 +1,10 @@
+name: postgres_dwh
+channels: 
+- conda-forge
+dependencies:
+- python=3.10
+- pandas
+- faker
+- path
+- psycopg2
+- configparser

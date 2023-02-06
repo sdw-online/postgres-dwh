@@ -1,0 +1,12 @@
+# Files 
+.env
+*.json
+
+
+
+
+
+# Folders 
+
+/src_data
+/logs
