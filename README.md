@@ -92,6 +92,9 @@
 ### Macro tasks
 
 
+- Set up workflows and task dependencies in Prefect
+- Setup CI/CD pipelines in GitHub Actions to automatically test and deploy changes made to the DWH
+
 ### Micro tasks
 
 
