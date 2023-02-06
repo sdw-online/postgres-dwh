@@ -75,7 +75,12 @@
 ## Governance layer 
 
 ### Macro tasks
-
+- Understand the members of the analytics team that require access to the DWH
+- Create custom roles using a role-based access control
+- Grant table ownership rights to the delegated roles
+- Grant the appropriate schema usage rights to each custom role
+- Grant privileges to each custom role around each member's responsibilities in the analytics team
+- Create row security policies to control what data is visible to each role within their authorized tables
 
 ### Micro tasks
 
