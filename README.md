@@ -34,6 +34,12 @@
 
 ### Macro tasks
 
+- Load raw data into staging tables
+- Design transformation strategy
+- Design DQ constraints and QA tests
+- Execute transformation strategy
+- Add surrogate keys to staging tables
+- Execute DQ tests
 
 ### Micro tasks
 
