@@ -6,6 +6,7 @@
 
 To create a centralized platform for the analytics team to analyze customer and flight information. This platform aims to provide insights that will support the team in making informed decisions for enhancing the customer's travel experience. This means the analytics team will require access to a wealth of data from one location (i.e. the data warehouse) allowing them to make data-driven decisions that benefit the company, resulting in a more efficient process that improves customer satisfaction. 
 
+
 ## Source data 
 
 Here are some of the tables gathered from the travel source systems (databases, CRMs and other tools):
@@ -50,7 +51,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Run data profiling checks
 
 
-### Micro tasks
+
 
 
 
@@ -67,7 +68,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Add surrogate keys to staging tables
 - Execute DQ tests
 
-### Micro tasks
+
 
 
 ***
@@ -81,7 +82,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Define cardinality between tables (via ERD if possible)
 - Create data dictionary for the tables
 
-### Micro tasks
+
 
 
 ***
@@ -93,7 +94,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Document the code in each layer to reduce single point of failure risk
 - Conduct regular maintenance activities e.g. performance tuning, backups, system updates
 
-### Micro tasks
+
 
 
 ***
@@ -108,7 +109,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Grant privileges to each custom role around each member's responsibilities in the analytics team
 - Create row security policies to control what data is visible to each role within their authorized tables
 
-### Micro tasks
+
 
 
 ***
@@ -121,7 +122,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Set up workflows and task dependencies in Prefect
 - Setup CI/CD pipelines in GitHub Actions to automatically test and deploy changes made to the DWH
 
-### Micro tasks
+
 
 
 ***
