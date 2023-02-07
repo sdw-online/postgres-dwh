@@ -19,10 +19,6 @@ def generate_travel_data():
   DATASETS_LOCATION_PATH = config['travel_data_filepaths']['DATASETS_LOCATION_PATH']
 
 
-  # Update the DATASETS_LOCATION_PATH variable
-  # config['travel_data_filepaths']['DATASETS_LOCATION_PATH'] = '/usr/local/airflow/datasets'
-
-
   print('------------------------------------------------')
   print('------------------------------------------------')
   print(f'DATASET DESTINATION PATH: {DATASETS_LOCATION_PATH} ')
@@ -115,6 +111,7 @@ def generate_travel_data():
   
 
 
+  # ========================================================================================================================================================================
 
 
 
