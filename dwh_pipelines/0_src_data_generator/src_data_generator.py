@@ -50,6 +50,7 @@ def generate_travel_data():
   NO_OF_FLIGHT_DESTINATIONS = 100
   NO_OF_FLIGHT_TICKET_SALES = 100
   NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
+  NO_OF_SALES_AGENTS = 100
 
 
 
@@ -281,6 +282,61 @@ def generate_travel_data():
   
     
 
+  # ============================ SALES AGENTS ============================
+
+
+  fake = Faker()
+
+  
+
+  # List of sales agents
+  agents = []
+
+  # Generate the sales agents
+  for i in range(NO_OF_SALES_AGENTS):
+    agent_id = str(uuid.uuid4())
+    first_name = fake.first_name()
+    last_name = fake.last_name()
+    email = f"{first_name.lower()}.{last_name.lower()}@" + random.choice(['gmail.com', 'outlook.com', 'msn.com', 'aoi.net', 'microsoft.com' ])
+    phone = fake.phone_number()
+    location = fake.city()
+    service_speciality = random.choice(['Air', 'Land', 'Sea'])
+    years_experience = random.randint(1, 10)
+    commission = random.uniform(0.1, 0.3)
+    nationality = fake.country()
+    seniority_levels = ['Junior', 'Mid-Level', 'Senior']
+    seniority_level = random.choice(seniority_levels)
+    agents.append({
+        'id': agent_id,
+        'first_name': first_name,
+        'last_name': last_name,
+        'email': email,
+        'phone': phone,
+        'location': location,
+        'service_speciality': service_speciality,
+        'years_experience': years_experience,
+        'commission': commission,
+        'nationality': nationality,
+        'seniority_level': seniority_level
+    })
+
+  # Create a Pandas DataFrame from the list of options
+  sales_agents_df = pd.DataFrame(agents)
+
+
+  # # Write dataframe to JSON file 
+  with open(f'{DATASETS_LOCATION_PATH}/sales_agents.json', 'w') as sales_agents_file:
+    sales_agents_file_df_to_json = sales_agents_df.to_json(orient="records")
+    sales_agents_file.write(json.dumps(json.loads(sales_agents_file_df_to_json), indent=4, sort_keys=True)) 
+
+
+  # Print the data frame
+  print('----------')
+  print('============================ SALES AGENTS ============================')
+  print(sales_agents_df)
+
+
+
 
 
   # ============================ FLIGHT DESTINATION ============================
@@ -330,6 +386,12 @@ def generate_travel_data():
   for i in range(NO_OF_FLIGHT_TICKET_SALES):
      flight_ticket_sale = {
         'flight_id': random.choice(flight_bookings_df['flight_id']),
+        'customer_id': random.choice(customer_info_df['customer_id']),
+        'customer_first_name': random.choice(customer_info_df['first_name']),
+        'customer_last_name': random.choice(customer_info_df['last_name']),
+        'agent_id': random.choice(sales_agents_df['id']),
+        'agent_first_name': random.choice(sales_agents_df['first_name']),
+        'agent_last_name': random.choice(sales_agents_df['last_name']),
         'ticket_sales': random.randint(100, 500),
         'ticket_sales_date': fake.date_this_decade()
      }
@@ -393,6 +455,8 @@ def generate_travel_data():
 
      
      
+
+
 
 
 

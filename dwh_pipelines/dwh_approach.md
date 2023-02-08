@@ -22,8 +22,7 @@ Here are some of the tables gathered from the travel source systems (databases, 
 - Flight Promotions & Deals         ------------ [x]
 - Holiday data                      ------------ []
 - Airline data                      ------------ []
-- Sales agent data                  ------------ []
-- Ticket sales data                 ------------ []
+- Sales agent data                  ------------ [x]
 - Fight destination revenue         ------------ []
 
 
