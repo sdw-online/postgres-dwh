@@ -44,7 +44,8 @@ def generate_travel_data():
 
   NO_OF_CUSTOMER_INFO_ROWS = 100
   NO_OF_FLIGHT_SCHEDULES = 100
-
+  NO_OF_CUSTOMER_FEEDBACKS = 100
+  NO_OF_TICKET_PRICES = 100
 
 
 
@@ -168,7 +169,85 @@ def generate_travel_data():
   # ========================================================================================================================================================================
 
 
+   # ============================ TICKET PRICES ============================
+
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+
+  ticket_prices = []
+  for i in range(NO_OF_TICKET_PRICES):
+     ticket_price = {
+        'flight_id' : random.choice(flight_schedules_df['flight_id']),
+        'ticket_price': random.randint(50, 700),
+        'ticket_price_date': fake.date_this_decade()
+
+     }
+     ticket_prices.append(ticket_price)
+
+  ticket_prices_df = pd.DataFrame(ticket_prices)
+
+  # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/ticket_prices.json', 'w') as ticket_prices_file:
+      ticket_prices_df_to_json = ticket_prices_df.to_json(orient="records", default_handler=str)
+      ticket_prices_df_to_json = json.loads(ticket_prices_df_to_json)
+      ticket_prices_file.write(json.dumps(ticket_prices_df_to_json, indent=4, sort_keys=True)) 
+
+    
+
+ 
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ TICKET PRICES ============================')
+  print(ticket_prices_df)
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # ============================ CUSTOMER FEEDBACK ============================
+
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+
+  customer_feedbacks = []
+  for i in range(NO_OF_CUSTOMER_FEEDBACKS):
+     customer_feedback = {
+     'feedback_id' : uuid.uuid4(),
+     'customer_id': random.choice(customer_info_df['customer_id']),
+     'booking_id': xxx,
+
+
+     }
+    
 
 
 
