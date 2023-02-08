@@ -17,7 +17,7 @@ Here are some of the tables gathered from the travel source systems (databases, 
 - Flight bookings data              ------------ [x]
 - Customer feedback                 ------------ [x]
 - Raw customer demographic data     ------------ []
-- Flight destination information    ------------ []
+- Flight destination information    ------------ [x]
 - Flight ticket sales               ------------ []
 - Flight Promotion                  ------------ []
 - Holiday data                      ------------ []

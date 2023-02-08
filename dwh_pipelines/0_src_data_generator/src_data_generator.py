@@ -47,6 +47,7 @@ def generate_travel_data():
   NO_OF_CUSTOMER_FEEDBACKS = 100
   NO_OF_TICKET_PRICES = 100
   NO_OF_FLIGHT_BOOKINGS = 100
+  NO_OF_FLIGHT_DESTINATIONS = 100
 
 
 
@@ -85,8 +86,8 @@ def generate_travel_data():
       'address': fake.address(),
       'city': fake.city(),
       'state': fake.state(),
-      # 'zip': fake.zip(),
-      'phone': fake.phone_number(),
+      'zip': fake.zipcode(),
+      'phone_number': fake.phone_number(),
       'credit_card': fake.credit_card_number(),
       'credit_card_provider': fake.credit_card_provider(),
       'nationality': fake.country(),
@@ -280,7 +281,46 @@ def generate_travel_data():
 
 
 
+  # ============================ FLIGHT DESTINATION ============================
+
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+  flight_destinations = []
+
+  for i in range(NO_OF_FLIGHT_DESTINATIONS):
+     flight_destination = {
+        'flight_id' : random.choice(flight_bookings_df['flight_id']),
+        'departure_city' : fake.city(),
+        'arrival_city': fake.city() 
+
+     }
+
+     flight_destinations.append(flight_destination)
+
+  flight_destinations_df = pd.DataFrame(flight_destinations)
+
+  # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/flight_destinations.json', 'w') as flight_destinations_file:
+      flight_destinations_df_to_json = flight_destinations_df.to_json(orient="records", default_handler=str)
+      flight_destinations_df_to_json = json.loads(flight_destinations_df_to_json)
+      flight_destinations_file.write(json.dumps(flight_destinations_df_to_json, indent=4, sort_keys=True)) 
+
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ FLIGHT DESTINATIONS ============================')
+  print(flight_destinations_df)
+  
+    
+
+
+
      
+
+
+
 
 
 
