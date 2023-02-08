@@ -4,7 +4,7 @@ import uuid
 import string
 import json
 from faker import Faker
-from datetime import datetime
+from datetime import datetime, timedelta
 import configparser
 import os 
 
@@ -13,10 +13,10 @@ def generate_travel_data():
 
   # Establish the relevant constants for generating the synthetic travel data  
   config = configparser.ConfigParser()
-  path = os.path.abspath('dwh_pipelines/0_src_data_generator/config.ini')
+  path = os.path.abspath('dwh_pipelines/local_config.ini')
   config.read(path)
 
-  DATASETS_LOCATION_PATH = config['travel_data_filepaths']['DATASETS_LOCATION_PATH']
+  DATASETS_LOCATION_PATH = config['travel_data_filepath']['DATASETS_LOCATION_PATH']
 
 
   print('------------------------------------------------')
@@ -42,7 +42,8 @@ def generate_travel_data():
 
 
 
-  NO_CUSTOMER_INFO_ROWS = 100
+  NO_OF_CUSTOMER_INFO_ROWS = 100
+  NO_OF_FLIGHT_SCHEDULES = 100
 
 
 
@@ -55,17 +56,29 @@ def generate_travel_data():
   fake = Faker()
 
 
+
+  created_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
+  preferred_contact_method = [
+  {"id": uuid.uuid4(), "description": "Email"},
+  {"id": uuid.uuid4(), "description": "Phone"},
+  {"id": uuid.uuid4(), "description": "Text message"},
+  {"id": uuid.uuid4(), "description": "Postal mail"},
+  {"id": uuid.uuid4(), "description": "No contact"}
+]
+
+
+
   customer_info_records = []
 
-  for i in range(NO_CUSTOMER_INFO_ROWS):
+  for i in range(NO_OF_CUSTOMER_INFO_ROWS):
     customer_id = uuid.uuid4(),
-    first_name = fake.first_name(),
-    last_name = fake.last_name(),
-    email = f"{first_name.lower()}.{last_name.lower()}@" + random.choice(['email.com', 'inlook.com', 'mzn.com', 'aio.net', 'macrosoft.com' ]),
+    first_name = fake.first_name()
+    last_name = fake.last_name()
+    email = f"{first_name.lower()}.{last_name.lower()}@" + random.choice(['email.com', 'inlook.com', 'mzn.com', 'aio.net', 'macrosoft.com' ])
     place_of_birth = fake.city(),
     dob = fake.date_of_birth(),
     today = datetime.today(),
-    age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day)),
+    age = random.uniform(1, 100),
     address = fake.address(),
     city = fake.city(),
     state = fake.state(),
@@ -75,6 +88,15 @@ def generate_travel_data():
     credit_card = fake.credit_card_number(),
     credit_card_provider = fake.credit_card_provider(),
     nationality = fake.country(),
+    created_date = created_date,
+    last_updated_date = created_date + timedelta(days=random.randint(1, 400)),
+    customer_contact_preference_id = str(uuid.uuid4()),
+    customer_contact_preference_desc = random.choice(list(preferred_contact_method))
+
+
+
+
+
     customer_info_records.append({
       'customer_id': customer_id,
       'first_name': first_name,
@@ -90,7 +112,10 @@ def generate_travel_data():
       'credit_card': credit_card,
       'credit_card_provider': credit_card_provider,
       'nationality': nationality,
-      'country': country
+      'country': country,
+      'last_updated_date': last_updated_date,
+      'customer_contact_preference_id': customer_contact_preference_id,
+      'customer_contact_preference_desc': customer_contact_preference_desc
 
     })
 
@@ -115,3 +140,29 @@ def generate_travel_data():
 
 
 
+  # ============================ FLIGHT SCHEDULES ============================
+
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+
+  flight_schedules = []
+  # for i in range(NO_OF_FLIGHT_SCHEDULES):
+  #   flight_id = uuid.uuid4()
+  #   departure_city = fake.city()
+  #   arrival_city = fake.city()
+  #   departure_time = fake.time()
+  #   arrival_time = fake.time()
+  #   flight_date = fake.date_this_decade()
+
+
+
+
+
+
+
+
+
+
+
+generate_travel_data()

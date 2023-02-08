@@ -79,6 +79,8 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Load staging to semantic tables
 - Add surrogate keys to semantic tables
 - Add business rules to semantic tables
+- Add date dimension table 
+- Add the date foreign keys to the relevant dim tables 
 - Define cardinality between tables (via ERD if possible)
 - Create data dictionary for the tables
 - Create DEV and PROD environments (schemas)
@@ -91,7 +93,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 ## Data warehouse layer 
 
 ### Macro tasks
-- Create fact and dimension tables
+- Create fact and dimension tables (dimensional modelling)
 - Create aggregated views using the fact and dimension tables
 - Document the code in each layer to reduce single point of failure risk
 - Conduct regular maintenance activities e.g. performance tuning, backups, system updates

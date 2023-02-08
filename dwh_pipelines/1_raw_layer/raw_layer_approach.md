@@ -81,6 +81,7 @@ Once the acceptance criteria is 100% covered and satisfied, the raw layer’s ta
 
 
 
+| DWH-054 | RAW             | Load source data for “Customer preferences data” into raw table `raw_customer_preferences_data`| LOAD_TO_RAW | NOT_STARTED |
 
 
 
