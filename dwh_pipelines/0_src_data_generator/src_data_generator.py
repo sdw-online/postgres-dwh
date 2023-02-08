@@ -193,9 +193,6 @@ def generate_travel_data():
       ticket_prices_df_to_json = json.loads(ticket_prices_df_to_json)
       ticket_prices_file.write(json.dumps(ticket_prices_df_to_json, indent=4, sort_keys=True)) 
 
-    
-
- 
 
 
   # Print the customer information title in console
@@ -203,31 +200,6 @@ def generate_travel_data():
   print('============================ TICKET PRICES ============================')
   print(ticket_prices_df)
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -243,10 +215,30 @@ def generate_travel_data():
      customer_feedback = {
      'feedback_id' : uuid.uuid4(),
      'customer_id': random.choice(customer_info_df['customer_id']),
-     'booking_id': xxx,
-
-
+     'flight_booking_id': random.choice(flight_schedules_df['flight_id']),
+     'feedback_text': fake.text(),
+     'feedback_date': fake.date_this_decade()
      }
+
+     customer_feedbacks.append(customer_feedback)
+
+
+  
+  customer_feedbacks_df = pd.DataFrame(customer_feedbacks)
+
+  # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/customer_feedbacks.json', 'w') as customer_feedbacks_file:
+      customer_feedbacks_df_to_json = customer_feedbacks_df.to_json(orient="records", default_handler=str)
+      customer_feedbacks_df_to_json = json.loads(customer_feedbacks_df_to_json)
+      customer_feedbacks_file.write(json.dumps(customer_feedbacks_df_to_json, indent=4, sort_keys=True)) 
+
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ CUSTOMER FEEDBACKS ============================')
+  print(customer_feedbacks_df)
+  
     
 
 
