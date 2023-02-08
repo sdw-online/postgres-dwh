@@ -48,6 +48,7 @@ def generate_travel_data():
   NO_OF_TICKET_PRICES = 100
   NO_OF_FLIGHT_BOOKINGS = 100
   NO_OF_FLIGHT_DESTINATIONS = 100
+  NO_OF_FLIGHT_TICKET_SALES = 100
 
 
 
@@ -316,6 +317,39 @@ def generate_travel_data():
     
 
 
+
+
+  # ============================ FLIGHT TICKET SALES ============================
+
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+  flight_ticket_sales = []
+
+  for i in range(NO_OF_FLIGHT_TICKET_SALES):
+     flight_ticket_sale = {
+        'flight_id': random.choice(flight_bookings_df['flight_id']),
+        'ticket_sales': random.randint(100, 500),
+        'ticket_sales_date': fake.date_this_decade()
+     }
+
+     flight_ticket_sales.append(flight_ticket_sale)
+  
+  flight_ticket_sales_df = pd.DataFrame(flight_ticket_sales)
+
+  # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/flight_ticket_sales.json', 'w') as flight_ticket_sales_file:
+      flight_ticket_sales_df_to_json = flight_ticket_sales_df.to_json(orient="records", default_handler=str)
+      flight_ticket_sales_df_to_json = json.loads(flight_ticket_sales_df_to_json)
+      flight_ticket_sales_file.write(json.dumps(flight_ticket_sales_df_to_json, indent=4, sort_keys=True)) 
+
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ FLIGHT TICKET SALES ============================')
+  print(flight_ticket_sales_df)
+  
 
      
 
