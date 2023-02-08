@@ -56,11 +56,7 @@ def generate_travel_data():
   fake = Faker()
 
 
-  random_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
-  created_date = datetime.strptime(str(random_date.date()), "%Y-%m-%d")
-  print(created_date)
-  print(timedelta(days=random.randint(1, 40)))
-  created_date = pd.Timedelta(days=random.randint(1, 40))
+  created_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
   # created_date = datetime.strptime(str(random_date.date()), "%Y-%m-%d")
   
   preferred_contact_method = [
@@ -88,7 +84,7 @@ def generate_travel_data():
       'address': fake.address(),
       'city': fake.city(),
       'state': fake.state(),
-      'zip': fake.zip(),
+      # 'zip': fake.zip(),
       'phone': fake.phone_number(),
       'credit_card': fake.credit_card_number(),
       'credit_card_provider': fake.credit_card_provider(),
@@ -102,12 +98,17 @@ def generate_travel_data():
 
 
   customer_info_df = pd.DataFrame(customer_info_records)
+  print(customer_info_df)
 
 
    # Write dataframe to JSON file
-  with open(f'{DATASETS_LOCATION_PATH}/customer_info.json', 'wb') as customer_info_file:
-      customer_info_df_to_json = customer_info_df.to_json(orient="records").encode('utf-8')
-      customer_info_file.write(customer_info_df_to_json)
+  with open(f'{DATASETS_LOCATION_PATH}/customer_info.json', 'w') as customer_info_file:
+      customer_info_df_to_json = customer_info_df.to_json(orient="records", default_handler=str)
+      customer_info_df_to_json = json.loads(customer_info_df_to_json)
+      customer_info_file.write(json.dumps(customer_info_df_to_json, indent=4, sort_keys=True)) 
+
+    
+  # customer_info_df.to_json(orient='records')
  
 
 
