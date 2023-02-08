@@ -46,6 +46,7 @@ def generate_travel_data():
   NO_OF_FLIGHT_SCHEDULES = 100
   NO_OF_CUSTOMER_FEEDBACKS = 100
   NO_OF_TICKET_PRICES = 100
+  NO_OF_FLIGHT_BOOKINGS = 100
 
 
 
@@ -57,8 +58,7 @@ def generate_travel_data():
   fake = Faker()
 
 
-  created_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
-  # created_date = datetime.strptime(str(random_date.date()), "%Y-%m-%d")
+  created_date = fake.date_this_decade()
   
   preferred_contact_method = [
   {"id": uuid.uuid4(), "description": "Email"},
@@ -203,6 +203,43 @@ def generate_travel_data():
 
 
 
+  # ============================ FLIGHT BOOKINGS ============================
+
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+
+  flight_bookings = []
+
+  for i in range(NO_OF_FLIGHT_BOOKINGS):
+     flight_booking = {
+        'flight_booking_id': uuid.uuid4(),
+        'customer_id' : random.choice(customer_info_df['customer_id']),
+        'flight_id' : random.choice(flight_schedules_df['flight_id']),
+        'ticket_price' : random.randint(0, 700),
+        'booking_date': fake.date_this_decade()
+     }
+     flight_bookings.append(flight_booking)
+  
+
+  flight_bookings_df = pd.DataFrame(flight_bookings)
+
+  # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/flight_bookings.json', 'w') as flight_bookings_file:
+      flight_bookings_df_to_json = flight_bookings_df.to_json(orient="records", default_handler=str)
+      flight_bookings_df_to_json = json.loads(flight_bookings_df_to_json)
+      flight_bookings_file.write(json.dumps(flight_bookings_df_to_json, indent=4, sort_keys=True)) 
+
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ FLIGHT BOOKINGS ============================')
+  print(flight_bookings_df)
+  
+
+
+
 
   # ============================ CUSTOMER FEEDBACK ============================
 
@@ -215,7 +252,7 @@ def generate_travel_data():
      customer_feedback = {
      'feedback_id' : uuid.uuid4(),
      'customer_id': random.choice(customer_info_df['customer_id']),
-     'flight_booking_id': random.choice(flight_schedules_df['flight_id']),
+     'flight_booking_id': random.choice(flight_bookings_df['flight_booking_id']),
      'feedback_text': fake.text(),
      'feedback_date': fake.date_this_decade()
      }
@@ -243,6 +280,7 @@ def generate_travel_data():
 
 
 
+     
 
 
 
