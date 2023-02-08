@@ -11,20 +11,20 @@ To create a centralized platform for the analytics team to analyze customer and 
 
 Here are some of the tables gathered from the travel source systems (databases, CRMs and other tools):
 
-- Customer information
-- Flight schedules
-- Customer feedback
-- Ticket price data
-- Raw customer demographic data
-- Flight destination information
-- Flight ticket sales
-- Flight Promotion
-- Holiday data
-- Airline data
-- Sales agent data
-- Ticket sales data 
-- Flight bookings data 
-- Fight destination revenue
+- Customer information              ------------ [x]
+- Flight schedules                  ------------ [x]
+- Ticket price data                 ------------ [x]
+- Flight bookings data              ------------ [x]
+- Customer feedback                 ------------ [x]
+- Raw customer demographic data     ------------ []
+- Flight destination information    ------------ []
+- Flight ticket sales               ------------ []
+- Flight Promotion                  ------------ []
+- Holiday data                      ------------ []
+- Airline data                      ------------ []
+- Sales agent data                  ------------ []
+- Ticket sales data                 ------------ []
+- Fight destination revenue         ------------ []
 
 
 ## Layers 
