@@ -56,8 +56,13 @@ def generate_travel_data():
   fake = Faker()
 
 
-
-  created_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
+  random_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
+  created_date = datetime.strptime(str(random_date.date()), "%Y-%m-%d")
+  print(created_date)
+  print(timedelta(days=random.randint(1, 40)))
+  created_date = pd.Timedelta(days=random.randint(1, 40))
+  # created_date = datetime.strptime(str(random_date.date()), "%Y-%m-%d")
+  
   preferred_contact_method = [
   {"id": uuid.uuid4(), "description": "Email"},
   {"id": uuid.uuid4(), "description": "Phone"},
@@ -71,62 +76,39 @@ def generate_travel_data():
   customer_info_records = []
 
   for i in range(NO_OF_CUSTOMER_INFO_ROWS):
-    customer_id = uuid.uuid4(),
-    first_name = fake.first_name()
-    last_name = fake.last_name()
-    email = f"{first_name.lower()}.{last_name.lower()}@" + random.choice(['email.com', 'inlook.com', 'mzn.com', 'aio.net', 'macrosoft.com' ])
-    place_of_birth = fake.city(),
-    dob = fake.date_of_birth(),
-    today = datetime.today(),
-    age = random.uniform(1, 100),
-    address = fake.address(),
-    city = fake.city(),
-    state = fake.state(),
-    zip = fake.zip(),
-    phone = fake.phone_number(),
-    country = fake.country(),
-    credit_card = fake.credit_card_number(),
-    credit_card_provider = fake.credit_card_provider(),
-    nationality = fake.country(),
-    created_date = created_date,
-    last_updated_date = created_date + timedelta(days=random.randint(1, 400)),
-    customer_contact_preference_id = str(uuid.uuid4()),
-    customer_contact_preference_desc = random.choice(list(preferred_contact_method))
 
-
-
-
-
-    customer_info_records.append({
-      'customer_id': customer_id,
-      'first_name': first_name,
-      'last_name': last_name,
-      'email': email,
-      'place_of_birth': place_of_birth,
-      'age': age,
-      'address': address,
-      'city': city,
-      'state': state,
-      'zip': zip,
-      'phone': phone,
-      'credit_card': credit_card,
-      'credit_card_provider': credit_card_provider,
-      'nationality': nationality,
-      'country': country,
-      'last_updated_date': last_updated_date,
-      'customer_contact_preference_id': customer_contact_preference_id,
-      'customer_contact_preference_desc': customer_contact_preference_desc
-
-    })
+    customer_info_record = {
+      'customer_id': uuid.uuid4(),
+      'first_name': fake.first_name(),
+      'last_name': fake.last_name(),
+      'email': f"{fake.first_name().lower()}.{fake.last_name().lower()}@" + random.choice(['email.com', 'inlook.com', 'mzn.com', 'aio.net', 'macrosoft.com' ]),
+      'place_of_birth': fake.city(),
+      'dob' : fake.date_of_birth(),
+      'age': random.uniform(1, 100),
+      'address': fake.address(),
+      'city': fake.city(),
+      'state': fake.state(),
+      'zip': fake.zip(),
+      'phone': fake.phone_number(),
+      'credit_card': fake.credit_card_number(),
+      'credit_card_provider': fake.credit_card_provider(),
+      'nationality': fake.country(),
+      'created_date': created_date,
+      'last_updated_date': created_date + pd.Timedelta(days=random.randint(1, 40)),
+      'customer_contact_preference_id': str(uuid.uuid4()),
+      'customer_contact_preference_desc': random.choice(list(preferred_contact_method))
+    }
+    customer_info_records.append(customer_info_record)
 
 
   customer_info_df = pd.DataFrame(customer_info_records)
 
 
-   # # Write dataframe to JSON file 
-  with open(f'{DATASETS_LOCATION_PATH}/customer_info.json', 'w') as customer_info_file:
-    customer_info_df_to_json = customer_info_df.to_json(orient="records")
-    customer_info_file.write(json.dumps(json.loads(customer_info_df_to_json), indent=4, sort_keys=True)) 
+   # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/customer_info.json', 'wb') as customer_info_file:
+      customer_info_df_to_json = customer_info_df.to_json(orient="records").encode('utf-8')
+      customer_info_file.write(customer_info_df_to_json)
+ 
 
 
   # Print the customer information title in console
