@@ -98,7 +98,7 @@ def generate_travel_data():
 
 
   customer_info_df = pd.DataFrame(customer_info_records)
-  print(customer_info_df)
+  # print(customer_info_df)
 
 
    # Write dataframe to JSON file
@@ -108,7 +108,7 @@ def generate_travel_data():
       customer_info_file.write(json.dumps(customer_info_df_to_json, indent=4, sort_keys=True)) 
 
     
-  # customer_info_df.to_json(orient='records')
+
  
 
 
@@ -130,15 +130,45 @@ def generate_travel_data():
 
 
   flight_schedules = []
-  # for i in range(NO_OF_FLIGHT_SCHEDULES):
-  #   flight_id = uuid.uuid4()
-  #   departure_city = fake.city()
-  #   arrival_city = fake.city()
-  #   departure_time = fake.time()
-  #   arrival_time = fake.time()
-  #   flight_date = fake.date_this_decade()
+  for i in range(NO_OF_FLIGHT_SCHEDULES):
+    flight_schedule = {
+    'flight_id' : uuid.uuid4(),
+    'departure_city' : fake.city(),
+    'arrival_city' : fake.city(),
+    'departure_time' : fake.time(),
+    'arrival_time' : fake.time(),
+    'flight_date' : fake.date_this_decade()
+
+    }
+    flight_schedules.append(flight_schedule)
 
 
+    flight_schedules_df = pd.DataFrame(flight_schedules)
+    # print(flight_schedules_df)
+
+
+     # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/flight_schedules.json', 'w') as flight_schedules_file:
+      flight_schedules_df_to_json = flight_schedules_df.to_json(orient="records", default_handler=str)
+      flight_schedules_df_to_json = json.loads(flight_schedules_df_to_json)
+      flight_schedules_file.write(json.dumps(flight_schedules_df_to_json, indent=4, sort_keys=True)) 
+
+    
+
+ 
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ FLIGHT SCHEDULES ============================')
+  print(flight_schedules_df)
+  
+
+
+  # ========================================================================================================================================================================
+
+
+  
 
 
 
