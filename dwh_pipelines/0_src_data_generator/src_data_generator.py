@@ -49,6 +49,7 @@ def generate_travel_data():
   NO_OF_FLIGHT_BOOKINGS = 100
   NO_OF_FLIGHT_DESTINATIONS = 100
   NO_OF_FLIGHT_TICKET_SALES = 100
+  NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
 
 
 
@@ -355,6 +356,43 @@ def generate_travel_data():
 
 
 
+
+  # ============================ FLIGHT PROMOTIONS & DEALS ============================
+
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+  flight_promotion_deals = []
+
+  for i in range(NO_OF_FLIGHT_PROMOS_AND_DEALS):
+     flight_promotion_deal = {
+        'promotion_id': uuid.uuid4(),
+        'promotion_name': fake.sentence(), 
+        'flight_booking_id': random.choice(flight_bookings_df['flight_booking_id']),
+        'applied_discount': random.randint(10, 350)
+
+     }
+     flight_promotion_deals.append(flight_promotion_deal)
+
+  
+  flight_promotion_deals_df = pd.DataFrame(flight_promotion_deals)
+
+    # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/flight_promotion_deals.json', 'w') as flight_promotion_deals_file:
+      flight_promotion_deals_df_to_json = flight_promotion_deals_df.to_json(orient="records", default_handler=str)
+      flight_promotion_deals_df_to_json = json.loads(flight_promotion_deals_df_to_json)
+      flight_promotion_deals_file.write(json.dumps(flight_promotion_deals_df_to_json, indent=4, sort_keys=True)) 
+
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ FLIGHT PROMOTIONS & DEALS ============================')
+  print(flight_promotion_deals_df)
+  
+
+     
+     
 
 
 
