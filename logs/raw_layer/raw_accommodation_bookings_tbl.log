@@ -1,43 +1,43 @@
-2023-02-09 20:54:52,983  |  INFO  |    
-2023-02-09 20:54:52,984  |  INFO  |  ---------------------------------------------  
-2023-02-09 20:54:52,985  |  INFO  |  Beginning the source data extraction process...  
-2023-02-09 20:54:52,988  |  INFO  |  Successfully located 'accommodation_bookings.json'  
-2023-02-09 20:54:52,989  |  INFO  |  Data type: '<class 'list'>'  
-2023-02-09 20:54:53,048  |  DEBUG  |    
-2023-02-09 20:54:53,049  |  INFO  |  =================================================================================  
-2023-02-09 20:54:53,049  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
-2023-02-09 20:54:53,050  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
-2023-02-09 20:54:53,051  |  INFO  |  =================================================================================  
-2023-02-09 20:54:53,052  |  DEBUG  |    
-2023-02-09 20:54:53,061  |  INFO  |  main  
-2023-02-09 20:54:53,062  |  DEBUG  |    
-2023-02-09 20:54:53,063  |  INFO  |  =================================================================================================  
-2023-02-09 20:54:53,064  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
-2023-02-09 20:54:53,065  |  INFO  |  Schema name in Postgres: main   
-2023-02-09 20:54:53,066  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
+2023-02-09 20:58:05,666  |  INFO  |    
+2023-02-09 20:58:05,667  |  INFO  |  ---------------------------------------------  
+2023-02-09 20:58:05,668  |  INFO  |  Beginning the source data extraction process...  
+2023-02-09 20:58:05,671  |  INFO  |  Successfully located 'accommodation_bookings.json'  
+2023-02-09 20:58:05,671  |  INFO  |  Data type: '<class 'list'>'  
+2023-02-09 20:58:05,767  |  DEBUG  |    
+2023-02-09 20:58:05,768  |  INFO  |  =================================================================================  
+2023-02-09 20:58:05,768  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
+2023-02-09 20:58:05,769  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
+2023-02-09 20:58:05,770  |  INFO  |  =================================================================================  
+2023-02-09 20:58:05,771  |  DEBUG  |    
+2023-02-09 20:58:05,812  |  INFO  |  main  
+2023-02-09 20:58:05,813  |  DEBUG  |    
+2023-02-09 20:58:05,813  |  INFO  |  =================================================================================================  
+2023-02-09 20:58:05,814  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
+2023-02-09 20:58:05,815  |  INFO  |  Schema name in Postgres: main   
+2023-02-09 20:58:05,817  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
            
-2023-02-09 20:54:53,067  |  INFO  |  =================================================================================================  
-2023-02-09 20:54:53,068  |  DEBUG  |    
-2023-02-09 20:54:53,082  |  INFO  |  False  
-2023-02-09 20:54:53,084  |  DEBUG  |    
-2023-02-09 20:54:53,085  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 20:54:53,086  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
-2023-02-09 20:54:53,087  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-09 20:58:05,818  |  INFO  |  =================================================================================================  
+2023-02-09 20:58:05,819  |  DEBUG  |    
+2023-02-09 20:58:05,843  |  INFO  |  False  
+2023-02-09 20:58:05,844  |  DEBUG  |    
+2023-02-09 20:58:05,845  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 20:58:05,846  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
+2023-02-09 20:58:05,847  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-09 20:54:53,088  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 20:54:53,089  |  DEBUG  |    
-2023-02-09 20:54:53,102  |  INFO  |  True  
-2023-02-09 20:54:53,103  |  DEBUG  |    
-2023-02-09 20:54:53,104  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 20:54:53,105  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
-2023-02-09 20:54:53,106  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-09 20:58:05,848  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 20:58:05,848  |  DEBUG  |    
+2023-02-09 20:58:05,869  |  INFO  |  True  
+2023-02-09 20:58:05,870  |  DEBUG  |    
+2023-02-09 20:58:05,871  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:58:05,872  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
+2023-02-09 20:58:05,872  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-09 20:54:53,108  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 20:54:53,109  |  DEBUG  |    
-2023-02-09 20:54:53,144  |  DEBUG  |    
-2023-02-09 20:54:53,144  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 20:54:53,145  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
-2023-02-09 20:54:53,146  |  INFO  |  SQL Query for validation check:          
+2023-02-09 20:58:05,873  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:58:05,874  |  DEBUG  |    
+2023-02-09 20:58:05,917  |  DEBUG  |    
+2023-02-09 20:58:05,918  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:58:05,919  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
+2023-02-09 20:58:05,919  |  INFO  |  SQL Query for validation check:          
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = 'raw_accommodation_bookings_tbl' 
@@ -49,335 +49,335 @@
                                                                         OR      column_name     = 'dwh_layer');
                                                                               
            
-2023-02-09 20:54:53,149  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 20:54:53,150  |  DEBUG  |    
-2023-02-09 20:54:53,153  |  INFO  |  Rows before SQL insert in Postgres: 0   
-2023-02-09 20:54:53,153  |  DEBUG  |    
-2023-02-09 20:54:53,157  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,157  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 1   
-2023-02-09 20:54:53,159  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,162  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,163  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 2   
-2023-02-09 20:54:53,164  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,166  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,167  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 3   
-2023-02-09 20:54:53,168  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,170  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,170  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 4   
-2023-02-09 20:54:53,171  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,172  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,173  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 5   
-2023-02-09 20:54:53,174  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,176  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,177  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 6   
-2023-02-09 20:54:53,178  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,180  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,181  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 7   
-2023-02-09 20:54:53,182  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,184  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,185  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 8   
-2023-02-09 20:54:53,186  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,187  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,188  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 9   
-2023-02-09 20:54:53,188  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,190  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,191  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 10   
-2023-02-09 20:54:53,191  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,193  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,194  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 11   
-2023-02-09 20:54:53,195  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,196  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,197  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 12   
-2023-02-09 20:54:53,198  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,199  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,200  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 13   
-2023-02-09 20:54:53,201  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,203  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,204  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 14   
-2023-02-09 20:54:53,205  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,207  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,208  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 15   
-2023-02-09 20:54:53,209  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,211  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,212  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 16   
-2023-02-09 20:54:53,213  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,214  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,215  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 17   
-2023-02-09 20:54:53,216  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,218  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,219  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 18   
-2023-02-09 20:54:53,220  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,222  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,223  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 19   
-2023-02-09 20:54:53,224  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,226  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,227  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 20   
-2023-02-09 20:54:53,227  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,229  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,230  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 21   
-2023-02-09 20:54:53,231  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,232  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,233  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 22   
-2023-02-09 20:54:53,234  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,236  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,237  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 23   
-2023-02-09 20:54:53,238  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,240  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,241  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 24   
-2023-02-09 20:54:53,242  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,244  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,245  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 25   
-2023-02-09 20:54:53,246  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,248  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,249  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 26   
-2023-02-09 20:54:53,250  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,252  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,253  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 27   
-2023-02-09 20:54:53,254  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,258  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,259  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 28   
-2023-02-09 20:54:53,260  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,262  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,263  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 29   
-2023-02-09 20:54:53,264  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,266  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,267  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 30   
-2023-02-09 20:54:53,268  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,269  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,270  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 31   
-2023-02-09 20:54:53,270  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,272  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,273  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 32   
-2023-02-09 20:54:53,274  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,276  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,277  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 33   
-2023-02-09 20:54:53,279  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,281  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,281  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 34   
-2023-02-09 20:54:53,282  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,284  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,284  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 35   
-2023-02-09 20:54:53,285  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,287  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,287  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 36   
-2023-02-09 20:54:53,288  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,290  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,291  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 37   
-2023-02-09 20:54:53,292  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,295  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,296  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 38   
-2023-02-09 20:54:53,296  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,298  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,299  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 39   
-2023-02-09 20:54:53,300  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,301  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,302  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 40   
-2023-02-09 20:54:53,302  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,304  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,305  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 41   
-2023-02-09 20:54:53,306  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,308  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,308  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 42   
-2023-02-09 20:54:53,310  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,312  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,312  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 43   
-2023-02-09 20:54:53,313  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,315  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,315  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 44   
-2023-02-09 20:54:53,316  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,318  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,318  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 45   
-2023-02-09 20:54:53,319  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,320  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,321  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 46   
-2023-02-09 20:54:53,322  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,323  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,324  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 47   
-2023-02-09 20:54:53,326  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,328  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,329  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 48   
-2023-02-09 20:54:53,329  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,331  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,331  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 49   
-2023-02-09 20:54:53,332  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,334  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,335  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 50   
-2023-02-09 20:54:53,335  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,337  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,337  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 51   
-2023-02-09 20:54:53,338  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,340  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,341  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 52   
-2023-02-09 20:54:53,342  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,345  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,345  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 53   
-2023-02-09 20:54:53,346  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,348  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,348  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 54   
-2023-02-09 20:54:53,349  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,351  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,352  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 55   
-2023-02-09 20:54:53,353  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,354  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,355  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 56   
-2023-02-09 20:54:53,355  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,357  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,358  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 57   
-2023-02-09 20:54:53,359  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,361  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,362  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 58   
-2023-02-09 20:54:53,363  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,364  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,365  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 59   
-2023-02-09 20:54:53,366  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,368  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,368  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 60   
-2023-02-09 20:54:53,369  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,370  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,372  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 61   
-2023-02-09 20:54:53,372  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,375  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,375  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 62   
-2023-02-09 20:54:53,377  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,379  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,380  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 63   
-2023-02-09 20:54:53,380  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,381  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,382  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 64   
-2023-02-09 20:54:53,383  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,384  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,385  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 65   
-2023-02-09 20:54:53,386  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,388  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,389  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 66   
-2023-02-09 20:54:53,389  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,391  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,392  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 67   
-2023-02-09 20:54:53,393  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,395  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,396  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 68   
-2023-02-09 20:54:53,397  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,398  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,399  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 69   
-2023-02-09 20:54:53,399  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,401  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,402  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 70   
-2023-02-09 20:54:53,403  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,404  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,405  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 71   
-2023-02-09 20:54:53,406  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,408  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,409  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 72   
-2023-02-09 20:54:53,410  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,412  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,413  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 73   
-2023-02-09 20:54:53,414  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,416  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,417  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 74   
-2023-02-09 20:54:53,418  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,420  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,421  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 75   
-2023-02-09 20:54:53,422  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,424  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,425  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 76   
-2023-02-09 20:54:53,426  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,428  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,429  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 77   
-2023-02-09 20:54:53,430  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,432  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,433  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 78   
-2023-02-09 20:54:53,434  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,435  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,436  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 79   
-2023-02-09 20:54:53,437  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,439  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,440  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 80   
-2023-02-09 20:54:53,441  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,444  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,445  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 81   
-2023-02-09 20:54:53,447  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,449  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,450  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 82   
-2023-02-09 20:54:53,451  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,453  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,454  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 83   
-2023-02-09 20:54:53,455  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,457  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,458  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 84   
-2023-02-09 20:54:53,460  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,463  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,463  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 85   
-2023-02-09 20:54:53,464  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,466  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,467  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 86   
-2023-02-09 20:54:53,468  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,470  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,471  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 87   
-2023-02-09 20:54:53,472  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,474  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,476  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 88   
-2023-02-09 20:54:53,477  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,480  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,481  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 89   
-2023-02-09 20:54:53,483  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,484  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,485  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 90   
-2023-02-09 20:54:53,485  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,487  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,488  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 91   
-2023-02-09 20:54:53,488  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,490  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,491  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 92   
-2023-02-09 20:54:53,492  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,494  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,495  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 93   
-2023-02-09 20:54:53,496  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,497  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,498  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 94   
-2023-02-09 20:54:53,499  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,501  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,502  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 95   
-2023-02-09 20:54:53,503  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,505  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,506  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 96   
-2023-02-09 20:54:53,507  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,510  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,511  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 97   
-2023-02-09 20:54:53,513  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,515  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,516  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 98   
-2023-02-09 20:54:53,517  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,519  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,520  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 99   
-2023-02-09 20:54:53,521  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,522  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,524  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 100   
-2023-02-09 20:54:53,525  |  DEBUG  |  ---------------------------------  
-2023-02-09 20:54:53,527  |  INFO  |  Rows after SQL insert in Postgres: 100   
-2023-02-09 20:54:53,529  |  DEBUG  |    
-2023-02-09 20:54:53,538  |  INFO  |  ================================================  
-2023-02-09 20:54:53,540  |  INFO  |  DATA PROFILING METRICS  
-2023-02-09 20:54:53,541  |  INFO  |  ================================================  
-2023-02-09 20:54:53,541  |  INFO  |  Number of rows in table:                     100   
-2023-02-09 20:54:53,543  |  INFO  |  Number of columns in table:                  22   
-2023-02-09 20:54:53,544  |  INFO  |    
-2023-02-09 20:54:53,545  |  INFO  |  Successful records uploaded total :          100 / 100     
-2023-02-09 20:54:53,546  |  INFO  |  Failed records uploaded total:               0 / 100         
-2023-02-09 20:54:53,547  |  INFO  |    
-2023-02-09 20:54:53,548  |  INFO  |  Number of unique records:                    100 / 100  
-2023-02-09 20:54:53,549  |  INFO  |  Number of duplicate records:                 0 / 100  
-2023-02-09 20:54:53,549  |  INFO  |    
-2023-02-09 20:54:53,550  |  INFO  |  Successful records uploaded % :              100.0      
-2023-02-09 20:54:53,551  |  INFO  |  Failed records uploaded %:                   0.0         
-2023-02-09 20:54:53,552  |  INFO  |    
-2023-02-09 20:54:53,553  |  INFO  |  Unique records %:                            100.0   
-2023-02-09 20:54:53,554  |  INFO  |  Duplicate records %:                         0.0   
-2023-02-09 20:54:53,554  |  INFO  |  ================================================  
-2023-02-09 20:54:53,556  |  DEBUG  |    
-2023-02-09 20:54:53,556  |  INFO  |  DATA VALIDATION SUCCESS: All general DQ checks passed!   
-2023-02-09 20:54:53,558  |  DEBUG  |    
-2023-02-09 20:54:53,559  |  INFO  |  Now saving changes made by SQL statements to Postgres DB....  
-2023-02-09 20:54:53,572  |  INFO  |    
-2023-02-09 20:54:53,572  |  INFO  |  Closing cursor.  
-2023-02-09 20:54:53,574  |  INFO  |    
-2023-02-09 20:54:53,575  |  INFO  |  Closing postgres connection.  
+2023-02-09 20:58:05,923  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:58:05,924  |  DEBUG  |    
+2023-02-09 20:58:05,929  |  INFO  |  Rows before SQL insert in Postgres: 0   
+2023-02-09 20:58:05,929  |  DEBUG  |    
+2023-02-09 20:58:05,934  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,935  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 1   
+2023-02-09 20:58:05,936  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,937  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,938  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 2   
+2023-02-09 20:58:05,940  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,941  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,942  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 3   
+2023-02-09 20:58:05,943  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,944  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,945  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 4   
+2023-02-09 20:58:05,946  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,948  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,949  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 5   
+2023-02-09 20:58:05,950  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,952  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,953  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 6   
+2023-02-09 20:58:05,954  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,955  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,956  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 7   
+2023-02-09 20:58:05,957  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,958  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,959  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 8   
+2023-02-09 20:58:05,960  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,961  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,962  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 9   
+2023-02-09 20:58:05,963  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,964  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,965  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 10   
+2023-02-09 20:58:05,966  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,969  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,970  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 11   
+2023-02-09 20:58:05,971  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,972  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,973  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 12   
+2023-02-09 20:58:05,974  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,975  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,976  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 13   
+2023-02-09 20:58:05,977  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,978  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,979  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 14   
+2023-02-09 20:58:05,979  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,981  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,982  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 15   
+2023-02-09 20:58:05,983  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,985  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,986  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 16   
+2023-02-09 20:58:05,987  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,989  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,989  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 17   
+2023-02-09 20:58:05,990  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,992  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,993  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 18   
+2023-02-09 20:58:05,993  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,995  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,995  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 19   
+2023-02-09 20:58:05,996  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,998  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:05,999  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 20   
+2023-02-09 20:58:06,000  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,002  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,003  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 21   
+2023-02-09 20:58:06,004  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,005  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,006  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 22   
+2023-02-09 20:58:06,007  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,008  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,009  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 23   
+2023-02-09 20:58:06,010  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,012  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,012  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 24   
+2023-02-09 20:58:06,013  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,015  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,016  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 25   
+2023-02-09 20:58:06,017  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,019  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,020  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 26   
+2023-02-09 20:58:06,020  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,022  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,023  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 27   
+2023-02-09 20:58:06,023  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,026  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,027  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 28   
+2023-02-09 20:58:06,028  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,030  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,030  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 29   
+2023-02-09 20:58:06,031  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,034  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,035  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 30   
+2023-02-09 20:58:06,036  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,038  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,040  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 31   
+2023-02-09 20:58:06,042  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,045  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,046  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 32   
+2023-02-09 20:58:06,047  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,049  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,050  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 33   
+2023-02-09 20:58:06,051  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,053  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,055  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 34   
+2023-02-09 20:58:06,056  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,058  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,059  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 35   
+2023-02-09 20:58:06,060  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,062  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,063  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 36   
+2023-02-09 20:58:06,064  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,066  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,067  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 37   
+2023-02-09 20:58:06,068  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,070  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,071  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 38   
+2023-02-09 20:58:06,072  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,074  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,075  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 39   
+2023-02-09 20:58:06,075  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,077  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,078  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 40   
+2023-02-09 20:58:06,079  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,081  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,082  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 41   
+2023-02-09 20:58:06,083  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,085  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,086  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 42   
+2023-02-09 20:58:06,087  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,089  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,090  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 43   
+2023-02-09 20:58:06,092  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,098  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,103  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 44   
+2023-02-09 20:58:06,104  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,108  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,109  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 45   
+2023-02-09 20:58:06,110  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,111  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,112  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 46   
+2023-02-09 20:58:06,113  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,115  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,117  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 47   
+2023-02-09 20:58:06,118  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,119  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,120  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 48   
+2023-02-09 20:58:06,121  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,122  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,123  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 49   
+2023-02-09 20:58:06,124  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,126  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,126  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 50   
+2023-02-09 20:58:06,127  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,129  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,130  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 51   
+2023-02-09 20:58:06,131  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,133  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,135  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 52   
+2023-02-09 20:58:06,136  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,138  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,139  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 53   
+2023-02-09 20:58:06,140  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,141  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,143  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 54   
+2023-02-09 20:58:06,144  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,146  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,147  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 55   
+2023-02-09 20:58:06,148  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,150  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,152  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 56   
+2023-02-09 20:58:06,153  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,154  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,155  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 57   
+2023-02-09 20:58:06,156  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,157  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,159  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 58   
+2023-02-09 20:58:06,160  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,161  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,162  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 59   
+2023-02-09 20:58:06,163  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,166  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,167  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 60   
+2023-02-09 20:58:06,169  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,171  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,172  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 61   
+2023-02-09 20:58:06,173  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,175  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,175  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 62   
+2023-02-09 20:58:06,176  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,178  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,179  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 63   
+2023-02-09 20:58:06,180  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,182  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,184  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 64   
+2023-02-09 20:58:06,185  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,186  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,187  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 65   
+2023-02-09 20:58:06,188  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,190  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,191  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 66   
+2023-02-09 20:58:06,192  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,193  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,194  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 67   
+2023-02-09 20:58:06,195  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,196  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,197  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 68   
+2023-02-09 20:58:06,198  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,201  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,203  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 69   
+2023-02-09 20:58:06,203  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,205  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,206  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 70   
+2023-02-09 20:58:06,207  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,208  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,209  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 71   
+2023-02-09 20:58:06,210  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,212  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,212  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 72   
+2023-02-09 20:58:06,213  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,215  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,217  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 73   
+2023-02-09 20:58:06,218  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,220  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,221  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 74   
+2023-02-09 20:58:06,222  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,224  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,224  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 75   
+2023-02-09 20:58:06,226  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,227  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,229  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 76   
+2023-02-09 20:58:06,230  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,232  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,234  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 77   
+2023-02-09 20:58:06,236  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,237  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,238  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 78   
+2023-02-09 20:58:06,239  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,240  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,241  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 79   
+2023-02-09 20:58:06,242  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,244  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,244  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 80   
+2023-02-09 20:58:06,245  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,247  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,248  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 81   
+2023-02-09 20:58:06,249  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,252  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,253  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 82   
+2023-02-09 20:58:06,254  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,255  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,256  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 83   
+2023-02-09 20:58:06,257  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,259  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,259  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 84   
+2023-02-09 20:58:06,260  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,261  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,262  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 85   
+2023-02-09 20:58:06,263  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,265  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,266  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 86   
+2023-02-09 20:58:06,267  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,269  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,270  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 87   
+2023-02-09 20:58:06,270  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,272  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,273  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 88   
+2023-02-09 20:58:06,274  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,275  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,276  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 89   
+2023-02-09 20:58:06,277  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,279  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,280  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 90   
+2023-02-09 20:58:06,280  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,284  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,284  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 91   
+2023-02-09 20:58:06,285  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,287  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,288  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 92   
+2023-02-09 20:58:06,289  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,290  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,292  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 93   
+2023-02-09 20:58:06,293  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,294  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,295  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 94   
+2023-02-09 20:58:06,296  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,298  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,300  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 95   
+2023-02-09 20:58:06,301  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,303  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,303  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 96   
+2023-02-09 20:58:06,305  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,306  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,307  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 97   
+2023-02-09 20:58:06,308  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,309  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,310  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 98   
+2023-02-09 20:58:06,311  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,313  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,314  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 99   
+2023-02-09 20:58:06,315  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,318  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,319  |  INFO  |  INSERT SUCCESS: Uploaded accommodation_bookings record no 100   
+2023-02-09 20:58:06,320  |  DEBUG  |  ---------------------------------  
+2023-02-09 20:58:06,322  |  INFO  |  Rows after SQL insert in Postgres: 100   
+2023-02-09 20:58:06,323  |  DEBUG  |    
+2023-02-09 20:58:06,336  |  INFO  |  ================================================  
+2023-02-09 20:58:06,336  |  INFO  |  DATA PROFILING METRICS  
+2023-02-09 20:58:06,337  |  INFO  |  ================================================  
+2023-02-09 20:58:06,338  |  INFO  |  Number of rows in table:                     100   
+2023-02-09 20:58:06,338  |  INFO  |  Number of columns in table:                  22   
+2023-02-09 20:58:06,340  |  INFO  |    
+2023-02-09 20:58:06,341  |  INFO  |  Successful records uploaded total :          100 / 100     
+2023-02-09 20:58:06,342  |  INFO  |  Failed/Errored records uploaded total:       0 / 100         
+2023-02-09 20:58:06,343  |  INFO  |    
+2023-02-09 20:58:06,344  |  INFO  |  Successful records uploaded % :              100.0      
+2023-02-09 20:58:06,345  |  INFO  |  Failed/Errored records uploaded %:           0.0         
+2023-02-09 20:58:06,346  |  INFO  |    
+2023-02-09 20:58:06,347  |  INFO  |  Number of unique records:                    100 / 100  
+2023-02-09 20:58:06,349  |  INFO  |  Number of duplicate records:                 0 / 100  
+2023-02-09 20:58:06,351  |  INFO  |    
+2023-02-09 20:58:06,353  |  INFO  |  Unique records %:                            100.0   
+2023-02-09 20:58:06,353  |  INFO  |  Duplicate records %:                         0.0   
+2023-02-09 20:58:06,355  |  INFO  |  ================================================  
+2023-02-09 20:58:06,356  |  DEBUG  |    
+2023-02-09 20:58:06,357  |  INFO  |  DATA VALIDATION SUCCESS: All general DQ checks passed!   
+2023-02-09 20:58:06,358  |  DEBUG  |    
+2023-02-09 20:58:06,359  |  INFO  |  Now saving changes made by SQL statements to Postgres DB....  
+2023-02-09 20:58:06,371  |  INFO  |    
+2023-02-09 20:58:06,372  |  INFO  |  Closing cursor.  
+2023-02-09 20:58:06,375  |  INFO  |    
+2023-02-09 20:58:06,375  |  INFO  |  Closing postgres connection.  
