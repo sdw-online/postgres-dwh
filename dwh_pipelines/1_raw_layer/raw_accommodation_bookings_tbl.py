@@ -131,6 +131,7 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info("=================================================================================")
             root_logger.info(f"CONNECTION SUCCESS: Managed to connect successfully to the {db_layer_name} database!!")
+            root_logger.info(f"Connection details: {postgres_connection.dsn} ")
             root_logger.info("=================================================================================")
             root_logger.debug("")
         
@@ -193,12 +194,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Set up SQL statements for adding data lineage and validation check 
         add_data_lineage_to_raw_accommodation_bookings_tbl = f'''        ALTER TABLE {schema_name}.{table_name}
-                                                                        ADD COLUMN created_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                                                        ADD COLUMN updated_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                                                        ADD COLUMN source_system        VARCHAR(255),
-                                                                        ADD COLUMN source_file          VARCHAR(255),
-                                                                        ADD load_timestamp              TIMESTAMP,
-                                                                        ADD transformation_process      VARCHAR(255)
+                                                                            ADD COLUMN created_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                            ADD COLUMN updated_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                            ADD COLUMN source_system        VARCHAR(255),
+                                                                            ADD COLUMN source_file          VARCHAR(255),
+                                                                            ADD load_timestamp              TIMESTAMP,
+                                                                            ADD transformation_process      VARCHAR(255)
                                                                         ;
         '''
 
@@ -242,6 +243,7 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.info(f"=================================================================================================")
             root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {schema_name} schema in {db_layer_name} ")
             root_logger.info(f"Schema name in Postgres: {sql_result} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
             root_logger.info(f"=================================================================================================")
             root_logger.debug(f"")
 
@@ -249,6 +251,7 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.error(f"=================================================================================================")
             root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {db_layer_name}...")
+            root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
             root_logger.error(f"=================================================================================================")
             root_logger.debug(f"")
 
@@ -263,12 +266,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_accommodation_bookings_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_accommodation_bookings_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -283,12 +288,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {db_layer_name}.  ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_accommodation_bookings_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_accommodation_bookings_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -297,6 +304,7 @@ def load_data_to_raw_layer(postgres_connection):
         temp = f'''     SELECT * FROM information_schema.tables WHERE table_name =  '{schema_name}.{table_name}'
         '''
         cursor.execute(temp)
+        root_logger.info(f"SQL Query: {temp} ")
         sql_result = cursor.fetchone()
         print('-----------------')
         print('-----------------')
@@ -323,7 +331,9 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
-
+        # Commit the changes made above 
+        root_logger.info("Now committing all SQL statements....")
+        postgres_connection.commit()
 
 
     except Exception as e:

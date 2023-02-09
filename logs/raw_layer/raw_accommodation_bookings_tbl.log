@@ -1,29 +1,39 @@
-2023-02-09 13:17:02,378  |  INFO  |    
-2023-02-09 13:17:02,379  |  INFO  |  ---------------------------------------------  
-2023-02-09 13:17:02,379  |  INFO  |  Beginning the source data extraction process...  
-2023-02-09 13:17:02,381  |  INFO  |  Successfully located 'accommodation_bookings.json'  
-2023-02-09 13:17:02,451  |  DEBUG  |    
-2023-02-09 13:17:02,451  |  INFO  |  =================================================================================  
-2023-02-09 13:17:02,451  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
-2023-02-09 13:17:02,453  |  INFO  |  =================================================================================  
-2023-02-09 13:17:02,454  |  DEBUG  |    
-2023-02-09 13:17:02,464  |  DEBUG  |    
-2023-02-09 13:17:02,465  |  INFO  |  =================================================================================================  
-2023-02-09 13:17:02,465  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
-2023-02-09 13:17:02,466  |  INFO  |  Schema name in Postgres: main   
-2023-02-09 13:17:02,466  |  INFO  |  =================================================================================================  
-2023-02-09 13:17:02,467  |  DEBUG  |    
-2023-02-09 13:17:02,480  |  DEBUG  |    
-2023-02-09 13:17:02,480  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 13:17:02,481  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
-2023-02-09 13:17:02,481  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 13:17:02,482  |  DEBUG  |    
-2023-02-09 13:17:02,503  |  DEBUG  |    
-2023-02-09 13:17:02,503  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 13:17:02,504  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
-2023-02-09 13:17:02,504  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 13:17:02,505  |  DEBUG  |    
-2023-02-09 13:17:02,507  |  INFO  |    
-2023-02-09 13:17:02,508  |  INFO  |  Closing cursor.  
-2023-02-09 13:17:02,509  |  INFO  |    
-2023-02-09 13:17:02,510  |  INFO  |  Closing postgres connection.  
+2023-02-09 13:41:01,325  |  INFO  |    
+2023-02-09 13:41:01,326  |  INFO  |  ---------------------------------------------  
+2023-02-09 13:41:01,326  |  INFO  |  Beginning the source data extraction process...  
+2023-02-09 13:41:01,329  |  INFO  |  Successfully located 'accommodation_bookings.json'  
+2023-02-09 13:41:01,474  |  DEBUG  |    
+2023-02-09 13:41:01,474  |  INFO  |  =================================================================================  
+2023-02-09 13:41:01,475  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
+2023-02-09 13:41:01,475  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
+2023-02-09 13:41:01,475  |  INFO  |  =================================================================================  
+2023-02-09 13:41:01,476  |  DEBUG  |    
+2023-02-09 13:41:01,508  |  DEBUG  |    
+2023-02-09 13:41:01,508  |  INFO  |  =================================================================================================  
+2023-02-09 13:41:01,509  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
+2023-02-09 13:41:01,510  |  INFO  |  Schema name in Postgres: main   
+2023-02-09 13:41:01,511  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
+           
+2023-02-09 13:41:01,512  |  INFO  |  =================================================================================================  
+2023-02-09 13:41:01,512  |  DEBUG  |    
+2023-02-09 13:41:01,542  |  DEBUG  |    
+2023-02-09 13:41:01,543  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 13:41:01,544  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
+2023-02-09 13:41:01,544  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+           
+2023-02-09 13:41:01,545  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 13:41:01,545  |  DEBUG  |    
+2023-02-09 13:41:01,577  |  DEBUG  |    
+2023-02-09 13:41:01,578  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 13:41:01,578  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
+2023-02-09 13:41:01,578  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+           
+2023-02-09 13:41:01,580  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 13:41:01,580  |  DEBUG  |    
+2023-02-09 13:41:01,583  |  INFO  |  SQL Query:      SELECT * FROM information_schema.tables WHERE table_name =  'main.raw_accommodation_bookings_tbl'
+           
+2023-02-09 13:41:01,584  |  INFO  |  Now committing all SQL statements....  
+2023-02-09 13:41:01,593  |  INFO  |    
+2023-02-09 13:41:01,593  |  INFO  |  Closing cursor.  
+2023-02-09 13:41:01,595  |  INFO  |    
+2023-02-09 13:41:01,596  |  INFO  |  Closing postgres connection.  
