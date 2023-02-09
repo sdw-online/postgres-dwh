@@ -111,15 +111,26 @@ postgres_connection = psycopg2.connect(
 def load_data_to_raw_layer(postgres_connection):
     try:
         
+        # Set up constants
+        row_counter = 0 
+        successful_rows_upload_count  =   0 
+        failed_rows_upload_count      =   0 
+
+        db_layer_name = database
+        schema_name = 'main'
+        table_name = 'raw_accommodation_bookings_tbl'
+
+
         # Create a cursor object to execute the PG-SQL commands 
         cursor = postgres_connection.cursor()
+
 
 
         # Validate the Postgres database connection
         if postgres_connection.closed == 0:
             root_logger.debug(f"")
             root_logger.info("=================================================================================")
-            root_logger.info("CONNECTION SUCCESS: Managed to connect successfully to the demo_company database!!")
+            root_logger.info(f"CONNECTION SUCCESS: Managed to connect successfully to the {db_layer_name} database!!")
             root_logger.info("=================================================================================")
             root_logger.debug("")
         
@@ -132,28 +143,27 @@ def load_data_to_raw_layer(postgres_connection):
 
         # ======================================= LOAD SRC TO RAW =======================================
         
-        row_counter = 0 
-        successful_rows_upload_count  =   0 
-        failed_rows_upload_count      =   0 
-
-        db_layer_name = database
-        schema_name = 'main'
-        table_name = 'accommodation_bookings_tbl'
 
 
 
 
-        
-        create_schema = f'''    CREATE SCHEMA IF NOT EXISTS {schema_name}
+        # Set up SQL statements for schema creation and validation check  
+        create_schema = f'''    CREATE SCHEMA IF NOT EXISTS {schema_name};
         '''
 
-        check_if_schema_exists = f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{schema_name}'
+        check_if_schema_exists = f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{schema_name}';
         '''
-       
-        delete_accommodation_bookings_tbl_if_exists = f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE
+
+
+        # Set up SQL statements for table deletion and validation check  
+        delete_raw_accommodation_bookings_tbl_if_exists = f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
         '''
-        
-        create_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+
+        check_if_raw_accommodation_bookings_tbl_is_deleted = f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        '''
+
+        # Set up SQL statements for table creation and validation check 
+        create_raw_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
                                                                             id                      UUID PRIMARY KEY,
                                                                             booking_date            TIMESTAMP,
                                                                             check_in_date           TIMESTAMP,
@@ -176,15 +186,20 @@ def load_data_to_raw_layer(postgres_connection):
 
         '''
 
+        check_if_raw_accommodation_bookings_tbl_exists = f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        '''
 
-        add_data_lineage_to_accommodation_bookings_tbl = f'''        ALTER TABLE {schema_name}.{table_name}
+
+
+        # Set up SQL statements for adding data lineage and validation check 
+        add_data_lineage_to_raw_accommodation_bookings_tbl = f'''        ALTER TABLE {schema_name}.{table_name}
                                                                         ADD COLUMN created_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                         ADD COLUMN updated_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                         ADD COLUMN source_system        VARCHAR(255),
                                                                         ADD COLUMN source_file          VARCHAR(255),
                                                                         ADD load_timestamp              TIMESTAMP,
                                                                         ADD transformation_process      VARCHAR(255)
-
+                                                                        ;
         '''
 
         insert_accommodation_bookings_data = f'''                       INSERT INTO {schema_name}.{table_name} (
@@ -212,57 +227,93 @@ def load_data_to_raw_layer(postgres_connection):
                                                                                 transformation_process
                                                                                 )
 
-                                                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s);
+                                                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)
+                                                                            ;
         '''
 
 
-        # Create schema for database
+        # Create schema in Postgres
         cursor.execute(create_schema)
         cursor.execute(check_if_schema_exists)
-        sql_result = cursor.fetchone()
-        if len(sql_result) > 0:
+        sql_result = cursor.fetchone()[0]
+        print(sql_result)
+        if sql_result:
             root_logger.debug(f"")
-            root_logger.info(f"==============================================")
+            root_logger.info(f"=================================================================================================")
             root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {schema_name} schema in {db_layer_name} ")
-            root_logger.info(f"==============================================")
+            root_logger.info(f"Schema name in Postgres: {sql_result} ")
+            root_logger.info(f"=================================================================================================")
             root_logger.debug(f"")
 
         else:
             root_logger.debug(f"")
-            root_logger.error(f"==============================================")
+            root_logger.error(f"=================================================================================================")
             root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {db_layer_name}...")
-            root_logger.error(f"==============================================")
+            root_logger.error(f"=================================================================================================")
             root_logger.debug(f"")
 
         
+
+        # Delete table if it exists in Postgres
+        cursor.execute(delete_raw_accommodation_bookings_tbl_if_exists)
+        cursor.execute(check_if_raw_accommodation_bookings_tbl_is_deleted)
+        sql_result = cursor.fetchone()[0]
+        print(sql_result)
+        if sql_result:
+            root_logger.debug(f"")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.debug(f"")
+        else:
+            root_logger.debug(f"")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.debug(f"")
+
+
+
+        # Create table if it doesn't exist in Postgres  
+        cursor.execute(create_raw_accommodation_bookings_tbl)
+        cursor.execute(check_if_raw_accommodation_bookings_tbl_exists)
+        sql_result = cursor.fetchone()[0]
+        print(sql_result)
+        if sql_result:
+            root_logger.debug(f"")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {db_layer_name}.  ")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.debug(f"")
+        else:
+            root_logger.debug(f"")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.debug(f"")
+
+
+
+        temp = f'''     SELECT * FROM information_schema.tables WHERE table_name =  '{schema_name}.{table_name}'
+        '''
+        cursor.execute(temp)
+        sql_result = cursor.fetchone()
+        print('-----------------')
+        print('-----------------')
+        print(sql_result)
         # try:
-        #     cursor.execute(create_schema)
+        #     cursor(delete_raw_accommodation_bookings_tbl_if_exists)
         #     root_logger.debug(f"")
-        #     root_logger.info(f"==============================================")
-        #     root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {schema_name} schema in {db_layer_name} ")
-        #     root_logger.info(f"==============================================")
+        #     root_logger.info(f"=============================================================================================================================================================================")
+        #     root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
+        #     root_logger.info(f"=============================================================================================================================================================================")
         #     root_logger.debug(f"")
         # except:
         #     root_logger.debug(f"")
-        #     root_logger.error(f"==============================================")
-        #     root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {db_layer_name}...")
-        #     root_logger.error(f"==============================================")
+        #     root_logger.error(f"==========================================================================================================================================================================")
+        #     root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
+        #     root_logger.error(f"==========================================================================================================================================================================")
         #     root_logger.debug(f"")
-
-        
-        try:
-            cursor(delete_accommodation_bookings_tbl_if_exists)
-            root_logger.debug(f"")
-            root_logger.info(f"==============================================")
-            root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
-            root_logger.info(f"==============================================")
-            root_logger.debug(f"")
-        except:
-            root_logger.debug(f"")
-            root_logger.error(f"==============================================")
-            root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"==============================================")
-            root_logger.debug(f"")
 
 
 
@@ -282,13 +333,15 @@ def load_data_to_raw_layer(postgres_connection):
         
         # Close the cursor if it exists 
         if cursor is not None:
-            root_logger.info(cursor)
             cursor.close()
+            root_logger.info("")
+            root_logger.info("Closing cursor.")
 
         # Close the database connection to Postgres if it exists 
         if postgres_connection is not None:
-            root_logger.info(postgres_connection)
             postgres_connection.close()
+            root_logger.info("")
+            root_logger.info("Closing postgres connection.")
 
 
 
