@@ -17,7 +17,7 @@ root_logger.setLevel(logging.DEBUG)
 
 
 # Set up formatter for logs 
-file_handler_log_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s  ')
+file_handler_log_formatter = logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
 console_handler_log_formatter = logging.Formatter('%(message)s ')
 
 
@@ -93,17 +93,13 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
         accommodation_bookings_data = json.load(accommodation_bookings_file)
         root_logger.info(f"Successfully located '{src_file}'")
     # accommodation_bookings_data = accommodation_bookings_data[0:100]
+
     except:
         root_logger.error("Unable to locate source file...terminating process...")
         raise Exception("No source file located")
     
 
-
-
-
-def load_data_to_raw_layer(**connection_params):
-    try:
-        postgres_connection = psycopg2.connect(
+postgres_connection = psycopg2.connect(
             host = host,
             port = port,
             dbname = database,
@@ -112,20 +108,20 @@ def load_data_to_raw_layer(**connection_params):
         )
 
 
+def load_data_to_raw_layer(postgres_connection):
+    try:
+        
         # Create a cursor object to execute the PG-SQL commands 
         cursor = postgres_connection.cursor()
 
 
-        
-
-
-
         # Validate the Postgres database connection
         if postgres_connection.closed == 0:
+            root_logger.debug(f"")
             root_logger.info("=================================================================================")
             root_logger.info("CONNECTION SUCCESS: Managed to connect successfully to the demo_company database!!")
             root_logger.info("=================================================================================")
-            root_logger.info("")
+            root_logger.debug("")
         
         elif postgres_connection.closed != 0:
             raise ConnectionError("CONNECTION ERROR: Unable to connect to the demo_company database...") 
@@ -140,17 +136,24 @@ def load_data_to_raw_layer(**connection_params):
         successful_rows_upload_count  =   0 
         failed_rows_upload_count      =   0 
 
+        db_layer_name = database
+        schema_name = 'main'
+        table_name = 'accommodation_bookings_tbl'
+
 
 
 
         
-        create_schema = f'''    CREATE SCHEMA IF NOT EXISTS main
+        create_schema = f'''    CREATE SCHEMA IF NOT EXISTS {schema_name}
+        '''
+
+        check_if_schema_exists = f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{schema_name}'
         '''
        
-        delete_accommodation_bookings_tbl_if_exists = f''' DROP TABLE IF EXISTS main.raw_accommodation_bookings_tbl CASCADE
+        delete_accommodation_bookings_tbl_if_exists = f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE
         '''
         
-        create_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS main.raw_accommodation_bookings_tbl (
+        create_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
                                                                             id                      UUID PRIMARY KEY,
                                                                             booking_date            TIMESTAMP,
                                                                             check_in_date           TIMESTAMP,
@@ -174,7 +177,7 @@ def load_data_to_raw_layer(**connection_params):
         '''
 
 
-        add_data_lineage_to_accommodation_bookings_tbl = '''        ALTER TABLE main.raw_accommodation_bookings_tbl
+        add_data_lineage_to_accommodation_bookings_tbl = f'''        ALTER TABLE {schema_name}.{table_name}
                                                                         ADD COLUMN created_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                         ADD COLUMN updated_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                         ADD COLUMN source_system        VARCHAR(255),
@@ -184,7 +187,7 @@ def load_data_to_raw_layer(**connection_params):
 
         '''
 
-        insert_accommodation_bookings_data = '''                       INSERT INTO main.raw_accommodation_bookings_tbl (
+        insert_accommodation_bookings_data = f'''                       INSERT INTO {schema_name}.{table_name} (
                                                                                 id, 
                                                                                 booking_date, 
                                                                                 check_in_date, 
@@ -213,6 +216,56 @@ def load_data_to_raw_layer(**connection_params):
         '''
 
 
+        # Create schema for database
+        cursor.execute(create_schema)
+        cursor.execute(check_if_schema_exists)
+        sql_result = cursor.fetchone()
+        if len(sql_result) > 0:
+            root_logger.debug(f"")
+            root_logger.info(f"==============================================")
+            root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {schema_name} schema in {db_layer_name} ")
+            root_logger.info(f"==============================================")
+            root_logger.debug(f"")
+
+        else:
+            root_logger.debug(f"")
+            root_logger.error(f"==============================================")
+            root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {db_layer_name}...")
+            root_logger.error(f"==============================================")
+            root_logger.debug(f"")
+
+        
+        # try:
+        #     cursor.execute(create_schema)
+        #     root_logger.debug(f"")
+        #     root_logger.info(f"==============================================")
+        #     root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {schema_name} schema in {db_layer_name} ")
+        #     root_logger.info(f"==============================================")
+        #     root_logger.debug(f"")
+        # except:
+        #     root_logger.debug(f"")
+        #     root_logger.error(f"==============================================")
+        #     root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {db_layer_name}...")
+        #     root_logger.error(f"==============================================")
+        #     root_logger.debug(f"")
+
+        
+        try:
+            cursor(delete_accommodation_bookings_tbl_if_exists)
+            root_logger.debug(f"")
+            root_logger.info(f"==============================================")
+            root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
+            root_logger.info(f"==============================================")
+            root_logger.debug(f"")
+        except:
+            root_logger.debug(f"")
+            root_logger.error(f"==============================================")
+            root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
+            root_logger.error(f"==============================================")
+            root_logger.debug(f"")
+
+
+
 
 
 
@@ -239,5 +292,5 @@ def load_data_to_raw_layer(**connection_params):
 
 
 
-load_data_to_raw_layer()
+load_data_to_raw_layer(postgres_connection)
 

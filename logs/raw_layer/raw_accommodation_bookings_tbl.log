@@ -1,10 +1,11 @@
-2023-02-09 12:00:01,082 - INFO -   
-2023-02-09 12:00:01,082 - INFO - ---------------------------------------------  
-2023-02-09 12:00:01,083 - INFO - Beginning the source data extraction process...  
-2023-02-09 12:00:01,085 - INFO - Successfully located 'accommodation_bookings.json'  
-2023-02-09 12:00:01,155 - INFO - =================================================================================  
-2023-02-09 12:00:01,155 - INFO - CONNECTION SUCCESS: Managed to connect successfully to the demo_company database!!  
-2023-02-09 12:00:01,155 - INFO - =================================================================================  
-2023-02-09 12:00:01,156 - INFO -   
-2023-02-09 12:00:01,156 - INFO - <cursor object at 0x0000016E671675A0; closed: 0>  
-2023-02-09 12:00:01,157 - INFO - <connection object at 0x0000016E670AD690; dsn: 'user=sdw_admin password=xxx dbname=raw_db host=localhost port=5434', closed: 0>  
+2023-02-09 12:22:56,057  |  INFO  |    
+2023-02-09 12:22:56,058  |  INFO  |  ---------------------------------------------  
+2023-02-09 12:22:56,058  |  INFO  |  Beginning the source data extraction process...  
+2023-02-09 12:22:56,060  |  INFO  |  Successfully located 'accommodation_bookings.json'  
+2023-02-09 12:22:56,155  |  DEBUG  |    
+2023-02-09 12:22:56,156  |  INFO  |  =================================================================================  
+2023-02-09 12:22:56,157  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the demo_company database!!  
+2023-02-09 12:22:56,157  |  INFO  |  =================================================================================  
+2023-02-09 12:22:56,157  |  DEBUG  |    
+2023-02-09 12:22:56,210  |  INFO  |  <cursor object at 0x000002140BC775A0; closed: 0>  
+2023-02-09 12:22:56,210  |  INFO  |  <connection object at 0x000002140BBBD690; dsn: 'user=sdw_admin password=xxx dbname=raw_db host=localhost port=5434', closed: 0>  
