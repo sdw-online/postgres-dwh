@@ -24,6 +24,7 @@ Here are some of the tables gathered from the travel source systems (databases, 
 - Airline data                      ------------ []
 - Sales agent data                  ------------ [x]
 - Fight destination revenue         ------------ []
+- Accommodation bookings data         ------------ []
 
 
 ## Layers 
