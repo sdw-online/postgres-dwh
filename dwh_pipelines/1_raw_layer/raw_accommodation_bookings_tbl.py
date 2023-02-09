@@ -282,6 +282,22 @@ def load_data_to_raw_layer(postgres_connection):
         '''
 
 
+        
+        count_total_no_of_columns_in_table = f'''           SELECT          COUNT(column_name) 
+                                                            FROM            information_schema.columns 
+                                                            WHERE           table_name = '{table_name}'
+                                                            AND             table_schema = '{schema_name}'
+        '''
+
+        count_total_no_of_unique_records_in_table = f'''        SELECT COUNT(*) FROM 
+                                                                            (SELECT DISTINCT * FROM {schema_name}.{table_name}) as unique_records   
+        '''
+        count_total_no_of_duplicate_records_in_table = f'''     
+        '''
+
+
+
+
         # Create schema in Postgres
         cursor.execute(create_schema)
         cursor.execute(check_if_schema_exists)
@@ -375,8 +391,8 @@ def load_data_to_raw_layer(postgres_connection):
         # Add insert rows to table 
         cursor.execute(check_total_row_count_before_insert_statement)
         sql_result = cursor.fetchone()[0]
-        root_logger.info(f"Rows before SQL insert: {sql_result} ")
-        root_logger.info(f"")
+        root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
+        root_logger.debug(f"")
 
 
         for accommodation_bookings in accommodation_bookings_data:
@@ -407,27 +423,59 @@ def load_data_to_raw_layer(postgres_connection):
 
             cursor.execute(insert_accommodation_bookings_data, values)
 
+            # Validate if each row inserted into the table exists 
+            if cursor.rowcount == 1:
+                row_counter += 1
+                successful_rows_upload_count += 1
+                root_logger.debug(f'---------------------------------')
+                root_logger.info(f'INSERT SUCCESS: Uploaded accommodation_bookings record no {row_counter} ')
+                root_logger.debug(f'---------------------------------')
+            else:
+                row_counter += 1
+                failed_rows_upload_count +=1
+                root_logger.error(f'---------------------------------')
+                root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
+                root_logger.error(f'---------------------------------')
+
+
+
         cursor.execute(check_total_row_count_after_insert_statement)
-        sql_result = cursor.fetchone()[0]
-        root_logger.info(f"Rows after SQL insert: {sql_result} ")
-        root_logger.info(f"")
+        total_rows_in_table = cursor.fetchone()[0]
+        root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
+        root_logger.debug(f"")
 
-        root_logger.info(f"Successful rows inserted: {sql_result} ")
-        root_logger.info(f"")
-        
-        root_logger.info(f"Failed rows inserted: {sql_result} ")
-        root_logger.info(f"")
+        # Display data profiling metrics 
+        cursor.execute(count_total_no_of_columns_in_table)
+        total_columns_in_table = cursor.fetchone()[0]
+
+        cursor.execute(count_total_no_of_unique_records_in_table)
+        total_unique_records_in_table = cursor.fetchone()[0]
+        print(total_unique_records_in_table)
+
+        total_duplicate_records_in_table = total_rows_in_table - total_unique_records_in_table
+
 
         
 
-        
+        root_logger.info('================================================')
+        root_logger.info('DATA PROFILING METRICS')
+        root_logger.info('================================================')
+        root_logger.info(f'Successful records uploaded total :    {successful_rows_upload_count} / {total_rows_in_table}   ')
+        root_logger.info(f'Failed records uploaded total:         {failed_rows_upload_count} / {total_rows_in_table}       ')
+        root_logger.info(f'')
+        root_logger.info(f'Number of rows in table:                     {total_rows_in_table} ')
+        root_logger.info(f'Number of columns in table:                  {total_columns_in_table} ')
+        root_logger.info(f'')
+        root_logger.info(f'Number of unique records:                     {total_unique_records_in_table} ')
+        root_logger.info(f'Number of duplicate records:                  {total_duplicate_records_in_table} ')
+        root_logger.info('================================================')
 
 
 
 
 
         # Commit the changes made above 
-        root_logger.info("Now saving changes made by SQL statements in Postgres DB....")
+        root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
         postgres_connection.commit()
 
 
