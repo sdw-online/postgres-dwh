@@ -16,14 +16,16 @@ import time
 root_logger = logging.getLogger(__name__)
 root_logger.setLevel(logging.DEBUG)
 
+# Add colour to the console prints 
+coloredlogs.install(level='DEBUG', logger=root_logger, fmt='%(message)s')
+
 # Set up formatter for logs 
 file_handler_log_formatter = logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
-console_handler_log_formatter_1 = logging.Formatter('%(message)s ')
-console_handler_log_formatter_2 = coloredlogs.ColoredFormatter(fmt='%(message)s', level_styles=dict(
+console_handler_log_formatter = coloredlogs.ColoredFormatter(fmt='%(message)s', level_styles=dict(
                                                                                         debug=dict(color='green'),
                                                                                         info=dict(color='blue'),
                                                                                         warning=dict(color='orange'),
-                                                                                        error=dict(color='yellow', bold=True, bright=True),
+                                                                                        error=dict(color='red', bold=True, bright=True),
                                                                                         critical=dict(color='black', bold=True, background='red')
                                                                                             ),
                                                                                     field_styles=dict(
@@ -37,14 +39,17 @@ file_handler.setFormatter(file_handler_log_formatter)
 
 # Set up console handler object for writing event logs to console in real time (i.e. streams events to stderr)
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(console_handler_log_formatter_2)
+console_handler.setFormatter(console_handler_log_formatter)
+
+
 
 # Add the file and console handlers 
 root_logger.addHandler(file_handler)
 root_logger.addHandler(console_handler)
 
-# Add colour to the console prints 
-coloredlogs.install(level='DEBUG', logger=root_logger, milliseconds=True)
+
+
+
 
 
 
