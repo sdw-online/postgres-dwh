@@ -7,7 +7,7 @@ from datetime import datetime
 import os 
 from pathlib import Path
 import time 
-
+import random
 
 
 # ================================================ LOGGER ================================================
@@ -113,6 +113,7 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
     try:
         accommodation_bookings_data = json.load(accommodation_bookings_file)
         root_logger.info(f"Successfully located '{src_file}'")
+        root_logger.info(f"Data type: '{type(accommodation_bookings_data)}'")
     # accommodation_bookings_data = accommodation_bookings_data[0:100]
 
     except:
@@ -133,7 +134,12 @@ def load_data_to_raw_layer(postgres_connection):
     try:
         
         # Set up constants
+        CURRENT_TIMESTAMP = datetime.now()
+        source_system = ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter = 0 
+        total_rows_before_insert_operation = 0 
+        total_rows_after_insert_operation = 0 
+        
         successful_rows_upload_count  =   0 
         failed_rows_upload_count      =   0 
 
@@ -187,14 +193,14 @@ def load_data_to_raw_layer(postgres_connection):
         # Set up SQL statements for table creation and validation check 
         create_raw_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
                                                                             id                      UUID PRIMARY KEY,
-                                                                            booking_date            TIMESTAMP,
-                                                                            check_in_date           TIMESTAMP,
-                                                                            check_out_date          TIMESTAMP,
+                                                                            booking_date            INTEGER,
+                                                                            check_in_date           INTEGER,
+                                                                            check_out_date          INTEGER,
                                                                             checked_in              VARCHAR(3),
                                                                             confirmation_code       VARCHAR(12),
                                                                             customer_id             UUID,
                                                                             flight_booking_id       UUID,
-                                                                            location                TEXT,
+                                                                            location                VARCHAR(255),
                                                                             num_adults              INTEGER,
                                                                             num_children            INTEGER,
                                                                             payment_method          VARCHAR(20),
@@ -222,7 +228,7 @@ def load_data_to_raw_layer(postgres_connection):
                                                                             ADD COLUMN  source_system               VARCHAR(255),
                                                                             ADD COLUMN  source_file                 VARCHAR(255),
                                                                             ADD COLUMN  load_timestamp              TIMESTAMP,
-                                                                            ADD COLUMN  transformation_process      VARCHAR(255)
+                                                                            ADD COLUMN  dwh_layer                   VARCHAR(255)
                                                                         ;
         '''
 
@@ -235,41 +241,41 @@ def load_data_to_raw_layer(postgres_connection):
                                                                         OR      column_name     = 'source_system' 
                                                                         OR      column_name     = 'source_file' 
                                                                         OR      column_name     = 'load_timestamp' 
-                                                                        OR      column_name     = 'transformation_process');
+                                                                        OR      column_name     = 'dwh_layer');
                                                                               
         '''
         
         check_total_row_count_before_insert_statement = f'''   SELECT COUNT(*) FROM {schema_name}.{table_name}
         '''
 
-        # Set up SQL statements for records insertion and validation check
+        # Set up SQL statements for records insert and validation check
         insert_accommodation_bookings_data = f'''                       INSERT INTO {schema_name}.{table_name} (
-                                                                                id, 
-                                                                                booking_date, 
-                                                                                check_in_date, 
-                                                                                check_out_date, 
-                                                                                checked_in, 
-                                                                                confirmation_code, 
-                                                                                customer_id, 
-                                                                                flight_booking_id, 
-                                                                                location, 
-                                                                                num_adults, 
-                                                                                num_children, 
-                                                                                payment_method, 
-                                                                                room_type, 
-                                                                                sales_agent_id, 
-                                                                                status, 
-                                                                                total_price, 
-                                                                                created_at, 
-                                                                                updated_at, 
-                                                                                source_system, 
-                                                                                source_file, 
-                                                                                load_timestamp, 
-                                                                                transformation_process
-                                                                                )
-
-                                                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)
-                                                                            ;
+                                                                                id,
+                                                                                booking_date,
+                                                                                check_in_date,
+                                                                                check_out_date,
+                                                                                checked_in,
+                                                                                confirmation_code,
+                                                                                customer_id,
+                                                                                flight_booking_id,
+                                                                                location,
+                                                                                num_adults,
+                                                                                num_children,
+                                                                                payment_method,
+                                                                                room_type,
+                                                                                sales_agent_id,
+                                                                                status,
+                                                                                total_price,
+                                                                                created_at,
+                                                                                updated_at,
+                                                                                source_system,
+                                                                                source_file,
+                                                                                load_timestamp,
+                                                                                dwh_layer
+                                                                            )
+                                                                            VALUES (
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                            );
         '''
 
         check_total_row_count_after_insert_statement = f'''        SELECT COUNT(*) FROM {schema_name}.{table_name}
@@ -369,13 +375,49 @@ def load_data_to_raw_layer(postgres_connection):
         # Add insert rows to table 
         cursor.execute(check_total_row_count_before_insert_statement)
         sql_result = cursor.fetchone()[0]
-        root_logger.info(f"Rows before insertion: {sql_result} ")
-
-        
+        root_logger.info(f"Rows before SQL insert: {sql_result} ")
         root_logger.info(f"")
 
 
-        cursor.execute(insert_accommodation_bookings_data)
+        for accommodation_bookings in accommodation_bookings_data:
+            values = (
+                accommodation_bookings['id'],              
+                accommodation_bookings['booking_date'],     
+                accommodation_bookings['check_in_date'],    
+                accommodation_bookings['check_out_date'],   
+                accommodation_bookings['checked_in'],       
+                accommodation_bookings['confirmation_code'],
+                accommodation_bookings['customer_id'],      
+                accommodation_bookings['flight_booking_id'],
+                accommodation_bookings['location'],         
+                accommodation_bookings['num_adults'],       
+                accommodation_bookings['num_children'],    
+                accommodation_bookings['payment_method'],   
+                accommodation_bookings['room_type'],        
+                accommodation_bookings['sales_agent_id'],   
+                accommodation_bookings['status'],          
+                accommodation_bookings['total_price'],
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP,
+                random.choice(source_system),
+                'N/A',
+                CURRENT_TIMESTAMP,
+                'RAW'
+                )
+
+            cursor.execute(insert_accommodation_bookings_data, values)
+
+        cursor.execute(check_total_row_count_after_insert_statement)
+        sql_result = cursor.fetchone()[0]
+        root_logger.info(f"Rows after SQL insert: {sql_result} ")
+        root_logger.info(f"")
+
+        root_logger.info(f"Successful rows inserted: {sql_result} ")
+        root_logger.info(f"")
+        
+        root_logger.info(f"Failed rows inserted: {sql_result} ")
+        root_logger.info(f"")
+
         
 
         

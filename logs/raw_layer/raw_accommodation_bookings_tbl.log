@@ -1,42 +1,43 @@
-2023-02-09 17:36:55,349  |  INFO  |    
-2023-02-09 17:36:55,350  |  INFO  |  ---------------------------------------------  
-2023-02-09 17:36:55,352  |  INFO  |  Beginning the source data extraction process...  
-2023-02-09 17:36:55,355  |  INFO  |  Successfully located 'accommodation_bookings.json'  
-2023-02-09 17:36:55,438  |  DEBUG  |    
-2023-02-09 17:36:55,439  |  INFO  |  =================================================================================  
-2023-02-09 17:36:55,440  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
-2023-02-09 17:36:55,441  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
-2023-02-09 17:36:55,442  |  INFO  |  =================================================================================  
-2023-02-09 17:36:55,443  |  DEBUG  |    
-2023-02-09 17:36:55,455  |  INFO  |  main  
-2023-02-09 17:36:55,456  |  DEBUG  |    
-2023-02-09 17:36:55,457  |  INFO  |  =================================================================================================  
-2023-02-09 17:36:55,458  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
-2023-02-09 17:36:55,459  |  INFO  |  Schema name in Postgres: main   
-2023-02-09 17:36:55,459  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
+2023-02-09 19:56:50,836  |  INFO  |    
+2023-02-09 19:56:50,838  |  INFO  |  ---------------------------------------------  
+2023-02-09 19:56:50,838  |  INFO  |  Beginning the source data extraction process...  
+2023-02-09 19:56:50,841  |  INFO  |  Successfully located 'accommodation_bookings.json'  
+2023-02-09 19:56:50,842  |  INFO  |  Data type: '<class 'list'>'  
+2023-02-09 19:56:50,929  |  DEBUG  |    
+2023-02-09 19:56:50,929  |  INFO  |  =================================================================================  
+2023-02-09 19:56:50,930  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
+2023-02-09 19:56:50,931  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
+2023-02-09 19:56:50,932  |  INFO  |  =================================================================================  
+2023-02-09 19:56:50,933  |  DEBUG  |    
+2023-02-09 19:56:50,982  |  INFO  |  main  
+2023-02-09 19:56:50,983  |  DEBUG  |    
+2023-02-09 19:56:50,984  |  INFO  |  =================================================================================================  
+2023-02-09 19:56:50,985  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
+2023-02-09 19:56:50,986  |  INFO  |  Schema name in Postgres: main   
+2023-02-09 19:56:50,987  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
            
-2023-02-09 17:36:55,461  |  INFO  |  =================================================================================================  
-2023-02-09 17:36:55,461  |  DEBUG  |    
-2023-02-09 17:36:55,477  |  INFO  |  False  
-2023-02-09 17:36:55,478  |  DEBUG  |    
-2023-02-09 17:36:55,478  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 17:36:55,479  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
-2023-02-09 17:36:55,480  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-09 19:56:50,988  |  INFO  |  =================================================================================================  
+2023-02-09 19:56:50,988  |  DEBUG  |    
+2023-02-09 19:56:51,017  |  INFO  |  False  
+2023-02-09 19:56:51,017  |  DEBUG  |    
+2023-02-09 19:56:51,018  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 19:56:51,019  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
+2023-02-09 19:56:51,020  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-09 17:36:55,481  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 17:36:55,483  |  DEBUG  |    
-2023-02-09 17:36:55,507  |  INFO  |  True  
-2023-02-09 17:36:55,508  |  DEBUG  |    
-2023-02-09 17:36:55,508  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 17:36:55,509  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
-2023-02-09 17:36:55,510  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-09 19:56:51,021  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 19:56:51,022  |  DEBUG  |    
+2023-02-09 19:56:51,043  |  INFO  |  True  
+2023-02-09 19:56:51,044  |  DEBUG  |    
+2023-02-09 19:56:51,045  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 19:56:51,046  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
+2023-02-09 19:56:51,047  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-09 17:36:55,511  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 17:36:55,512  |  DEBUG  |    
-2023-02-09 17:36:55,541  |  DEBUG  |    
-2023-02-09 17:36:55,542  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 17:36:55,543  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
-2023-02-09 17:36:55,544  |  INFO  |  SQL Query for validation check:          
+2023-02-09 19:56:51,048  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 19:56:51,049  |  DEBUG  |    
+2023-02-09 19:56:51,095  |  DEBUG  |    
+2023-02-09 19:56:51,096  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 19:56:51,097  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
+2023-02-09 19:56:51,099  |  INFO  |  SQL Query for validation check:          
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = 'raw_accommodation_bookings_tbl' 
@@ -45,17 +46,16 @@
                                                                         OR      column_name     = 'source_system' 
                                                                         OR      column_name     = 'source_file' 
                                                                         OR      column_name     = 'load_timestamp' 
-                                                                        OR      column_name     = 'transformation_process');
+                                                                        OR      column_name     = 'dwh_layer');
                                                                               
            
-2023-02-09 17:36:55,548  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 17:36:55,549  |  DEBUG  |    
-2023-02-09 17:36:55,553  |  INFO  |    
-2023-02-09 17:36:55,560  |  INFO  |  syntax error at or near "%"
-LINE 26: ...                                          VALUES (%s, %s, %s...
-                                                              ^
+2023-02-09 19:56:51,102  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 19:56:51,103  |  DEBUG  |    
+2023-02-09 19:56:51,109  |  INFO  |  Rows before SQL insert: 0   
+2023-02-09 19:56:51,109  |  INFO  |    
+2023-02-09 19:56:51,121  |  INFO  |  integer out of range
   
-2023-02-09 17:36:55,563  |  INFO  |    
-2023-02-09 17:36:55,564  |  INFO  |  Closing cursor.  
-2023-02-09 17:36:55,566  |  INFO  |    
-2023-02-09 17:36:55,567  |  INFO  |  Closing postgres connection.  
+2023-02-09 19:56:51,122  |  INFO  |    
+2023-02-09 19:56:51,123  |  INFO  |  Closing cursor.  
+2023-02-09 19:56:51,125  |  INFO  |    
+2023-02-09 19:56:51,125  |  INFO  |  Closing postgres connection.  
