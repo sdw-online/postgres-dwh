@@ -194,13 +194,26 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Set up SQL statements for adding data lineage and validation check 
         add_data_lineage_to_raw_accommodation_bookings_tbl = f'''        ALTER TABLE {schema_name}.{table_name}
-                                                                            ADD COLUMN created_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                                                            ADD COLUMN updated_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                                                            ADD COLUMN source_system        VARCHAR(255),
-                                                                            ADD COLUMN source_file          VARCHAR(255),
-                                                                            ADD load_timestamp              TIMESTAMP,
-                                                                            ADD transformation_process      VARCHAR(255)
+                                                                            ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                            ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                            ADD COLUMN  source_system               VARCHAR(255),
+                                                                            ADD COLUMN  source_file                 VARCHAR(255),
+                                                                            ADD COLUMN  load_timestamp              TIMESTAMP,
+                                                                            ADD COLUMN  transformation_process      VARCHAR(255)
                                                                         ;
+        '''
+
+        check_if_data_lineage_fields_are_added_to_tbl = f'''        SELECT * 
+                                                                    FROM    information_schema.columns 
+                                                                    WHERE   table_name      = '{table_name}' 
+                                                                        AND     (column_name    = 'created_at'
+                                                                        OR      column_name     = 'updated_at' 
+                                                                        OR      column_name     = 'source_system' 
+                                                                        OR      column_name     = 'source_file' 
+                                                                        OR      column_name     = 'load_timestamp' 
+                                                                        OR      column_name     = 'transformation_process' 
+                                                                    )
+                                                                              
         '''
 
         insert_accommodation_bookings_data = f'''                       INSERT INTO {schema_name}.{table_name} (
@@ -237,7 +250,7 @@ def load_data_to_raw_layer(postgres_connection):
         cursor.execute(create_schema)
         cursor.execute(check_if_schema_exists)
         sql_result = cursor.fetchone()[0]
-        print(sql_result)
+        root_logger.info(sql_result)
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=================================================================================================")
@@ -261,7 +274,7 @@ def load_data_to_raw_layer(postgres_connection):
         cursor.execute(delete_raw_accommodation_bookings_tbl_if_exists)
         cursor.execute(check_if_raw_accommodation_bookings_tbl_is_deleted)
         sql_result = cursor.fetchone()[0]
-        print(sql_result)
+        root_logger.info(sql_result)
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
@@ -283,7 +296,7 @@ def load_data_to_raw_layer(postgres_connection):
         cursor.execute(create_raw_accommodation_bookings_tbl)
         cursor.execute(check_if_raw_accommodation_bookings_tbl_exists)
         sql_result = cursor.fetchone()[0]
-        print(sql_result)
+        root_logger.info(sql_result)
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
@@ -301,38 +314,24 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
-        temp = f'''     SELECT * FROM information_schema.tables WHERE table_name =  '{schema_name}.{table_name}'
-        '''
-        cursor.execute(temp)
-        root_logger.info(f"SQL Query: {temp} ")
-        sql_result = cursor.fetchone()
-        print('-----------------')
-        print('-----------------')
-        print(sql_result)
-        # try:
-        #     cursor(delete_raw_accommodation_bookings_tbl_if_exists)
-        #     root_logger.debug(f"")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.debug(f"")
-        # except:
-        #     root_logger.debug(f"")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.debug(f"")
+        # Add data lineage to table 
+        cursor.execute(add_data_lineage_to_raw_accommodation_bookings_tbl)
+        cursor.execute(check_if_data_lineage_fields_are_added_to_tbl)
+        sql_results = cursor.fetchall()
+        # root_logger.info(sql_results)
+        if len(sql_results) == 6:
+            root_logger.debug(f"")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.info(f"DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in {schema_name}.{table_name}.  ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.debug(f"")
 
-
-
-
-
-
-
+    
 
 
         # Commit the changes made above 
-        root_logger.info("Now committing all SQL statements....")
+        root_logger.info("Now saving changes made by SQL statements in Postgres DB....")
         postgres_connection.commit()
 
 
