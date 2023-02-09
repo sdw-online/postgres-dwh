@@ -1,43 +1,43 @@
-2023-02-09 19:56:50,836  |  INFO  |    
-2023-02-09 19:56:50,838  |  INFO  |  ---------------------------------------------  
-2023-02-09 19:56:50,838  |  INFO  |  Beginning the source data extraction process...  
-2023-02-09 19:56:50,841  |  INFO  |  Successfully located 'accommodation_bookings.json'  
-2023-02-09 19:56:50,842  |  INFO  |  Data type: '<class 'list'>'  
-2023-02-09 19:56:50,929  |  DEBUG  |    
-2023-02-09 19:56:50,929  |  INFO  |  =================================================================================  
-2023-02-09 19:56:50,930  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
-2023-02-09 19:56:50,931  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
-2023-02-09 19:56:50,932  |  INFO  |  =================================================================================  
-2023-02-09 19:56:50,933  |  DEBUG  |    
-2023-02-09 19:56:50,982  |  INFO  |  main  
-2023-02-09 19:56:50,983  |  DEBUG  |    
-2023-02-09 19:56:50,984  |  INFO  |  =================================================================================================  
-2023-02-09 19:56:50,985  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
-2023-02-09 19:56:50,986  |  INFO  |  Schema name in Postgres: main   
-2023-02-09 19:56:50,987  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
+2023-02-09 20:00:44,366  |  INFO  |    
+2023-02-09 20:00:44,367  |  INFO  |  ---------------------------------------------  
+2023-02-09 20:00:44,368  |  INFO  |  Beginning the source data extraction process...  
+2023-02-09 20:00:44,372  |  INFO  |  Successfully located 'accommodation_bookings.json'  
+2023-02-09 20:00:44,373  |  INFO  |  Data type: '<class 'list'>'  
+2023-02-09 20:00:44,456  |  DEBUG  |    
+2023-02-09 20:00:44,457  |  INFO  |  =================================================================================  
+2023-02-09 20:00:44,458  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
+2023-02-09 20:00:44,459  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
+2023-02-09 20:00:44,460  |  INFO  |  =================================================================================  
+2023-02-09 20:00:44,461  |  DEBUG  |    
+2023-02-09 20:00:44,516  |  INFO  |  main  
+2023-02-09 20:00:44,517  |  DEBUG  |    
+2023-02-09 20:00:44,518  |  INFO  |  =================================================================================================  
+2023-02-09 20:00:44,519  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
+2023-02-09 20:00:44,520  |  INFO  |  Schema name in Postgres: main   
+2023-02-09 20:00:44,521  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
            
-2023-02-09 19:56:50,988  |  INFO  |  =================================================================================================  
-2023-02-09 19:56:50,988  |  DEBUG  |    
-2023-02-09 19:56:51,017  |  INFO  |  False  
-2023-02-09 19:56:51,017  |  DEBUG  |    
-2023-02-09 19:56:51,018  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 19:56:51,019  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
-2023-02-09 19:56:51,020  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-09 20:00:44,522  |  INFO  |  =================================================================================================  
+2023-02-09 20:00:44,523  |  DEBUG  |    
+2023-02-09 20:00:44,549  |  INFO  |  False  
+2023-02-09 20:00:44,550  |  DEBUG  |    
+2023-02-09 20:00:44,551  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 20:00:44,552  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
+2023-02-09 20:00:44,553  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-09 19:56:51,021  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-09 19:56:51,022  |  DEBUG  |    
-2023-02-09 19:56:51,043  |  INFO  |  True  
-2023-02-09 19:56:51,044  |  DEBUG  |    
-2023-02-09 19:56:51,045  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 19:56:51,046  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
-2023-02-09 19:56:51,047  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-09 20:00:44,555  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-09 20:00:44,556  |  DEBUG  |    
+2023-02-09 20:00:44,576  |  INFO  |  True  
+2023-02-09 20:00:44,577  |  DEBUG  |    
+2023-02-09 20:00:44,577  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:00:44,578  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
+2023-02-09 20:00:44,579  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-09 19:56:51,048  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 19:56:51,049  |  DEBUG  |    
-2023-02-09 19:56:51,095  |  DEBUG  |    
-2023-02-09 19:56:51,096  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 19:56:51,097  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
-2023-02-09 19:56:51,099  |  INFO  |  SQL Query for validation check:          
+2023-02-09 20:00:44,580  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:00:44,581  |  DEBUG  |    
+2023-02-09 20:00:44,627  |  DEBUG  |    
+2023-02-09 20:00:44,628  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:00:44,629  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
+2023-02-09 20:00:44,630  |  INFO  |  SQL Query for validation check:          
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = 'raw_accommodation_bookings_tbl' 
@@ -49,13 +49,18 @@
                                                                         OR      column_name     = 'dwh_layer');
                                                                               
            
-2023-02-09 19:56:51,102  |  INFO  |  =============================================================================================================================================================================  
-2023-02-09 19:56:51,103  |  DEBUG  |    
-2023-02-09 19:56:51,109  |  INFO  |  Rows before SQL insert: 0   
-2023-02-09 19:56:51,109  |  INFO  |    
-2023-02-09 19:56:51,121  |  INFO  |  integer out of range
-  
-2023-02-09 19:56:51,122  |  INFO  |    
-2023-02-09 19:56:51,123  |  INFO  |  Closing cursor.  
-2023-02-09 19:56:51,125  |  INFO  |    
-2023-02-09 19:56:51,125  |  INFO  |  Closing postgres connection.  
+2023-02-09 20:00:44,634  |  INFO  |  =============================================================================================================================================================================  
+2023-02-09 20:00:44,635  |  DEBUG  |    
+2023-02-09 20:00:44,640  |  INFO  |  Rows before SQL insert: 0   
+2023-02-09 20:00:44,641  |  INFO  |    
+2023-02-09 20:00:44,688  |  INFO  |  Rows after SQL insert: 100   
+2023-02-09 20:00:44,689  |  INFO  |    
+2023-02-09 20:00:44,690  |  INFO  |  Successful rows inserted: 100   
+2023-02-09 20:00:44,691  |  INFO  |    
+2023-02-09 20:00:44,692  |  INFO  |  Failed rows inserted: 100   
+2023-02-09 20:00:44,692  |  INFO  |    
+2023-02-09 20:00:44,693  |  INFO  |  Now saving changes made by SQL statements in Postgres DB....  
+2023-02-09 20:00:44,704  |  INFO  |    
+2023-02-09 20:00:44,705  |  INFO  |  Closing cursor.  
+2023-02-09 20:00:44,708  |  INFO  |    
+2023-02-09 20:00:44,709  |  INFO  |  Closing postgres connection.  

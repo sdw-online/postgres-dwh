@@ -193,9 +193,9 @@ def load_data_to_raw_layer(postgres_connection):
         # Set up SQL statements for table creation and validation check 
         create_raw_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
                                                                             id                      UUID PRIMARY KEY,
-                                                                            booking_date            INTEGER,
-                                                                            check_in_date           INTEGER,
-                                                                            check_out_date          INTEGER,
+                                                                            booking_date            BIGINT,
+                                                                            check_in_date           BIGINT,
+                                                                            check_out_date          BIGINT,
                                                                             checked_in              VARCHAR(3),
                                                                             confirmation_code       VARCHAR(12),
                                                                             customer_id             UUID,
@@ -400,7 +400,7 @@ def load_data_to_raw_layer(postgres_connection):
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
-                'N/A',
+                src_file,
                 CURRENT_TIMESTAMP,
                 'RAW'
                 )
