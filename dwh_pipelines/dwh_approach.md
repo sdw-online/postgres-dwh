@@ -11,20 +11,19 @@ To create a centralized platform for the analytics team to analyze customer and 
 
 Here are some of the tables gathered from the travel source systems (databases, CRMs and other tools):
 
-- Customer information
-- Flight schedules
-- Customer feedback
-- Ticket price data
-- Raw customer demographic data
-- Flight destination information
-- Flight ticket sales
-- Flight Promotion
-- Holiday data
-- Airline data
-- Sales agent data
-- Ticket sales data 
-- Flight bookings data 
-- Fight destination revenue
+- Customer information              ------------ [x]
+- Flight schedules                  ------------ [x]
+- Ticket price data                 ------------ [x]
+- Flight bookings data              ------------ [x]
+- Customer feedback                 ------------ [x]
+- Raw customer demographic data     ------------ []
+- Flight destination information    ------------ [x]
+- Flight ticket sales               ------------ [x]
+- Flight Promotions & Deals         ------------ [x]
+- Holiday data                      ------------ []
+- Airline data                      ------------ []
+- Sales agent data                  ------------ [x]
+- Fight destination revenue         ------------ []
 
 
 ## Layers 
@@ -79,6 +78,8 @@ Here are the different layers that make up the proposed data warehouse solution 
 - Load staging to semantic tables
 - Add surrogate keys to semantic tables
 - Add business rules to semantic tables
+- Add date dimension table 
+- Add the date foreign keys to the relevant dim tables 
 - Define cardinality between tables (via ERD if possible)
 - Create data dictionary for the tables
 - Create DEV and PROD environments (schemas)
@@ -91,7 +92,7 @@ Here are the different layers that make up the proposed data warehouse solution 
 ## Data warehouse layer 
 
 ### Macro tasks
-- Create fact and dimension tables
+- Create fact and dimension tables (dimensional modelling)
 - Create aggregated views using the fact and dimension tables
 - Document the code in each layer to reduce single point of failure risk
 - Conduct regular maintenance activities e.g. performance tuning, backups, system updates
