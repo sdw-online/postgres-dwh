@@ -68,7 +68,7 @@ else:
 
     host                = config['travel_data_filepath']['HOST']
     port                = config['travel_data_filepath']['PORT']
-    database            = config['travel_data_filepath']['RAW_DB']
+    database            = config['travel_data_filepath']['DATABASE']
     username            = config['travel_data_filepath']['USERNAME']
     password            = config['travel_data_filepath']['PASSWORD']
 
@@ -87,7 +87,7 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
 
 
 
-def _connect_to_postgres_database():
+def load_data_to_raw_layer():
     try:
         postgres_connection = psycopg2.connect(
             host = host,
@@ -156,5 +156,5 @@ def _connect_to_postgres_database():
 
 
 
-_connect_to_postgres_database()
+load_data_to_raw_layer()
 
