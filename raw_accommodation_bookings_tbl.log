@@ -1,1 +1,8 @@
-2023-02-09 10:55:14,974 - INFO - local variable 'database' referenced before assignment  
+2023-02-09 11:10:17,495 - INFO - =================================================================================  
+2023-02-09 11:10:17,496 - INFO - CONNECTION SUCCESS: Managed to connect successfully to the demo_company database!!  
+2023-02-09 11:10:17,496 - INFO - =================================================================================  
+2023-02-09 11:10:17,497 - INFO -   
+2023-02-09 11:10:17,498 - INFO - CREATE DATABASE cannot run inside a transaction block
+  
+2023-02-09 11:10:17,499 - INFO - <cursor object at 0x0000021E3A726F80; closed: 0>  
+2023-02-09 11:10:17,500 - INFO - <connection object at 0x0000021E3A66D690; dsn: 'user=sdw_admin password=xxx dbname=demo_company host=localhost port=5434', closed: 0>  

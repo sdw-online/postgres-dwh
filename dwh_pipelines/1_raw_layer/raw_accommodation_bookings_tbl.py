@@ -55,8 +55,8 @@ if USING_AIRFLOW:
     username            = config['postgres_airflow_config']['USERNAME']
     password            = config['postgres_airflow_config']['PASSWORD']
     
-    postgres_connection    = None
-    cursor              = None
+    postgres_connection     = None
+    cursor                  = None
 
     
 else:
@@ -72,8 +72,8 @@ else:
     username            = config['travel_data_filepath']['USERNAME']
     password            = config['travel_data_filepath']['PASSWORD']
 
-    postgres_connection    = None
-    cursor              = None
+    postgres_connection     = None
+    cursor                  = None
 
 
 
@@ -87,7 +87,7 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
 
 
 
-def load_data_to_raw_layer():
+def load_data_to_raw_layer(**connection_params):
     try:
         postgres_connection = psycopg2.connect(
             host = host,
@@ -122,13 +122,24 @@ def load_data_to_raw_layer():
 
         # ======================================= LOAD SRC TO RAW =======================================
         
-        database = database
+        database_layer_name = config['travel_data_filepath']['RAW_DB']
 
-        create_raw_layer = f'''         CREATE DATABASE IF NOT EXISTS {database};
-        
-        ''' 
-
+        check_if_db_exists = f'''    SELECT 1 FROM pg_database WHERE datname='{database_layer_name}' 
+        '''
+        create_raw_layer = f'''         CREATE DATABASE {database_layer_name};'''
         cursor.execute(create_raw_layer)
+
+        
+
+        # cursor.execute(check_if_db_exists)
+        # sql_result = cursor.fetchone()
+
+        # if not sql_result:
+        #     postgres_connection.autocommit = True
+        #     create_raw_layer = f'''         CREATE DATABASE {database_layer_name};
+        #             ''' 
+        #     cursor.execute(create_raw_layer)
+        #     postgres_connection.autocommit = False
         
 
 
