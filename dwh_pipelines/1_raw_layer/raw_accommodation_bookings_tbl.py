@@ -460,17 +460,45 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info('================================================')
         root_logger.info('DATA PROFILING METRICS')
         root_logger.info('================================================')
-        root_logger.info(f'Successful records uploaded total :    {successful_rows_upload_count} / {total_rows_in_table}   ')
-        root_logger.info(f'Failed records uploaded total:         {failed_rows_upload_count} / {total_rows_in_table}       ')
-        root_logger.info(f'')
         root_logger.info(f'Number of rows in table:                     {total_rows_in_table} ')
         root_logger.info(f'Number of columns in table:                  {total_columns_in_table} ')
         root_logger.info(f'')
-        root_logger.info(f'Number of unique records:                     {total_unique_records_in_table} ')
-        root_logger.info(f'Number of duplicate records:                  {total_duplicate_records_in_table} ')
+        root_logger.info(f'Successful records uploaded total :          {successful_rows_upload_count} / {total_rows_in_table}   ')
+        root_logger.info(f'Failed records uploaded total:               {failed_rows_upload_count} / {total_rows_in_table}       ')
+        root_logger.info(f'')
+        root_logger.info(f'Number of unique records:                    {total_unique_records_in_table} / {total_rows_in_table}')
+        root_logger.info(f'Number of duplicate records:                 {total_duplicate_records_in_table} / {total_rows_in_table}')
+        root_logger.info(f'')
+        root_logger.info(f'Successful records uploaded % :              {(successful_rows_upload_count / total_rows_in_table) * 100}    ')
+        root_logger.info(f'Failed records uploaded %:                   {(failed_rows_upload_count/total_rows_in_table) * 100}       ')
+        root_logger.info(f'')
+        root_logger.info(f'Unique records %:                            {(total_unique_records_in_table / total_rows_in_table) * 100} ')
+        root_logger.info(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
         root_logger.info('================================================')
 
+        if successful_rows_upload_count != total_rows_in_table:
+            root_logger.error(f"ERROR: There are only {successful_rows_upload_count} records upload to '{table_name}' table....")
+            raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
+        
+        elif failed_rows_upload_count > 0:
+            root_logger.error(f"ERROR: A total of {failed_rows_upload_count} records failed to upload to '{table_name}' table....")
+            raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
+        
+        elif total_unique_records_in_table != total_rows_in_table:
+            root_logger.error(f"ERROR: There are duplicated records in the uploads for '{table_name}' table....")
+            raise ImportError("Trace filepath to highlight the root cause of the duplicated rows...")
 
+        elif total_duplicate_records_in_table > 0:
+            root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} duplicated records in the uploads for '{table_name}' table....")
+            raise ImportError("Trace filepath to highlight the root cause of the duplicated rows...")
+
+        
+
+
+        else:
+            root_logger.debug("")
+            root_logger.info("DATA VALIDATION SUCCESS: All general DQ checks passed! ")
+            root_logger.debug("")
 
 
 
