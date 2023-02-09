@@ -51,7 +51,7 @@ if USING_AIRFLOW:
 
     host                = config['postgres_airflow_config']['HOST']
     port                = config['postgres_airflow_config']['PORT']
-    database            = config['postgres_airflow_config']['DATABASE']
+    database            = config['postgres_airflow_config']['RAW_DB']
     username            = config['postgres_airflow_config']['USERNAME']
     password            = config['postgres_airflow_config']['PASSWORD']
     
@@ -68,7 +68,7 @@ else:
 
     host                = config['travel_data_filepath']['HOST']
     port                = config['travel_data_filepath']['PORT']
-    database            = config['travel_data_filepath']['DATABASE']
+    database            = config['travel_data_filepath']['RAW_DB']
     username            = config['travel_data_filepath']['USERNAME']
     password            = config['travel_data_filepath']['PASSWORD']
 
@@ -122,25 +122,77 @@ def load_data_to_raw_layer(**connection_params):
 
         # ======================================= LOAD SRC TO RAW =======================================
         
-        database_layer_name = config['travel_data_filepath']['RAW_DB']
-
-        check_if_db_exists = f'''    SELECT 1 FROM pg_database WHERE datname='{database_layer_name}' 
+        row_counter = 0 
+        successful_rows_upload_count  =   0 
+        failed_rows_upload_count      =   0 
+        
+        create_schema = f'''    CREATE SCHEMA IF NOT EXISTS main
         '''
-        create_raw_layer = f'''         CREATE DATABASE {database_layer_name};'''
-        cursor.execute(create_raw_layer)
-
+       
+        delete_accommodation_bookings_tbl_if_exists = f''' DROP TABLE IF EXISTS main.raw_accommodation_bookings_tbl CASCADE
+        '''
         
+        create_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS main.raw_accommodation_bookings_tbl (
+                                                                            id                      UUID PRIMARY KEY,
+                                                                            booking_date            TIMESTAMP,
+                                                                            check_in_date           TIMESTAMP,
+                                                                            check_out_date          TIMESTAMP,
+                                                                            checked_in              VARCHAR(3),
+                                                                            confirmation_code       VARCHAR(12),
+                                                                            customer_id             UUID,
+                                                                            flight_booking_id       UUID,
+                                                                            location                TEXT,
+                                                                            num_adults              INTEGER,
+                                                                            num_children            INTEGER,
+                                                                            payment_method          VARCHAR(20),
+                                                                            room_type               VARCHAR(10),
+                                                                            sales_agent_id          UUID,
+                                                                            status                  VARCHAR(10),
+                                                                            total_price             NUMERIC(18, 6)
+                                                                        );
 
-        # cursor.execute(check_if_db_exists)
-        # sql_result = cursor.fetchone()
 
-        # if not sql_result:
-        #     postgres_connection.autocommit = True
-        #     create_raw_layer = f'''         CREATE DATABASE {database_layer_name};
-        #             ''' 
-        #     cursor.execute(create_raw_layer)
-        #     postgres_connection.autocommit = False
-        
+
+        '''
+
+
+        add_data_lineage_to_accommodation_bookings_tbl = '''        ALTER TABLE main.raw_accommodation_bookings_tbl
+                                                                        ADD COLUMN created_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                        ADD COLUMN updated_at           TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                        ADD COLUMN source_system        VARCHAR(255),
+                                                                        ADD COLUMN source_file          VARCHAR(255),
+                                                                        ADD load_timestamp              TIMESTAMP,
+                                                                        ADD transformation_process      VARCHAR(255)
+
+        '''
+
+        insert_accommodation_bookings_data = '''                       INSERT INTO main.raw_accommodation_bookings_tbl (
+                                                                                id, 
+                                                                                booking_date, 
+                                                                                check_in_date, 
+                                                                                check_out_date, 
+                                                                                checked_in, 
+                                                                                confirmation_code, 
+                                                                                customer_id, 
+                                                                                flight_booking_id, 
+                                                                                location, 
+                                                                                num_adults, 
+                                                                                num_children, 
+                                                                                payment_method, 
+                                                                                room_type, 
+                                                                                sales_agent_id, 
+                                                                                status, 
+                                                                                total_price, 
+                                                                                created_at, 
+                                                                                updated_at, 
+                                                                                source_system, 
+                                                                                source_file, 
+                                                                                load_timestamp, 
+                                                                                transformation_process
+                                                                                )
+
+                                                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s);
+        '''
 
 
 

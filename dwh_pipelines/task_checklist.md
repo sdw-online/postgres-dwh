@@ -9,20 +9,20 @@ This is a recollection of all the micro tasks for each DWH layer
 
 | task_no | layer_name      | task                                                                                                      | task_type| completion_status |
 | -----   | --------------  | ---------------                                                                                           | ---------------  | --------------- |
-| DWH-001 | RAW             | Load source data for “Customer information” into raw table `raw_customer_data`                            | LOAD_TO_RAW  | NOT_STARTED |
-| DWH-002 | RAW             | Load source data for “Flight schedules” into raw table `raw_flight_schedules_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-003 | RAW             | Load source data for “Customer feedback” into raw table `raw_customer_feedback_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-004 | RAW             | Load source data for “Ticket price data” into raw table `raw_ticket_price_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-005 | RAW             | Load source data for “Raw customer demographic data” into raw table `raw_customer_demographic_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-006 | RAW             | Load source data for “Flight destination information” into raw table `raw_flight_destination_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-007 | RAW             | Load source data for “Flight ticket sales” into raw table `raw_flight_ticket_sales_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-008 | RAW             | Load source data for “Flight Promotion” into raw table `raw_flight_promotion_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-009 | RAW             | Load source data for “Holiday data” into raw table `raw_holiday_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-010 | RAW             | Load source data for “Airline data” into raw table `raw_airline_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-011 | RAW             | Load source data for “Sales agent data” into raw table `raw_sales_agent_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-012 | RAW             | Load source data for “Ticket sales data” into raw table `raw_ticket_sales_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-013 | RAW             | Load source data for “Flight bookings data” into raw table `raw_flight_bookings_data`| LOAD_TO_RAW | NOT_STARTED |
-| DWH-014 | RAW             | Load source data for “Fight destination revenue” into raw table `raw_flight_destination_revenue_data`| LOAD_TO_RAW | NOT_STARTED |
+| DWH-001 | RAW             | Load source data for “Customer information” into raw table `raw_customer_data`                            | SRC_TO_RAW  | NOT_STARTED |
+| DWH-002 | RAW             | Load source data for “Flight schedules” into raw table `raw_flight_schedules_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-003 | RAW             | Load source data for “Customer feedback” into raw table `raw_customer_feedback_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-004 | RAW             | Load source data for “Ticket price data” into raw table `raw_ticket_price_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-005 | RAW             | Load source data for “Raw customer demographic data” into raw table `raw_customer_demographic_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-006 | RAW             | Load source data for “Flight destination information” into raw table `raw_flight_destination_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-007 | RAW             | Load source data for “Flight ticket sales” into raw table `raw_flight_ticket_sales_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-008 | RAW             | Load source data for “Flight Promotion” into raw table `raw_flight_promotion_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-009 | RAW             | Load source data for “Holiday data” into raw table `raw_holiday_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-010 | RAW             | Load source data for “Airline data” into raw table `raw_airline_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-011 | RAW             | Load source data for “Sales agent data” into raw table `raw_sales_agent_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-012 | RAW             | Load source data for “Ticket sales data” into raw table `raw_ticket_sales_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-013 | RAW             | Load source data for “Flight bookings data” into raw table `raw_flight_bookings_data`| SRC_TO_RAW | NOT_STARTED |
+| DWH-014 | RAW             | Load source data for “Fight destination revenue” into raw table `raw_flight_destination_revenue_data`| SRC_TO_RAW | NOT_STARTED |
 | DWH-015 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_customer_data`| SENSITIVE_DATA_MARKING  | NOT_STARTED |
 | DWH-016 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_flight_schedules_data`| SENSITIVE_DATA_MARKING | NOT_STARTED |
 | DWH-017 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_customer_feedback_data`| SENSITIVE_DATA_MARKING | NOT_STARTED |
