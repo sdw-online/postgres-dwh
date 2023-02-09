@@ -456,7 +456,8 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         
-
+        root_logger.info(f'')
+        root_logger.info(f'')
         root_logger.info('================================================')
         root_logger.info('DATA PROFILING METRICS')
         root_logger.info('================================================')
@@ -516,14 +517,14 @@ def load_data_to_raw_layer(postgres_connection):
         # Close the cursor if it exists 
         if cursor is not None:
             cursor.close()
-            root_logger.info("")
-            root_logger.info("Closing cursor.")
+            root_logger.debug("")
+            root_logger.debug("Closing cursor.")
 
         # Close the database connection to Postgres if it exists 
         if postgres_connection is not None:
             postgres_connection.close()
-            root_logger.info("")
-            root_logger.info("Closing postgres connection.")
+            root_logger.debug("")
+            root_logger.debug("Closing postgres connection.")
 
 
 
