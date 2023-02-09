@@ -1,8 +1,7 @@
 import psycopg2
 import json
 import configparser
-import logging
-from colorit import init_colorit, Colors, color
+import logging, coloredlogs
 import pandas as pd 
 from datetime import datetime
 import os 
@@ -10,32 +9,49 @@ from pathlib import Path
 import time 
 
 
+
+# ================================================ LOGGER ================================================
+
 # Set up root root_logger 
 root_logger = logging.getLogger(__name__)
 root_logger.setLevel(logging.DEBUG)
 
-
-
 # Set up formatter for logs 
 file_handler_log_formatter = logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
-console_handler_log_formatter = logging.Formatter('%(message)s ')
-
+console_handler_log_formatter_1 = logging.Formatter('%(message)s ')
+console_handler_log_formatter_2 = coloredlogs.ColoredFormatter(fmt='%(message)s', level_styles=dict(
+                                                                                        debug=dict(color='green'),
+                                                                                        info=dict(color='blue'),
+                                                                                        warning=dict(color='orange'),
+                                                                                        error=dict(color='yellow', bold=True, bright=True),
+                                                                                        critical=dict(color='black', bold=True, background='red')
+                                                                                            ),
+                                                                                    field_styles=dict(
+                                                                                        messages=dict(color='white')
+                                                                                    ))
 
 # Set up file handler object for logging events to file
 current_filepath = Path(__file__).stem
 file_handler = logging.FileHandler('logs/raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
-
 # Set up console handler object for writing event logs to console in real time (i.e. streams events to stderr)
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(console_handler_log_formatter)
-
+console_handler.setFormatter(console_handler_log_formatter_2)
 
 # Add the file and console handlers 
 root_logger.addHandler(file_handler)
 root_logger.addHandler(console_handler)
 
+# Add colour to the console prints 
+coloredlogs.install(level='DEBUG', logger=root_logger, milliseconds=True)
+
+
+
+
+
+
+# ================================================ CONFIG ================================================
 
 # Add a flag/switch indicating whether Airflow is in use or not 
 USING_AIRFLOW = False
@@ -203,7 +219,8 @@ def load_data_to_raw_layer(postgres_connection):
                                                                         ;
         '''
 
-        check_if_data_lineage_fields_are_added_to_tbl = f'''        SELECT * 
+        check_if_data_lineage_fields_are_added_to_tbl = f'''        
+                                                                    SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = '{table_name}' 
                                                                         AND     (column_name    = 'created_at'
@@ -211,8 +228,7 @@ def load_data_to_raw_layer(postgres_connection):
                                                                         OR      column_name     = 'source_system' 
                                                                         OR      column_name     = 'source_file' 
                                                                         OR      column_name     = 'load_timestamp' 
-                                                                        OR      column_name     = 'transformation_process' 
-                                                                    )
+                                                                        OR      column_name     = 'transformation_process');
                                                                               
         '''
 
@@ -243,6 +259,9 @@ def load_data_to_raw_layer(postgres_connection):
 
                                                                             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)
                                                                             ;
+        '''
+
+        check_if_rows_are_inserted_into_raw_accommodation_bookings_tbl = f'''
         '''
 
 
@@ -326,8 +345,24 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.info(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
+        else:
+            root_logger.debug(f"")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {schema_name}.{table_name}.... ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.debug(f"")
 
-    
+
+
+        # Add insert rows to table 
+        cursor.execute(insert_accommodation_bookings_data)
+        cursor.execute(check_if_rows_are_inserted_into_raw_accommodation_bookings_tbl)
+
+        
+
+
+
 
 
         # Commit the changes made above 
