@@ -1,6 +1,0 @@
-2023-02-09 11:12:37,513 - INFO - =================================================================================  
-2023-02-09 11:12:37,515 - INFO - CONNECTION SUCCESS: Managed to connect successfully to the demo_company database!!  
-2023-02-09 11:12:37,515 - INFO - =================================================================================  
-2023-02-09 11:12:37,516 - INFO -   
-2023-02-09 11:12:37,516 - INFO - <cursor object at 0x00000294BB0E6F80; closed: 0>  
-2023-02-09 11:12:37,517 - INFO - <connection object at 0x00000294BB02D690; dsn: 'user=sdw_admin password=xxx dbname=raw_db host=localhost port=5434', closed: 0>  

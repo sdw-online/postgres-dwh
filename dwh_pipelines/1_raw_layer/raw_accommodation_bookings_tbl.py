@@ -7,6 +7,7 @@ import pandas as pd
 from datetime import datetime
 import os 
 from pathlib import Path
+import time 
 
 
 # Set up root root_logger 
@@ -22,7 +23,7 @@ console_handler_log_formatter = logging.Formatter('%(message)s ')
 
 # Set up file handler object for logging events to file
 current_filepath = Path(__file__).stem
-file_handler = logging.FileHandler(current_filepath + '.log', mode='w')
+file_handler = logging.FileHandler('logs/raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -39,6 +40,8 @@ root_logger.addHandler(console_handler)
 # Add a flag/switch indicating whether Airflow is in use or not 
 USING_AIRFLOW = False
 
+# Create source file variable 
+src_file = 'accommodation_bookings.json'
 
 
 # Create a config file for storing environment variables
@@ -47,7 +50,7 @@ if USING_AIRFLOW:
 
     # Use the airflow config file from the airflow container 
     config.read('/usr/local/airflow/dags/etl_to_postgres/airflow_config.ini')
-    accommodation_bookings_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + "accommodation_bookings.json"
+    accommodation_bookings_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
 
     host                = config['postgres_airflow_config']['HOST']
     port                = config['postgres_airflow_config']['PORT']
@@ -77,11 +80,22 @@ else:
 
 
 
+# Begin the data extraction process
+root_logger.info("")
+root_logger.info("---------------------------------------------")
+root_logger.info("Beginning the source data extraction process...")
+extraction_start_time = time.time()
 
 
-with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:        
-    accommodation_bookings_data = json.load(accommodation_bookings_file)
+with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:    
+    
+    try:
+        accommodation_bookings_data = json.load(accommodation_bookings_file)
+        root_logger.info(f"Successfully located '{src_file}'")
     # accommodation_bookings_data = accommodation_bookings_data[0:100]
+    except:
+        root_logger.error("Unable to locate source file...terminating process...")
+        raise Exception("No source file located")
     
 
 
@@ -125,6 +139,10 @@ def load_data_to_raw_layer(**connection_params):
         row_counter = 0 
         successful_rows_upload_count  =   0 
         failed_rows_upload_count      =   0 
+
+
+
+
         
         create_schema = f'''    CREATE SCHEMA IF NOT EXISTS main
         '''
@@ -193,6 +211,8 @@ def load_data_to_raw_layer(**connection_params):
 
                                                                             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s);
         '''
+
+
 
 
 
