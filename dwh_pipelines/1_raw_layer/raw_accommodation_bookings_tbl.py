@@ -211,6 +211,8 @@ def load_data_to_raw_layer(postgres_connection):
         check_if_raw_accommodation_bookings_tbl_exists = f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
+       
+
 
 
         # Set up SQL statements for adding data lineage and validation check 
@@ -236,7 +238,11 @@ def load_data_to_raw_layer(postgres_connection):
                                                                         OR      column_name     = 'transformation_process');
                                                                               
         '''
+        
+        check_total_row_count_before_insert_statement = f'''   SELECT COUNT(*) FROM {schema_name}.{table_name}
+        '''
 
+        # Set up SQL statements for records insertion and validation check
         insert_accommodation_bookings_data = f'''                       INSERT INTO {schema_name}.{table_name} (
                                                                                 id, 
                                                                                 booking_date, 
@@ -266,7 +272,7 @@ def load_data_to_raw_layer(postgres_connection):
                                                                             ;
         '''
 
-        check_if_rows_are_inserted_into_raw_accommodation_bookings_tbl = f'''
+        check_total_row_count_after_insert_statement = f'''        SELECT COUNT(*) FROM {schema_name}.{table_name}
         '''
 
 
@@ -361,8 +367,16 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Add insert rows to table 
+        cursor.execute(check_total_row_count_before_insert_statement)
+        sql_result = cursor.fetchone()[0]
+        root_logger.info(f"Rows before insertion: {sql_result} ")
+
+        
+        root_logger.info(f"")
+
+
         cursor.execute(insert_accommodation_bookings_data)
-        cursor.execute(check_if_rows_are_inserted_into_raw_accommodation_bookings_tbl)
+        
 
         
 
