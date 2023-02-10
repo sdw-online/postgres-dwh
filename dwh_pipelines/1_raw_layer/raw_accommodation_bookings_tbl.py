@@ -114,7 +114,7 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
         accommodation_bookings_data = json.load(accommodation_bookings_file)
         accommodation_bookings_data = accommodation_bookings_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
-        root_logger.info(f"Data type: '{type(accommodation_bookings_data)}'")
+        root_logger.info(f"File type: '{type(accommodation_bookings_data)}'")
 
     except:
         root_logger.error("Unable to locate source file...terminating process...")
@@ -144,25 +144,6 @@ def load_data_to_raw_layer(postgres_connection):
         total_null_values_in_table      =   0 
         successful_rows_upload_count    =   0 
         failed_rows_upload_count        =   0 
-
-        test_bad_row = {
-            'id': 12345,
-            'booking_date': '2022-01-01',
-            'check_in_date': '2022-01-02',
-            'check_out_date': '',  # missing check_out_date
-            'checked_in': 'yes',
-            'confirmation_code': 'ABCDE',
-            'customer_id': 6789,
-            'flight_booking_id': None,
-            'location': 'London',
-            'num_adults': 2,
-            'num_children': 0,
-            'payment_method': 'credit_card',
-            'room_type': 'deluxe',
-            'sales_agent_id': 1111,
-            'status': 'confirmed',
-            'total_price': 500
-        }
 
 
         # Create a cursor object to execute the PG-SQL commands 
@@ -330,7 +311,6 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         sql_result = cursor.fetchone()[0]
-        root_logger.info(sql_result)
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=================================================================================================")
@@ -362,7 +342,6 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         sql_result = cursor.fetchone()[0]
-        root_logger.info(sql_result)
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
@@ -392,7 +371,6 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         sql_result = cursor.fetchone()[0]
-        root_logger.info(sql_result)
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
@@ -520,8 +498,6 @@ def load_data_to_raw_layer(postgres_connection):
 
         cursor.execute(count_total_no_of_unique_records_in_table)
         total_unique_records_in_table = cursor.fetchone()[0]
-        print(total_unique_records_in_table)
-
         total_duplicate_records_in_table = total_rows_in_table - total_unique_records_in_table
 
 
@@ -639,17 +615,21 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'')
         root_logger.info(f'2. Execution time for CREATING schema (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK} ms')
         root_logger.info(f'')
+        root_logger.info(f'')
         root_logger.info(f'3. Execution time for DELETING schema: {EXECUTION_TIME_FOR_DROPPING_SCHEMA} ms')
         root_logger.info(f'')
         root_logger.info(f'4. Execution time for DELETING schema (VAL CHECK): {EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK} ms')
+        root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'5. Execution time for CREATING table: {EXECUTION_TIME_FOR_CREATING_TABLE} ms')
         root_logger.info(f'')
         root_logger.info(f'6. Execution time for CREATING table (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK} ms')
         root_logger.info(f'')
+        root_logger.info(f'')
         root_logger.info(f'7. Execution time for ADDING data lineage: {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE} ms')
         root_logger.info(f'')
         root_logger.info(f'8. Execution time for ADDING data lineage (VAL CHECK): {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK} ms')
+        root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'9. Execution time for INSERTING rows to table: {EXECUTION_TIME_FOR_ROW_INSERTION} ms')
         root_logger.info(f'')
