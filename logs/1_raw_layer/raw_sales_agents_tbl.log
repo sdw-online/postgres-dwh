@@ -1,0 +1,487 @@
+2023-02-10 22:41:45,769  |  INFO  |    
+2023-02-10 22:41:45,770  |  INFO  |  ---------------------------------------------  
+2023-02-10 22:41:45,770  |  INFO  |  Beginning the source data extraction process...  
+2023-02-10 22:41:45,772  |  INFO  |  Successfully located 'sales_agents.json'  
+2023-02-10 22:41:45,772  |  INFO  |  File type: '<class 'list'>'  
+2023-02-10 22:41:45,870  |  DEBUG  |    
+2023-02-10 22:41:45,871  |  INFO  |  =================================================================================  
+2023-02-10 22:41:45,871  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
+2023-02-10 22:41:45,872  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
+2023-02-10 22:41:45,872  |  INFO  |  =================================================================================  
+2023-02-10 22:41:45,873  |  DEBUG  |    
+2023-02-10 22:41:45,908  |  DEBUG  |    
+2023-02-10 22:41:45,908  |  INFO  |  =================================================================================================  
+2023-02-10 22:41:45,909  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
+2023-02-10 22:41:45,910  |  INFO  |  Schema name in Postgres: main   
+2023-02-10 22:41:45,910  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
+           
+2023-02-10 22:41:45,911  |  INFO  |  =================================================================================================  
+2023-02-10 22:41:45,911  |  DEBUG  |    
+2023-02-10 22:41:45,937  |  DEBUG  |    
+2023-02-10 22:41:45,938  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-10 22:41:45,939  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_sales_agents_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
+2023-02-10 22:41:45,939  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_sales_agents_tbl' );
+           
+2023-02-10 22:41:45,939  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-10 22:41:45,940  |  DEBUG  |    
+2023-02-10 22:41:45,967  |  DEBUG  |    
+2023-02-10 22:41:45,967  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 22:41:45,968  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_sales_agents_tbl table in raw_db.    
+2023-02-10 22:41:45,969  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_sales_agents_tbl' );
+           
+2023-02-10 22:41:45,969  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 22:41:45,970  |  DEBUG  |    
+2023-02-10 22:41:46,016  |  DEBUG  |    
+2023-02-10 22:41:46,017  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 22:41:46,018  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_sales_agents_tbl.    
+2023-02-10 22:41:46,018  |  INFO  |  SQL Query for validation check:          
+                                                                    SELECT * 
+                                                                    FROM    information_schema.columns 
+                                                                    WHERE   table_name      = 'raw_sales_agents_tbl' 
+                                                                        AND     (column_name    = 'created_at'
+                                                                        OR      column_name     = 'updated_at' 
+                                                                        OR      column_name     = 'source_system' 
+                                                                        OR      column_name     = 'source_file' 
+                                                                        OR      column_name     = 'load_timestamp' 
+                                                                        OR      column_name     = 'dwh_layer');
+                                                                              
+           
+2023-02-10 22:41:46,020  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 22:41:46,021  |  DEBUG  |    
+2023-02-10 22:41:46,025  |  INFO  |  Rows before SQL insert in Postgres: 0   
+2023-02-10 22:41:46,026  |  DEBUG  |    
+2023-02-10 22:41:46,030  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,031  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 1   
+2023-02-10 22:41:46,031  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,033  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,033  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 2   
+2023-02-10 22:41:46,034  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,035  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,035  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 3   
+2023-02-10 22:41:46,036  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,037  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,037  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 4   
+2023-02-10 22:41:46,037  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,038  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,039  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 5   
+2023-02-10 22:41:46,039  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,040  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,041  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 6   
+2023-02-10 22:41:46,042  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,043  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,044  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 7   
+2023-02-10 22:41:46,044  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,046  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,046  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 8   
+2023-02-10 22:41:46,047  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,048  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,049  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 9   
+2023-02-10 22:41:46,049  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,050  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,051  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 10   
+2023-02-10 22:41:46,051  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,052  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,053  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 11   
+2023-02-10 22:41:46,053  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,054  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,055  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 12   
+2023-02-10 22:41:46,056  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,057  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,057  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 13   
+2023-02-10 22:41:46,058  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,059  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,059  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 14   
+2023-02-10 22:41:46,060  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,062  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,062  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 15   
+2023-02-10 22:41:46,063  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,064  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,065  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 16   
+2023-02-10 22:41:46,065  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,066  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,067  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 17   
+2023-02-10 22:41:46,068  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,068  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,069  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 18   
+2023-02-10 22:41:46,069  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,070  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,071  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 19   
+2023-02-10 22:41:46,071  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,072  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,073  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 20   
+2023-02-10 22:41:46,073  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,074  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,075  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 21   
+2023-02-10 22:41:46,075  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,077  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,077  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 22   
+2023-02-10 22:41:46,078  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,079  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,080  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 23   
+2023-02-10 22:41:46,080  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,082  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,082  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 24   
+2023-02-10 22:41:46,083  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,084  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,084  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 25   
+2023-02-10 22:41:46,084  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,085  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,086  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 26   
+2023-02-10 22:41:46,086  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,087  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,088  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 27   
+2023-02-10 22:41:46,088  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,089  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,090  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 28   
+2023-02-10 22:41:46,090  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,091  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,092  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 29   
+2023-02-10 22:41:46,092  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,093  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,094  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 30   
+2023-02-10 22:41:46,095  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,096  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,097  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 31   
+2023-02-10 22:41:46,097  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,098  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,099  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 32   
+2023-02-10 22:41:46,099  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,100  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,101  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 33   
+2023-02-10 22:41:46,101  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,102  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,103  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 34   
+2023-02-10 22:41:46,104  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,105  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,105  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 35   
+2023-02-10 22:41:46,106  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,107  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,108  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 36   
+2023-02-10 22:41:46,108  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,110  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,110  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 37   
+2023-02-10 22:41:46,111  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,115  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,115  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 38   
+2023-02-10 22:41:46,116  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,118  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,118  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 39   
+2023-02-10 22:41:46,119  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,120  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,121  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 40   
+2023-02-10 22:41:46,122  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,123  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,123  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 41   
+2023-02-10 22:41:46,124  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,125  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,126  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 42   
+2023-02-10 22:41:46,127  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,128  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,129  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 43   
+2023-02-10 22:41:46,129  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,131  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,131  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 44   
+2023-02-10 22:41:46,132  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,133  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,134  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 45   
+2023-02-10 22:41:46,134  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,136  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,136  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 46   
+2023-02-10 22:41:46,137  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,138  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,139  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 47   
+2023-02-10 22:41:46,139  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,140  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,141  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 48   
+2023-02-10 22:41:46,141  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,143  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,144  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 49   
+2023-02-10 22:41:46,144  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,146  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,146  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 50   
+2023-02-10 22:41:46,147  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,148  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,149  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 51   
+2023-02-10 22:41:46,149  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,151  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,152  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 52   
+2023-02-10 22:41:46,152  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,154  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,155  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 53   
+2023-02-10 22:41:46,156  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,157  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,158  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 54   
+2023-02-10 22:41:46,158  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,160  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,161  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 55   
+2023-02-10 22:41:46,161  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,163  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,164  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 56   
+2023-02-10 22:41:46,164  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,166  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,167  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 57   
+2023-02-10 22:41:46,168  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,169  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,170  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 58   
+2023-02-10 22:41:46,171  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,172  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,173  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 59   
+2023-02-10 22:41:46,174  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,175  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,176  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 60   
+2023-02-10 22:41:46,176  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,178  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,179  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 61   
+2023-02-10 22:41:46,180  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,181  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,182  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 62   
+2023-02-10 22:41:46,183  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,184  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,185  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 63   
+2023-02-10 22:41:46,186  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,187  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,187  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 64   
+2023-02-10 22:41:46,188  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,189  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,190  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 65   
+2023-02-10 22:41:46,190  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,192  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,192  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 66   
+2023-02-10 22:41:46,193  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,195  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,196  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 67   
+2023-02-10 22:41:46,197  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,199  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,199  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 68   
+2023-02-10 22:41:46,200  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,202  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,202  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 69   
+2023-02-10 22:41:46,203  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,204  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,205  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 70   
+2023-02-10 22:41:46,205  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,206  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,207  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 71   
+2023-02-10 22:41:46,208  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,209  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,210  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 72   
+2023-02-10 22:41:46,210  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,212  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,213  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 73   
+2023-02-10 22:41:46,213  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,215  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,216  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 74   
+2023-02-10 22:41:46,216  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,218  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,219  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 75   
+2023-02-10 22:41:46,219  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,220  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,221  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 76   
+2023-02-10 22:41:46,221  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,223  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,224  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 77   
+2023-02-10 22:41:46,224  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,226  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,227  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 78   
+2023-02-10 22:41:46,227  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,229  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,230  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 79   
+2023-02-10 22:41:46,230  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,232  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,233  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 80   
+2023-02-10 22:41:46,233  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,235  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,236  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 81   
+2023-02-10 22:41:46,236  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,237  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,238  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 82   
+2023-02-10 22:41:46,238  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,240  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,241  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 83   
+2023-02-10 22:41:46,241  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,243  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,243  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 84   
+2023-02-10 22:41:46,244  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,246  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,246  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 85   
+2023-02-10 22:41:46,247  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,248  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,249  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 86   
+2023-02-10 22:41:46,250  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,252  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,252  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 87   
+2023-02-10 22:41:46,252  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,254  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,254  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 88   
+2023-02-10 22:41:46,255  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,256  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,257  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 89   
+2023-02-10 22:41:46,258  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,259  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,260  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 90   
+2023-02-10 22:41:46,260  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,262  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,262  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 91   
+2023-02-10 22:41:46,263  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,265  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,265  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 92   
+2023-02-10 22:41:46,266  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,267  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,268  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 93   
+2023-02-10 22:41:46,269  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,270  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,270  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 94   
+2023-02-10 22:41:46,271  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,272  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,273  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 95   
+2023-02-10 22:41:46,274  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,275  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,276  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 96   
+2023-02-10 22:41:46,276  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,278  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,278  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 97   
+2023-02-10 22:41:46,279  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,280  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,281  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 98   
+2023-02-10 22:41:46,281  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,282  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,283  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 99   
+2023-02-10 22:41:46,284  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,285  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,286  |  INFO  |  INSERT SUCCESS: Uploaded sales_agents record no 100   
+2023-02-10 22:41:46,287  |  DEBUG  |  ---------------------------------  
+2023-02-10 22:41:46,288  |  INFO  |  Rows after SQL insert in Postgres: 100   
+2023-02-10 22:41:46,289  |  DEBUG  |    
+2023-02-10 22:41:46,289  |  WARNING  |    
+2023-02-10 22:41:46,290  |  WARNING  |    
+2023-02-10 22:41:46,291  |  WARNING  |  ================================================  
+2023-02-10 22:41:46,291  |  WARNING  |             SENSITIVE COLUMN IDENTIFICATION                
+2023-02-10 22:41:46,292  |  WARNING  |  ================================================  
+2023-02-10 22:41:46,292  |  WARNING  |    
+2023-02-10 22:41:46,293  |  ERROR  |  IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.            
+2023-02-10 22:41:46,293  |  ERROR  |    
+2023-02-10 22:41:46,294  |  ERROR  |        Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information.   
+2023-02-10 22:41:46,295  |  ERROR  |    
+2023-02-10 22:41:46,295  |  ERROR  |        Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care.   
+2023-02-10 22:41:46,296  |  WARNING  |    
+2023-02-10 22:41:46,296  |  WARNING  |    
+2023-02-10 22:41:46,296  |  WARNING  |  Now beginning the sensitive column identification stage ...  
+2023-02-10 22:41:46,296  |  WARNING  |    
+2023-02-10 22:41:46,297  |  WARNING  |  Here are the columns considered sensitive in this table ...  
+2023-02-10 22:41:46,297  |  WARNING  |    
+2023-02-10 22:41:46,298  |  WARNING  |  1 : 'id'    
+2023-02-10 22:41:46,298  |  WARNING  |  2 : 'first_name'    
+2023-02-10 22:41:46,299  |  WARNING  |  3 : 'last_name'    
+2023-02-10 22:41:46,300  |  WARNING  |  4 : 'email'    
+2023-02-10 22:41:46,301  |  WARNING  |  5 : 'phone'    
+2023-02-10 22:41:46,302  |  WARNING  |  6 : 'location'    
+2023-02-10 22:41:46,302  |  WARNING  |  7 : 'nationality'    
+2023-02-10 22:41:46,302  |  WARNING  |  8 : 'seniority_level'    
+2023-02-10 22:41:46,303  |  WARNING  |  9 : 'service_speciality'    
+2023-02-10 22:41:46,303  |  WARNING  |  10 : 'commission'    
+2023-02-10 22:41:46,304  |  WARNING  |  11 : 'years_experience'    
+2023-02-10 22:41:46,305  |  WARNING  |    
+2023-02-10 22:41:46,305  |  WARNING  |    
+2023-02-10 22:41:46,305  |  WARNING  |  Decide on the appropriate treatment for these tables. A few options to consider include:  
+2023-02-10 22:41:46,306  |  WARNING  |  1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'.   
+2023-02-10 22:41:46,307  |  WARNING  |  2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).          
+2023-02-10 22:41:46,307  |  WARNING  |  3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities          
+2023-02-10 22:41:46,308  |  WARNING  |    
+2023-02-10 22:41:46,308  |  WARNING  |  Now terminating the sensitive column identification stage ...  
+2023-02-10 22:41:46,309  |  WARNING  |  Sensitive column identification stage ended.   
+2023-02-10 22:41:46,310  |  WARNING  |    
+2023-02-10 22:41:46,310  |  WARNING  |    
+2023-02-10 22:41:46,311  |  WARNING  |    
+2023-02-10 22:41:46,325  |  INFO  |    
+2023-02-10 22:41:46,325  |  INFO  |    
+2023-02-10 22:41:46,326  |  INFO  |  ================================================  
+2023-02-10 22:41:46,327  |  INFO  |                DATA PROFILING METRICS                
+2023-02-10 22:41:46,327  |  INFO  |  ================================================  
+2023-02-10 22:41:46,328  |  INFO  |    
+2023-02-10 22:41:46,328  |  INFO  |  Now calculating table statistics...  
+2023-02-10 22:41:46,329  |  INFO  |    
+2023-02-10 22:41:46,330  |  INFO  |    
+2023-02-10 22:41:46,330  |  INFO  |  Table name:                                  raw_sales_agents_tbl   
+2023-02-10 22:41:46,331  |  INFO  |  Schema name:                                 main   
+2023-02-10 22:41:46,332  |  INFO  |  Database name:                               raw_db   
+2023-02-10 22:41:46,333  |  INFO  |  Data warehouse layer:                        RAW   
+2023-02-10 22:41:46,333  |  INFO  |    
+2023-02-10 22:41:46,334  |  INFO  |    
+2023-02-10 22:41:46,334  |  INFO  |  Number of rows in table:                     100   
+2023-02-10 22:41:46,335  |  INFO  |  Number of columns in table:                  17   
+2023-02-10 22:41:46,335  |  INFO  |    
+2023-02-10 22:41:46,336  |  INFO  |  Successful records uploaded total :          100 / 100     
+2023-02-10 22:41:46,337  |  INFO  |  Failed/Errored records uploaded total:       0 / 100         
+2023-02-10 22:41:46,337  |  INFO  |    
+2023-02-10 22:41:46,338  |  INFO  |  Successful records uploaded % :              100.0      
+2023-02-10 22:41:46,339  |  INFO  |  Failed/Errored records uploaded %:           0.0         
+2023-02-10 22:41:46,340  |  INFO  |    
+2023-02-10 22:41:46,340  |  INFO  |  Number of unique records:                    100 / 100  
+2023-02-10 22:41:46,341  |  INFO  |  Number of duplicate records:                 0 / 100  
+2023-02-10 22:41:46,341  |  INFO  |    
+2023-02-10 22:41:46,342  |  INFO  |  Unique records %:                            100.0   
+2023-02-10 22:41:46,342  |  INFO  |  Duplicate records %:                         0.0   
+2023-02-10 22:41:46,343  |  INFO  |    
+2023-02-10 22:41:46,344  |  INFO  |  Column name: id,  Column no: 1,  Number of NULL values: 0   
+2023-02-10 22:41:46,346  |  INFO  |  Column name: first_name,  Column no: 2,  Number of NULL values: 0   
+2023-02-10 22:41:46,347  |  INFO  |  Column name: last_name,  Column no: 3,  Number of NULL values: 0   
+2023-02-10 22:41:46,348  |  INFO  |  Column name: email,  Column no: 4,  Number of NULL values: 0   
+2023-02-10 22:41:46,350  |  INFO  |  Column name: phone,  Column no: 5,  Number of NULL values: 0   
+2023-02-10 22:41:46,351  |  INFO  |  Column name: location,  Column no: 6,  Number of NULL values: 0   
+2023-02-10 22:41:46,353  |  INFO  |  Column name: nationality,  Column no: 7,  Number of NULL values: 0   
+2023-02-10 22:41:46,354  |  INFO  |  Column name: seniority_level,  Column no: 8,  Number of NULL values: 0   
+2023-02-10 22:41:46,356  |  INFO  |  Column name: service_speciality,  Column no: 9,  Number of NULL values: 0   
+2023-02-10 22:41:46,357  |  INFO  |  Column name: commission,  Column no: 10,  Number of NULL values: 0   
+2023-02-10 22:41:46,359  |  INFO  |  Column name: years_experience,  Column no: 11,  Number of NULL values: 0   
+2023-02-10 22:41:46,360  |  INFO  |  Column name: created_at,  Column no: 12,  Number of NULL values: 0   
+2023-02-10 22:41:46,361  |  INFO  |  Column name: updated_at,  Column no: 13,  Number of NULL values: 0   
+2023-02-10 22:41:46,363  |  INFO  |  Column name: source_system,  Column no: 14,  Number of NULL values: 0   
+2023-02-10 22:41:46,364  |  INFO  |  Column name: source_file,  Column no: 15,  Number of NULL values: 0   
+2023-02-10 22:41:46,365  |  INFO  |  Column name: load_timestamp,  Column no: 16,  Number of NULL values: 0   
+2023-02-10 22:41:46,367  |  INFO  |  Column name: dwh_layer,  Column no: 17,  Number of NULL values: 0   
+2023-02-10 22:41:46,368  |  INFO  |    
+2023-02-10 22:41:46,368  |  INFO  |  ================================================  
+2023-02-10 22:41:46,369  |  INFO  |    
+2023-02-10 22:41:46,369  |  INFO  |  Now calculating performance statistics (from a Python standpoint)...  
+2023-02-10 22:41:46,369  |  INFO  |    
+2023-02-10 22:41:46,370  |  INFO  |    
+2023-02-10 22:41:46,370  |  INFO  |  1. Execution time for CREATING schema: 13.997077941894531 ms   
+2023-02-10 22:41:46,370  |  INFO  |    
+2023-02-10 22:41:46,371  |  INFO  |    
+2023-02-10 22:41:46,371  |  INFO  |  2. Execution time for CREATING schema (VAL CHECK): 21.007776260375977 ms   
+2023-02-10 22:41:46,372  |  INFO  |    
+2023-02-10 22:41:46,372  |  INFO  |    
+2023-02-10 22:41:46,373  |  INFO  |  3. Execution time for DELETING schema:  13.003349304199219 ms   
+2023-02-10 22:41:46,373  |  INFO  |    
+2023-02-10 22:41:46,374  |  INFO  |    
+2023-02-10 22:41:46,374  |  INFO  |  4. Execution time for DELETING schema (VAL CHECK):  12.005805969238281 ms   
+2023-02-10 22:41:46,375  |  INFO  |    
+2023-02-10 22:41:46,375  |  INFO  |    
+2023-02-10 22:41:46,376  |  INFO  |  5. Execution time for CREATING table:  25.694608688354492 ms   
+2023-02-10 22:41:46,376  |  INFO  |    
+2023-02-10 22:41:46,377  |  INFO  |    
+2023-02-10 22:41:46,377  |  INFO  |  6. Execution time for CREATING table (VAL CHECK):  1.0988712310791016 ms   
+2023-02-10 22:41:46,378  |  INFO  |    
+2023-02-10 22:41:46,378  |  INFO  |    
+2023-02-10 22:41:46,379  |  INFO  |  7. Execution time for ADDING data lineage:  5.999326705932617 ms   
+2023-02-10 22:41:46,379  |  INFO  |    
+2023-02-10 22:41:46,380  |  INFO  |    
+2023-02-10 22:41:46,380  |  INFO  |  8. Execution time for ADDING data lineage (VAL CHECK):  40.00496864318848 ms   
+2023-02-10 22:41:46,381  |  INFO  |    
+2023-02-10 22:41:46,382  |  INFO  |    
+2023-02-10 22:41:46,382  |  INFO  |  9. Execution time for INSERTING rows to table:  266.0021781921387 ms   
+2023-02-10 22:41:46,382  |  INFO  |    
+2023-02-10 22:41:46,383  |  INFO  |    
+2023-02-10 22:41:46,383  |  INFO  |  10. Execution time for COUNTING uploaded rows to table:  0.9925365447998047 ms   
+2023-02-10 22:41:46,384  |  INFO  |    
+2023-02-10 22:41:46,384  |  INFO  |    
+2023-02-10 22:41:46,385  |  INFO  |    
+2023-02-10 22:41:46,385  |  INFO  |  ================================================  
+2023-02-10 22:41:46,386  |  DEBUG  |    
+2023-02-10 22:41:46,386  |  INFO  |  DATA VALIDATION SUCCESS: All general DQ checks passed!   
+2023-02-10 22:41:46,386  |  DEBUG  |    
+2023-02-10 22:41:46,387  |  INFO  |  Now saving changes made by SQL statements to Postgres DB....  
+2023-02-10 22:41:46,410  |  INFO  |  Saved successfully, now terminating cursor and current session....  
+2023-02-10 22:41:46,411  |  DEBUG  |    
+2023-02-10 22:41:46,412  |  DEBUG  |  Cursor closed successfully.  
+2023-02-10 22:41:46,413  |  DEBUG  |  Session connected to Postgres database closed.  

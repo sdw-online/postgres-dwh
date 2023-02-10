@@ -1,0 +1,466 @@
+2023-02-10 21:26:50,817  |  INFO  |    
+2023-02-10 21:26:50,818  |  INFO  |  ---------------------------------------------  
+2023-02-10 21:26:50,819  |  INFO  |  Beginning the source data extraction process...  
+2023-02-10 21:26:50,821  |  INFO  |  Successfully located 'flight_schedules.json'  
+2023-02-10 21:26:50,822  |  INFO  |  File type: '<class 'list'>'  
+2023-02-10 21:26:50,939  |  DEBUG  |    
+2023-02-10 21:26:50,940  |  INFO  |  =================================================================================  
+2023-02-10 21:26:50,940  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
+2023-02-10 21:26:50,941  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
+2023-02-10 21:26:50,941  |  INFO  |  =================================================================================  
+2023-02-10 21:26:50,942  |  DEBUG  |    
+2023-02-10 21:26:50,963  |  DEBUG  |    
+2023-02-10 21:26:50,963  |  INFO  |  =================================================================================================  
+2023-02-10 21:26:50,963  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
+2023-02-10 21:26:50,964  |  INFO  |  Schema name in Postgres: main   
+2023-02-10 21:26:50,964  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
+           
+2023-02-10 21:26:50,965  |  INFO  |  =================================================================================================  
+2023-02-10 21:26:50,966  |  DEBUG  |    
+2023-02-10 21:26:50,989  |  DEBUG  |    
+2023-02-10 21:26:50,989  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-10 21:26:50,989  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_flight_schedules_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
+2023-02-10 21:26:50,990  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_flight_schedules_tbl' );
+           
+2023-02-10 21:26:50,990  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-10 21:26:50,991  |  DEBUG  |    
+2023-02-10 21:26:51,017  |  DEBUG  |    
+2023-02-10 21:26:51,017  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 21:26:51,018  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_flight_schedules_tbl table in raw_db.    
+2023-02-10 21:26:51,018  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_flight_schedules_tbl' );
+           
+2023-02-10 21:26:51,018  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 21:26:51,019  |  DEBUG  |    
+2023-02-10 21:26:51,062  |  DEBUG  |    
+2023-02-10 21:26:51,062  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 21:26:51,063  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_flight_schedules_tbl.    
+2023-02-10 21:26:51,064  |  INFO  |  SQL Query for validation check:          
+                                                                    SELECT * 
+                                                                    FROM    information_schema.columns 
+                                                                    WHERE   table_name      = 'raw_flight_schedules_tbl' 
+                                                                        AND     (column_name    = 'created_at'
+                                                                        OR      column_name     = 'updated_at' 
+                                                                        OR      column_name     = 'source_system' 
+                                                                        OR      column_name     = 'source_file' 
+                                                                        OR      column_name     = 'load_timestamp' 
+                                                                        OR      column_name     = 'dwh_layer');
+                                                                              
+           
+2023-02-10 21:26:51,066  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 21:26:51,067  |  DEBUG  |    
+2023-02-10 21:26:51,071  |  INFO  |  Rows before SQL insert in Postgres: 0   
+2023-02-10 21:26:51,071  |  DEBUG  |    
+2023-02-10 21:26:51,074  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,075  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 1   
+2023-02-10 21:26:51,075  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,076  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,077  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 2   
+2023-02-10 21:26:51,077  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,078  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,079  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 3   
+2023-02-10 21:26:51,079  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,081  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,081  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 4   
+2023-02-10 21:26:51,082  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,083  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,084  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 5   
+2023-02-10 21:26:51,084  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,085  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,085  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 6   
+2023-02-10 21:26:51,086  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,087  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,088  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 7   
+2023-02-10 21:26:51,089  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,090  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,090  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 8   
+2023-02-10 21:26:51,091  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,092  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,092  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 9   
+2023-02-10 21:26:51,093  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,094  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,094  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 10   
+2023-02-10 21:26:51,094  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,095  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,096  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 11   
+2023-02-10 21:26:51,096  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,098  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,098  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 12   
+2023-02-10 21:26:51,099  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,100  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,101  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 13   
+2023-02-10 21:26:51,101  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,102  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,103  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 14   
+2023-02-10 21:26:51,103  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,105  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,105  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 15   
+2023-02-10 21:26:51,106  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,107  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,108  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 16   
+2023-02-10 21:26:51,108  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,109  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,110  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 17   
+2023-02-10 21:26:51,110  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,111  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,112  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 18   
+2023-02-10 21:26:51,112  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,113  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,114  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 19   
+2023-02-10 21:26:51,114  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,115  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,116  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 20   
+2023-02-10 21:26:51,116  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,118  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,118  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 21   
+2023-02-10 21:26:51,119  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,120  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,121  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 22   
+2023-02-10 21:26:51,121  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,122  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,123  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 23   
+2023-02-10 21:26:51,124  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,125  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,125  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 24   
+2023-02-10 21:26:51,126  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,127  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,127  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 25   
+2023-02-10 21:26:51,127  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,128  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,129  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 26   
+2023-02-10 21:26:51,130  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,131  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,132  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 27   
+2023-02-10 21:26:51,132  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,133  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,134  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 28   
+2023-02-10 21:26:51,134  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,135  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,136  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 29   
+2023-02-10 21:26:51,136  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,138  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,138  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 30   
+2023-02-10 21:26:51,139  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,140  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,141  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 31   
+2023-02-10 21:26:51,141  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,142  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,143  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 32   
+2023-02-10 21:26:51,143  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,144  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,145  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 33   
+2023-02-10 21:26:51,145  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,147  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,148  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 34   
+2023-02-10 21:26:51,148  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,150  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,150  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 35   
+2023-02-10 21:26:51,151  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,152  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,153  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 36   
+2023-02-10 21:26:51,153  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,154  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,155  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 37   
+2023-02-10 21:26:51,155  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,156  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,157  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 38   
+2023-02-10 21:26:51,158  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,159  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,159  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 39   
+2023-02-10 21:26:51,160  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,161  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,162  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 40   
+2023-02-10 21:26:51,162  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,164  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,165  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 41   
+2023-02-10 21:26:51,166  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,168  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,169  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 42   
+2023-02-10 21:26:51,170  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,171  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,172  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 43   
+2023-02-10 21:26:51,173  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,174  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,175  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 44   
+2023-02-10 21:26:51,175  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,177  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,178  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 45   
+2023-02-10 21:26:51,178  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,180  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,181  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 46   
+2023-02-10 21:26:51,182  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,183  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,184  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 47   
+2023-02-10 21:26:51,184  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,186  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,186  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 48   
+2023-02-10 21:26:51,187  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,191  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,191  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 49   
+2023-02-10 21:26:51,192  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,193  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,194  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 50   
+2023-02-10 21:26:51,195  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,196  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,197  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 51   
+2023-02-10 21:26:51,197  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,199  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,200  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 52   
+2023-02-10 21:26:51,201  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,202  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,204  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 53   
+2023-02-10 21:26:51,205  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,207  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,207  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 54   
+2023-02-10 21:26:51,208  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,210  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,210  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 55   
+2023-02-10 21:26:51,211  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,212  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,213  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 56   
+2023-02-10 21:26:51,214  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,216  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,217  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 57   
+2023-02-10 21:26:51,217  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,219  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,220  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 58   
+2023-02-10 21:26:51,220  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,222  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,222  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 59   
+2023-02-10 21:26:51,223  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,224  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,225  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 60   
+2023-02-10 21:26:51,226  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,227  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,228  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 61   
+2023-02-10 21:26:51,228  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,230  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,230  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 62   
+2023-02-10 21:26:51,231  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,233  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,234  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 63   
+2023-02-10 21:26:51,234  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,235  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,236  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 64   
+2023-02-10 21:26:51,237  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,238  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,239  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 65   
+2023-02-10 21:26:51,239  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,241  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,241  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 66   
+2023-02-10 21:26:51,242  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,243  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,244  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 67   
+2023-02-10 21:26:51,245  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,246  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,247  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 68   
+2023-02-10 21:26:51,248  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,250  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,250  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 69   
+2023-02-10 21:26:51,251  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,252  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,253  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 70   
+2023-02-10 21:26:51,253  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,255  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,255  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 71   
+2023-02-10 21:26:51,256  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,257  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,258  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 72   
+2023-02-10 21:26:51,258  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,259  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,260  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 73   
+2023-02-10 21:26:51,260  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,261  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,262  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 74   
+2023-02-10 21:26:51,263  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,265  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,265  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 75   
+2023-02-10 21:26:51,266  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,267  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,268  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 76   
+2023-02-10 21:26:51,268  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,269  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,270  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 77   
+2023-02-10 21:26:51,270  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,272  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,272  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 78   
+2023-02-10 21:26:51,273  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,274  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,275  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 79   
+2023-02-10 21:26:51,275  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,277  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,277  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 80   
+2023-02-10 21:26:51,277  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,279  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,279  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 81   
+2023-02-10 21:26:51,280  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,282  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,283  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 82   
+2023-02-10 21:26:51,283  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,285  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,285  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 83   
+2023-02-10 21:26:51,286  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,287  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,288  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 84   
+2023-02-10 21:26:51,288  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,290  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,290  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 85   
+2023-02-10 21:26:51,291  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,292  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,292  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 86   
+2023-02-10 21:26:51,293  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,294  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,295  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 87   
+2023-02-10 21:26:51,295  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,297  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,298  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 88   
+2023-02-10 21:26:51,298  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,299  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,300  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 89   
+2023-02-10 21:26:51,300  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,302  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,302  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 90   
+2023-02-10 21:26:51,302  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,303  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,304  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 91   
+2023-02-10 21:26:51,304  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,305  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,306  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 92   
+2023-02-10 21:26:51,306  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,308  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,308  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 93   
+2023-02-10 21:26:51,308  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,310  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,310  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 94   
+2023-02-10 21:26:51,311  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,312  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,312  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 95   
+2023-02-10 21:26:51,313  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,315  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,315  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 96   
+2023-02-10 21:26:51,316  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,317  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,318  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 97   
+2023-02-10 21:26:51,318  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,319  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,320  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 98   
+2023-02-10 21:26:51,320  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,322  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,322  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 99   
+2023-02-10 21:26:51,323  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,324  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,325  |  INFO  |  INSERT SUCCESS: Uploaded flight_schedules record no 100   
+2023-02-10 21:26:51,325  |  DEBUG  |  ---------------------------------  
+2023-02-10 21:26:51,327  |  INFO  |  Rows after SQL insert in Postgres: 100   
+2023-02-10 21:26:51,328  |  DEBUG  |    
+2023-02-10 21:26:51,329  |  WARNING  |    
+2023-02-10 21:26:51,329  |  WARNING  |    
+2023-02-10 21:26:51,329  |  WARNING  |  ================================================  
+2023-02-10 21:26:51,331  |  WARNING  |             SENSITIVE COLUMN IDENTIFICATION                
+2023-02-10 21:26:51,332  |  WARNING  |  ================================================  
+2023-02-10 21:26:51,333  |  WARNING  |    
+2023-02-10 21:26:51,334  |  ERROR  |  IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.            
+2023-02-10 21:26:51,335  |  ERROR  |    
+2023-02-10 21:26:51,335  |  ERROR  |        Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information.   
+2023-02-10 21:26:51,336  |  ERROR  |    
+2023-02-10 21:26:51,336  |  ERROR  |        Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care.   
+2023-02-10 21:26:51,337  |  WARNING  |    
+2023-02-10 21:26:51,338  |  WARNING  |    
+2023-02-10 21:26:51,338  |  WARNING  |  Now beginning the sensitive column identification stage ...  
+2023-02-10 21:26:51,340  |  WARNING  |    
+2023-02-10 21:26:51,342  |  ERROR  |  There are no sensitive columns for the 'raw_flight_schedules_tbl' table   
+2023-02-10 21:26:51,343  |  WARNING  |    
+2023-02-10 21:26:51,343  |  WARNING  |  1 : 'None'    
+2023-02-10 21:26:51,345  |  WARNING  |    
+2023-02-10 21:26:51,346  |  WARNING  |  Now terminating the sensitive column identification stage ...  
+2023-02-10 21:26:51,346  |  WARNING  |  Sensitive column identification stage ended.   
+2023-02-10 21:26:51,348  |  WARNING  |    
+2023-02-10 21:26:51,350  |  WARNING  |    
+2023-02-10 21:26:51,351  |  WARNING  |    
+2023-02-10 21:26:51,369  |  INFO  |    
+2023-02-10 21:26:51,369  |  INFO  |    
+2023-02-10 21:26:51,370  |  INFO  |  ================================================  
+2023-02-10 21:26:51,370  |  INFO  |                DATA PROFILING METRICS                
+2023-02-10 21:26:51,371  |  INFO  |  ================================================  
+2023-02-10 21:26:51,372  |  INFO  |    
+2023-02-10 21:26:51,372  |  INFO  |  Now calculating table statistics...  
+2023-02-10 21:26:51,373  |  INFO  |    
+2023-02-10 21:26:51,374  |  INFO  |    
+2023-02-10 21:26:51,374  |  INFO  |  Table name:                                  raw_flight_schedules_tbl   
+2023-02-10 21:26:51,375  |  INFO  |  Schema name:                                 main   
+2023-02-10 21:26:51,376  |  INFO  |  Database name:                               raw_db   
+2023-02-10 21:26:51,376  |  INFO  |  Data warehouse layer:                        RAW   
+2023-02-10 21:26:51,377  |  INFO  |    
+2023-02-10 21:26:51,378  |  INFO  |    
+2023-02-10 21:26:51,378  |  INFO  |  Number of rows in table:                     100   
+2023-02-10 21:26:51,379  |  INFO  |  Number of columns in table:                  12   
+2023-02-10 21:26:51,379  |  INFO  |    
+2023-02-10 21:26:51,380  |  INFO  |  Successful records uploaded total :          100 / 100     
+2023-02-10 21:26:51,381  |  INFO  |  Failed/Errored records uploaded total:       0 / 100         
+2023-02-10 21:26:51,382  |  INFO  |    
+2023-02-10 21:26:51,382  |  INFO  |  Successful records uploaded % :              100.0      
+2023-02-10 21:26:51,383  |  INFO  |  Failed/Errored records uploaded %:           0.0         
+2023-02-10 21:26:51,384  |  INFO  |    
+2023-02-10 21:26:51,384  |  INFO  |  Number of unique records:                    100 / 100  
+2023-02-10 21:26:51,385  |  INFO  |  Number of duplicate records:                 0 / 100  
+2023-02-10 21:26:51,385  |  INFO  |    
+2023-02-10 21:26:51,386  |  INFO  |  Unique records %:                            100.0   
+2023-02-10 21:26:51,386  |  INFO  |  Duplicate records %:                         0.0   
+2023-02-10 21:26:51,387  |  INFO  |    
+2023-02-10 21:26:51,388  |  INFO  |  Column name: flight_id,  Column no: 1,  Number of NULL values: 0   
+2023-02-10 21:26:51,389  |  INFO  |  Column name: flight_date,  Column no: 2,  Number of NULL values: 0   
+2023-02-10 21:26:51,390  |  INFO  |  Column name: departure_city,  Column no: 3,  Number of NULL values: 0   
+2023-02-10 21:26:51,391  |  INFO  |  Column name: departure_time,  Column no: 4,  Number of NULL values: 0   
+2023-02-10 21:26:51,392  |  INFO  |  Column name: arrival_city,  Column no: 5,  Number of NULL values: 0   
+2023-02-10 21:26:51,393  |  INFO  |  Column name: arrival_time,  Column no: 6,  Number of NULL values: 0   
+2023-02-10 21:26:51,394  |  INFO  |  Column name: created_at,  Column no: 7,  Number of NULL values: 0   
+2023-02-10 21:26:51,395  |  INFO  |  Column name: updated_at,  Column no: 8,  Number of NULL values: 0   
+2023-02-10 21:26:51,396  |  INFO  |  Column name: source_system,  Column no: 9,  Number of NULL values: 0   
+2023-02-10 21:26:51,398  |  INFO  |  Column name: source_file,  Column no: 10,  Number of NULL values: 0   
+2023-02-10 21:26:51,400  |  INFO  |  Column name: load_timestamp,  Column no: 11,  Number of NULL values: 0   
+2023-02-10 21:26:51,401  |  INFO  |  Column name: dwh_layer,  Column no: 12,  Number of NULL values: 0   
+2023-02-10 21:26:51,402  |  INFO  |    
+2023-02-10 21:26:51,403  |  INFO  |  ================================================  
+2023-02-10 21:26:51,403  |  INFO  |    
+2023-02-10 21:26:51,404  |  INFO  |  Now calculating performance statistics (from a Python standpoint)...  
+2023-02-10 21:26:51,405  |  INFO  |    
+2023-02-10 21:26:51,405  |  INFO  |    
+2023-02-10 21:26:51,406  |  INFO  |  1. Execution time for CREATING schema: 4.489660263061523 ms   
+2023-02-10 21:26:51,407  |  INFO  |    
+2023-02-10 21:26:51,407  |  INFO  |    
+2023-02-10 21:26:51,408  |  INFO  |  2. Execution time for CREATING schema (VAL CHECK): 15.494108200073242 ms   
+2023-02-10 21:26:51,409  |  INFO  |    
+2023-02-10 21:26:51,410  |  INFO  |    
+2023-02-10 21:26:51,410  |  INFO  |  3. Execution time for DELETING schema:  9.991884231567383 ms   
+2023-02-10 21:26:51,411  |  INFO  |    
+2023-02-10 21:26:51,412  |  INFO  |    
+2023-02-10 21:26:51,412  |  INFO  |  4. Execution time for DELETING schema (VAL CHECK):  12.371063232421875 ms   
+2023-02-10 21:26:51,414  |  INFO  |    
+2023-02-10 21:26:51,415  |  INFO  |    
+2023-02-10 21:26:51,416  |  INFO  |  5. Execution time for CREATING table:  24.009227752685547 ms   
+2023-02-10 21:26:51,417  |  INFO  |    
+2023-02-10 21:26:51,418  |  INFO  |    
+2023-02-10 21:26:51,419  |  INFO  |  6. Execution time for CREATING table (VAL CHECK):  1.9958019256591797 ms   
+2023-02-10 21:26:51,419  |  INFO  |    
+2023-02-10 21:26:51,420  |  INFO  |    
+2023-02-10 21:26:51,421  |  INFO  |  7. Execution time for ADDING data lineage:  5.05375862121582 ms   
+2023-02-10 21:26:51,421  |  INFO  |    
+2023-02-10 21:26:51,422  |  INFO  |    
+2023-02-10 21:26:51,422  |  INFO  |  8. Execution time for ADDING data lineage (VAL CHECK):  36.17596626281738 ms   
+2023-02-10 21:26:51,423  |  INFO  |    
+2023-02-10 21:26:51,424  |  INFO  |    
+2023-02-10 21:26:51,424  |  INFO  |  9. Execution time for INSERTING rows to table:  258.8956356048584 ms   
+2023-02-10 21:26:51,425  |  INFO  |    
+2023-02-10 21:26:51,425  |  INFO  |    
+2023-02-10 21:26:51,426  |  INFO  |  10. Execution time for COUNTING uploaded rows to table:  1.0004043579101562 ms   
+2023-02-10 21:26:51,426  |  INFO  |    
+2023-02-10 21:26:51,427  |  INFO  |    
+2023-02-10 21:26:51,428  |  INFO  |    
+2023-02-10 21:26:51,428  |  INFO  |  ================================================  
+2023-02-10 21:26:51,429  |  DEBUG  |    
+2023-02-10 21:26:51,429  |  INFO  |  DATA VALIDATION SUCCESS: All general DQ checks passed!   
+2023-02-10 21:26:51,430  |  DEBUG  |    
+2023-02-10 21:26:51,430  |  INFO  |  Now saving changes made by SQL statements to Postgres DB....  
+2023-02-10 21:26:51,440  |  INFO  |  Saved successfully, now terminating cursor and current session....  
+2023-02-10 21:26:51,441  |  DEBUG  |    
+2023-02-10 21:26:51,441  |  DEBUG  |  Cursor closed successfully.  
+2023-02-10 21:26:51,444  |  DEBUG  |  Session connected to Postgres database closed.  
