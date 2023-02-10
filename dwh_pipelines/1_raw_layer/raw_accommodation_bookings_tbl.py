@@ -113,7 +113,7 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
     
     try:
         accommodation_bookings_data = json.load(accommodation_bookings_file)
-        # accommodation_bookings_data = accommodation_bookings_data[0:100]
+        accommodation_bookings_data = accommodation_bookings_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(accommodation_bookings_data)}'")
 
@@ -222,12 +222,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Set up SQL statements for adding data lineage and validation check 
         add_data_lineage_to_raw_accommodation_bookings_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
-                                                                            ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                                                            ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                                                            ADD COLUMN  source_system               VARCHAR(255),
-                                                                            ADD COLUMN  source_file                 VARCHAR(255),
-                                                                            ADD COLUMN  load_timestamp              TIMESTAMP,
-                                                                            ADD COLUMN  dwh_layer                   VARCHAR(255)
+                                                                                ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                                ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                                ADD COLUMN  source_system               VARCHAR(255),
+                                                                                ADD COLUMN  source_file                 VARCHAR(255),
+                                                                                ADD COLUMN  load_timestamp              TIMESTAMP,
+                                                                                ADD COLUMN  dwh_layer                   VARCHAR(255)
                                                                         ;
         '''
 
@@ -282,19 +282,21 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         
-        count_total_no_of_columns_in_table  =   f'''           SELECT          COUNT(column_name) 
-                                                            FROM            information_schema.columns 
-                                                            WHERE           table_name = '{table_name}'
-                                                            AND             table_schema = '{schema_name}'
+        count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
+                                                                FROM            information_schema.columns 
+                                                                WHERE           table_name      =   '{table_name}'
+                                                                AND             table_schema    =   '{schema_name}'
         '''
 
         count_total_no_of_unique_records_in_table   =   f'''        SELECT COUNT(*) FROM 
                                                                             (SELECT DISTINCT * FROM {schema_name}.{table_name}) as unique_records   
         '''
-        get_list_of_column_names    =   f'''           SELECT      column_name
+        get_list_of_column_names    =   f'''                    SELECT      column_name
                                                                 FROM        information_schema.columns  
-                                                                WHERE       table_name = '{table_name}'
+                                                                WHERE       table_name   =  '{table_name}'
         '''
+
+        
 
 
 
@@ -483,6 +485,29 @@ def load_data_to_raw_layer(postgres_connection):
         total_rows_in_table = cursor.fetchone()[0]
         root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
         root_logger.debug(f"")
+
+
+
+        # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
+
+        """
+        NOTE: It is best practice to engage relevant stakeholders in the process of identifying sensitive data fields from the source data. 
+        
+        Approach this step with caution by taking time to properly understand the underlying data fields to avoid false positives like highlighting the wrong fields, or even missing out the fields containing confidential information. 
+
+        Failure to adhere to this could result in exposing your customers and company to harm (e.g. cybersecurity hacks, data breaches, unauthorized personnel  ) 
+        
+        """
+
+        
+        
+        sensitive_columns = []
+        sql_script = f"""       SELECT * 
+                                FROM    information_schema.columns 
+                                WHERE   table_name      = '{table_name}'
+                                ORDER BY ordinal_position 
+        """
+
 
 
 
