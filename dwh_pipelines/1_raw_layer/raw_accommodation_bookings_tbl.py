@@ -504,23 +504,30 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        # sensitive_columns_selected = ['customer_id',
-        #                     'num_adults',
-        #                     'num_children',
-        #                     'sales_agent_id'
-        #                     ]
+        sensitive_columns_selected = ['customer_id',
+                            'num_adults',
+                            'num_children',
+                            'sales_agent_id'
+                            ]
         
-        sensitive_columns_selected = []
         
 
         if len(sensitive_columns_selected) == 0:
             SENSITIVE_COLUMNS_IDENTIFIED = False
             root_logger.error(f"ERROR: No sensitive columns have been selected for '{table_name}' table ")
             root_logger.warning(f'')
+        
+        elif sensitive_columns_selected[0] is None:
+            SENSITIVE_COLUMNS_IDENTIFIED = True
+            root_logger.error(f"There are no sensitive columns for the '{table_name}' table ")
+            root_logger.warning(f'')
+
         else:
             SENSITIVE_COLUMNS_IDENTIFIED = True
-            root_logger.warning(f'Here are the sensitive columns in this table ...')
+            root_logger.warning(f'Here are the columns considered sensitive in this table ...')
+            root_logger.warning(f'')
 
+        
         if SENSITIVE_COLUMNS_IDENTIFIED is False:
             sql_statement_for_listing_columns_in_table = f"""        
             SELECT column_name FROM information_schema.columns 
@@ -541,8 +548,7 @@ def load_data_to_raw_layer(postgres_connection):
                 root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
 
 
-            
-            
+
             root_logger.warning(f'')
             root_logger.warning(f'You can use this SQL query to list the columns in this table:')
             root_logger.warning(f'              {sql_statement_for_listing_columns_in_table}                ')
@@ -552,13 +558,15 @@ def load_data_to_raw_layer(postgres_connection):
             for sensitive_column_name in sensitive_columns_selected:
                 total_sensitive_columns += 1
                 root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
-            root_logger.warning(f'')
-            root_logger.warning(f'')
-            root_logger.warning(f'Decide on the appropriate treatment for these tables. A few options to consider include:')
-            root_logger.warning(f'''1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'. ''')
-            root_logger.warning(f'''2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).        ''')
-            root_logger.warning(f'''3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities        ''')
+            if sensitive_columns_selected[0] is not None:
+                root_logger.warning(f'')
+                root_logger.warning(f'')
+                root_logger.warning(f'Decide on the appropriate treatment for these tables. A few options to consider include:')
+                root_logger.warning(f'''1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'. ''')
+                root_logger.warning(f'''2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).        ''')
+                root_logger.warning(f'''3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities        ''')
             
+            root_logger.warning(f'')
             root_logger.warning(f'Now terminating the sensitive column identification stage ...')
             root_logger.warning(f'Sensitive column identification stage ended. ')
             root_logger.warning(f'')
