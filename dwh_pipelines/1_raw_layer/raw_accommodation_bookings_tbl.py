@@ -16,6 +16,7 @@ from datetime import datetime
 root_logger     =   logging.getLogger(__name__)
 root_logger.setLevel(logging.DEBUG)
 
+
 # Set up formatter for logs 
 file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
 console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
@@ -31,21 +32,21 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
                                                                                     )
                                                                                     )
 
+
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
 file_handler        =   logging.FileHandler('logs/raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
+
 
 # Set up console handler object for writing event logs to console in real time (i.e. streams events to stderr)
 console_handler     =   logging.StreamHandler()
 console_handler.setFormatter(console_handler_log_formatter)
 
 
-
 # Add the file and console handlers 
 root_logger.addHandler(file_handler)
 root_logger.addHandler(console_handler)
-
 
 
 
