@@ -7,40 +7,54 @@ from faker import Faker
 from datetime import datetime, timedelta
 import configparser
 import os 
+import time
+import logging, coloredlogs
+from pathlib import Path
 
 
 def generate_travel_data():
 
-  # Establish the relevant constants for generating the synthetic travel data  
-  config = configparser.ConfigParser()
-  path = os.path.abspath('dwh_pipelines/local_config.ini')
-  config.read(path)
 
-  DATASETS_LOCATION_PATH = config['travel_data_filepath']['DATASETS_LOCATION_PATH']
+  # ================================================ LOGGER ================================================
 
-
-  print('------------------------------------------------')
-  print('------------------------------------------------')
-  print(f'DATASET DESTINATION PATH: {DATASETS_LOCATION_PATH} ')
-  print('------------------------------------------------')
-  print('------------------------------------------------')
+  # Set up root root_logger 
+  root_logger     =   logging.getLogger(__name__)
+  root_logger.setLevel(logging.DEBUG)
 
 
-  NUM_TRAVEL_OPTIONS = 30
-  NUM_CUSTOMERS = 1500
-  NUM_FX_RATES = 800
-  NUM_TRAVEL_BOOKINGS = 200
-  NUM_SALES = 20000
-  NUM_SALES_AGENTS = 65
-  NUM_ACCOMMODATION_BOOKINGS = 20000
-  DESTINATIONS = ['Paris', 'Rome', 'Barcelona', 'Amsterdam', 'London', 'New York', 'Sydney', 'Bali', 'Maldives', 'Tokyo',
-                  'Dubai', 'Bangkok', 'Istanbul', 'Cancun', 'Phuket', 'Bora Bora', 'Santorini', 'Cancun', 
-                  'Maui', 'Serengeti', 'Venice', 'Prague', 'Maui']
-  INCLUSIONS = ['Accommodation', 'Breakfast', 'Lunch', 'Dinner', 'Transportation', 'Guided tours', 'Entrance fees', 'Sightseeing', 'Airport transfers', 'Cruise']
-  EXCLUSIONS = ['Flights', 'Visas', 'Insurance', 'Personal expenses', 'Optional activities', 'Tips and gratuities', 'Extra meals', 'Beverages', 'Laundry services', 'Phone calls']
-  CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'DKK', 'HKD', 'NOK', 'SEK', 'SGD', 'THB', 'TWD', 'ZAR']
+  # Set up formatter for logs 
+  file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
+  console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
+                                                                                                  debug           =   dict    (color  =   'white'),
+                                                                                                  info            =   dict    (color  =   'green'),
+                                                                                                  warning         =   dict    (color  =   'orange'),
+                                                                                                  error           =   dict    (color  =   'red',      bold    =   True,   bright      =   True),
+                                                                                                  critical        =   dict    (color  =   'black',    bold    =   True,   background  =   'red')
+                                                                                              ),
+
+                                                                                      field_styles=dict(
+                                                                                          messages            =   dict    (color  =   'white')
+                                                                                      )
+                                                                                      )
 
 
+  # Set up file handler object for logging events to file
+  current_filepath    =   Path(__file__).stem
+  file_handler        =   logging.FileHandler('logs/0_src_data_generator/' + current_filepath + '.log', mode='w')
+  file_handler.setFormatter(file_handler_log_formatter)
+
+
+  # Set up console handler object for writing event logs to console in real time (i.e. streams events to stderr)
+  console_handler     =   logging.StreamHandler()
+  console_handler.setFormatter(console_handler_log_formatter)
+
+
+  # Add the file and console handlers 
+  root_logger.addHandler(file_handler)
+  root_logger.addHandler(console_handler)
+
+
+  # Establish the relevant constants for generating the synthetic travel data 
 
   NO_OF_CUSTOMER_INFO_ROWS = 100
   NO_OF_FLIGHT_SCHEDULES = 100
@@ -51,15 +65,29 @@ def generate_travel_data():
   NO_OF_FLIGHT_TICKET_SALES = 100
   NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
   NO_OF_SALES_AGENTS = 100
-  NO_OF_ACCOMMODATION_BOOKINGS = 40000
+  NO_OF_ACCOMMODATION_BOOKINGS = 400 
 
 
+  # Set up environment variables 
+  config = configparser.ConfigParser()
+  path = os.path.abspath('dwh_pipelines/local_config.ini')
+  config.read(path)
+
+  DATASETS_LOCATION_PATH = config['travel_data_filepath']['DATASETS_LOCATION_PATH']
+
+
+
+
+  root_logger.debug("")
+  root_logger.debug("")
+  root_logger.debug("Now beginning session for generating data...")
 
   # ========================================================================================================================================================================
 
   # ============================ CUSTOMER INFORMATION ============================
 
    # Create a Faker instance to generate fake data
+  CUSTOMER_INFO_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -104,7 +132,7 @@ def generate_travel_data():
 
 
   customer_info_df = pd.DataFrame(customer_info_records)
-  # print(customer_info_df)
+  # root_logger.info(customer_info_df)
 
 
    # Write dataframe to JSON file
@@ -119,11 +147,12 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ CUSTOMER INFORMATION ============================')
-  print(customer_info_df)
+  root_logger.info('----------')
+  root_logger.info('============================ CUSTOMER INFORMATION ============================')
+  root_logger.info(customer_info_df)
   
 
+  CUSTOMER_INFO_PROCESSING_END_TIME = time.time()
 
   # ========================================================================================================================================================================
 
@@ -132,6 +161,7 @@ def generate_travel_data():
   # ============================ FLIGHT SCHEDULES ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_SCHEDULES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -150,7 +180,7 @@ def generate_travel_data():
 
 
     flight_schedules_df = pd.DataFrame(flight_schedules)
-    # print(flight_schedules_df)
+    # root_logger.info(flight_schedules_df)
 
 
      # Write dataframe to JSON file
@@ -165,9 +195,10 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT SCHEDULES ============================')
-  print(flight_schedules_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT SCHEDULES ============================')
+  root_logger.info(flight_schedules_df)
+  FLIGHT_SCHEDULES_PROCESSING_END_TIME = time.time()
   
 
 
@@ -177,6 +208,7 @@ def generate_travel_data():
    # ============================ TICKET PRICES ============================
 
    # Create a Faker instance to generate fake data
+  TICKET_PRICES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -201,9 +233,10 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ TICKET PRICES ============================')
-  print(ticket_prices_df)
+  root_logger.info('----------')
+  root_logger.info('============================ TICKET PRICES ============================')
+  root_logger.info(ticket_prices_df)
+  TICKET_PRICES_PROCESSING_END_TIME = time.time()
   
 
 
@@ -211,6 +244,7 @@ def generate_travel_data():
   # ============================ FLIGHT BOOKINGS ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_BOOKINGS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -241,9 +275,10 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT BOOKINGS ============================')
-  print(flight_bookings_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT BOOKINGS ============================')
+  root_logger.info(flight_bookings_df)
+  FLIGHT_BOOKINGS_PROCESSING_END_TIME = time.time()
   
 
 
@@ -252,6 +287,7 @@ def generate_travel_data():
   # ============================ CUSTOMER FEEDBACK ============================
 
    # Create a Faker instance to generate fake data
+  CUSTOMER_FEEDBACKS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -280,15 +316,17 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ CUSTOMER FEEDBACKS ============================')
-  print(customer_feedbacks_df)
+  root_logger.info('----------')
+  root_logger.info('============================ CUSTOMER FEEDBACKS ============================')
+  root_logger.info(customer_feedbacks_df)
+  CUSTOMER_FEEDBACKS_PROCESSING_END_TIME = time.time()
   
     
 
   # ============================ SALES AGENTS ============================
 
 
+  SALES_AGENTS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   
@@ -335,9 +373,10 @@ def generate_travel_data():
 
 
   # Print the data frame
-  print('----------')
-  print('============================ SALES AGENTS ============================')
-  print(sales_agents_df)
+  root_logger.info('----------')
+  root_logger.info('============================ SALES AGENTS ============================')
+  root_logger.info(sales_agents_df)
+  SALES_AGENTS_PROCESSING_END_TIME = time.time()
 
 
 
@@ -346,6 +385,7 @@ def generate_travel_data():
   # ============================ FLIGHT DESTINATION ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_DESTINATION_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   flight_destinations = []
@@ -371,9 +411,10 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT DESTINATIONS ============================')
-  print(flight_destinations_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT DESTINATIONS ============================')
+  root_logger.info(flight_destinations_df)
+  FLIGHT_DESTINATION_PROCESSING_END_TIME = time.time()
   
     
 
@@ -381,6 +422,7 @@ def generate_travel_data():
   # ============================ FLIGHT PROMOTIONS & DEALS ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_PROMOTIONS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   flight_promotion_deals = []
@@ -407,9 +449,10 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT PROMOTIONS & DEALS ============================')
-  print(flight_promotion_deals_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT PROMOTIONS & DEALS ============================')
+  root_logger.info(flight_promotion_deals_df)
+  FLIGHT_PROMOTIONS_PROCESSING_END_TIME = time.time()
   
 
      
@@ -418,6 +461,7 @@ def generate_travel_data():
   # ============================ FLIGHT TICKET SALES ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_TICKET_SALES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   flight_ticket_sales = []
@@ -451,9 +495,10 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT TICKET SALES ============================')
-  print(flight_ticket_sales_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT TICKET SALES ============================')
+  root_logger.info(flight_ticket_sales_df)
+  FLIGHT_TICKET_SALES_PROCESSING_END_TIME = time.time()
   
 
      
@@ -463,21 +508,22 @@ def generate_travel_data():
   # ============================ ACCOMMODATION BOOKINGS ============================
 
    # Create a Faker instance to generate fake data
+  ACCOMMODATION_BOOKINGS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   accommodation_options = ['Drayton Manners Hotel', 'Hannah Wilson Hotel', 'Ladberry Sapphire Hotel', 'D.Q Hotel', 'Royal Baked Beans Hotel', 'Breakfast Abroad Hotel', 'Benny Toast Hotel', 'Test DWH Hotel']
-  check_in_date = fake.date_between(start_date='today', end_date='+30d')
+  check_in_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
 
   accommodation_bookings = []
 
   for i in range(NO_OF_ACCOMMODATION_BOOKINGS):
      accommodation_booking = {
         'id': uuid.uuid4(),
-        'location' : fake.address(),
+        'location' : fake.city(),
         'room_type' : random.choice(["Single", "Double", "Family", "Luxury"]),
         'check_in_date' : check_in_date,
         'check_out_date' : check_in_date + pd.Timedelta(days=random.randint(1, 14)),
-        'booking_date' : fake.date_between(start_date='-365d', end_date='today'),
+        'booking_date' : random.choice(pd.date_range(start='2012-01-01', end='2022-12-31')),
         'total_price' : random.randint(50, 500),
         'customer_id' : random.choice(customer_info_df['customer_id']),
         'flight_booking_id' : random.choice(flight_bookings_df['flight_booking_id']),
@@ -505,17 +551,200 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ ACCOMMODATION BOOKINGS ============================')
-  print(accommodation_bookings_df)
+  root_logger.info('----------')
+  root_logger.info('============================ ACCOMMODATION BOOKINGS ============================')
+  root_logger.info(accommodation_bookings_df)
+  ACCOMMODATION_BOOKINGS_PROCESSING_END_TIME = time.time()
   
      
 
 
 
 
+ 
+  root_logger.info(f'')
+  root_logger.info(f'')
+  root_logger.info('================================================')
+  root_logger.info('              DATA PROFILING METRICS              ')
+  root_logger.info('================================================')
+  root_logger.info(f'')
+  root_logger.info(f'Now calculating statistics for data generated ...')
+  root_logger.info(f'')
+  root_logger.info(f'')
+  root_logger.info(f'')
+  root_logger.info(f'')
+
+
+  # Define constants for query execution times 
+  EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO                      =     (  CUSTOMER_INFO_PROCESSING_END_TIME             -      CUSTOMER_INFO_PROCESSING_START_TIME            )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES                   =     (  FLIGHT_SCHEDULES_PROCESSING_END_TIME          -      FLIGHT_SCHEDULES_PROCESSING_START_TIME         )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES                      =     (  TICKET_PRICES_PROCESSING_END_TIME             -      TICKET_PRICES_PROCESSING_START_TIME            )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS                    =     (  FLIGHT_BOOKINGS_PROCESSING_END_TIME           -      FLIGHT_BOOKINGS_PROCESSING_START_TIME          )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS                 =     (  CUSTOMER_FEEDBACKS_PROCESSING_END_TIME        -      CUSTOMER_FEEDBACKS_PROCESSING_START_TIME       )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS                       =     (  SALES_AGENTS_PROCESSING_END_TIME              -      SALES_AGENTS_PROCESSING_START_TIME             )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS                =     (  FLIGHT_DESTINATION_PROCESSING_END_TIME        -      FLIGHT_DESTINATION_PROCESSING_START_TIME       )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS            =     (  FLIGHT_PROMOTIONS_PROCESSING_END_TIME         -      FLIGHT_PROMOTIONS_PROCESSING_START_TIME        )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES                =     (  FLIGHT_TICKET_SALES_PROCESSING_END_TIME       -      FLIGHT_TICKET_SALES_PROCESSING_START_TIME      )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS      =     (  ACCOMMODATION_BOOKINGS_PROCESSING_END_TIME    -      ACCOMMODATION_BOOKINGS_PROCESSING_START_TIME   )   *   1000
 
 
 
+
+  if (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO > 1000) and (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO < 60000):
+    root_logger.info(f'1. Execution time for generating CUSTOMER INFO : {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO  /   1000, 2)   } secs) ')
+    root_logger.info(f'')
+    root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO >= 60000):
+      root_logger.info(f'1. Execution time for generating CUSTOMER INFO :  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'1. Execution time for generating CUSTOMER INFO :  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES < 60000):
+      root_logger.info(f'2. Execution time for generating FLIGHT SCHEDULES : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES >= 60000):
+      root_logger.info(f'2. Execution time for generating FLIGHT SCHEDULES  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'2. Execution time for generating FLIGHT SCHEDULES  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+
+  
+
+  if (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES > 1000) and (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES < 60000):
+      root_logger.info(f'3. Execution time for generating TICKET PRICES : {EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES >= 60000):
+      root_logger.info(f'3. Execution time for generating TICKET PRICES:  {EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'3. Execution time for generating TICKET PRICES:  {EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS < 60000):
+      root_logger.info(f'4. Execution time for generating FLIGHT BOOKINGS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS >= 60000):
+      root_logger.info(f'4. Execution time for generating FLIGHT BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'4. Execution time for generating FLIGHT BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS > 1000) and (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS < 60000):
+    root_logger.info(f'5. Execution time for generating CUSTOMER FEEDBACKS : {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS  /   1000, 2)   } secs) ')
+    root_logger.info(f'')
+    root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS >= 60000):
+      root_logger.info(f'5. Execution time for generating CUSTOMER FEEDBACKS:  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'5. Execution time for generating CUSTOMER FEEDBACKS:  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS > 1000) and (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS < 60000):
+      root_logger.info(f'6. Execution time for generating SALES AGENTS : {EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS >= 60000):
+      root_logger.info(f'6. Execution time for generating SALES AGENTS:  {EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'6. Execution time for generating SALES AGENTS:  {EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS < 60000):
+      root_logger.info(f'7. Execution time for generating FLIGHT DESTINATIONS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS >= 60000):
+      root_logger.info(f'7. Execution time for generating FLIGHT DESTINATIONS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'7. Execution time for generating FLIGHT DESTINATIONS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS < 60000):
+      root_logger.info(f'8. Execution time for generating FLIGHT PROMOS AND DEALS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS >= 60000):
+      root_logger.info(f'8. Execution time for generating FLIGHT PROMOS AND DEALS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'8. Execution time for generating FLIGHT PROMOS AND DEALS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES < 60000):
+      root_logger.info(f'9. Execution time for generating FLIGHT TICKET SALES : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES >= 60000):
+      root_logger.info(f'9. Execution time for generating FLIGHT TICKET SALES:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'9. Execution time for generating FLIGHT TICKET SALES:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS < 60000):
+      root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS >= 60000):
+      root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+
+
+  
+  root_logger.debug("Successfully completed generating data")
+  root_logger.debug("")
+  root_logger.debug("")
+  root_logger.debug("Terminating data generation job...")
+  root_logger.debug("Session ended.")
+      
 
 generate_travel_data()
