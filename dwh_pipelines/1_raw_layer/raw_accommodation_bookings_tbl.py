@@ -112,9 +112,9 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
     
     try:
         accommodation_bookings_data = json.load(accommodation_bookings_file)
+        accommodation_bookings_data = accommodation_bookings_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"Data type: '{type(accommodation_bookings_data)}'")
-    # accommodation_bookings_data = accommodation_bookings_data[0:100]
 
     except:
         root_logger.error("Unable to locate source file...terminating process...")
@@ -292,7 +292,10 @@ def load_data_to_raw_layer(postgres_connection):
         count_total_no_of_unique_records_in_table = f'''        SELECT COUNT(*) FROM 
                                                                             (SELECT DISTINCT * FROM {schema_name}.{table_name}) as unique_records   
         '''
-        count_total_no_of_duplicate_records_in_table = f'''     
+        count_total_no_of_null_values_in_table = f'''           SELECT      column_name, COUNT(*) 
+                                                                FROM        {schema_name}.{table_name}  
+                                                                WHERE       column_name is NULL 
+                                                                GROUP BY    column_name;
         '''
 
 
@@ -455,6 +458,10 @@ def load_data_to_raw_layer(postgres_connection):
         total_duplicate_records_in_table = total_rows_in_table - total_unique_records_in_table
 
 
+        cursor.execute(count_total_no_of_null_values_in_table)
+        total_null_results = cursor.fetchall()
+
+
         
         root_logger.info(f'')
         root_logger.info(f'')
@@ -475,6 +482,16 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'')
         root_logger.info(f'Unique records %:                            {(total_unique_records_in_table / total_rows_in_table) * 100} ')
         root_logger.info(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
+        root_logger.info(f'')
+        
+        for sql_result in total_null_results:
+
+            root_logger.info(f'')
+            root_logger.info(f'Column name: {sql_result[0]}, Number of NULL values: {sql_result[1]} ')
+        
+
+
+
         root_logger.info('================================================')
 
 
