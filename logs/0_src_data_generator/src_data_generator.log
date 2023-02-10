@@ -1,0 +1,165 @@
+2023-02-10 15:54:50,006  |  DEBUG  |  ------------------------------------------------  
+2023-02-10 15:54:50,007  |  DEBUG  |  ------------------------------------------------  
+2023-02-10 15:54:50,007  |  INFO  |  DATASET DESTINATION PATH: C:/Users/steph/OneDrive/Documents/Projects/proj_2023/sdw_projs/fiverr_gigs/scripts/flask/projects/postgres-dwh/dwh_pipelines/0_src_data_generator/src_data/   
+2023-02-10 15:54:50,007  |  DEBUG  |  ------------------------------------------------  
+2023-02-10 15:54:50,008  |  DEBUG  |  ------------------------------------------------  
+2023-02-10 15:54:50,359  |  INFO  |  ----------  
+2023-02-10 15:54:50,360  |  INFO  |  ============================ CUSTOMER INFORMATION ============================  
+2023-02-10 15:54:50,361  |  INFO  |                               customer_id first_name last_name                         email  ... created_date last_updated_date        customer_contact_preference_id                   customer_contact_preference_desc
+0   1fcc5ba0-c66e-4ceb-a84e-0a09296ba00a      Kelly      Gray       andrea.murphy@email.com  ...   2020-06-16        2020-07-15  38ec00f4-8a16-416d-a268-e8bf562b3d20  {'id': 4ad1c258-5471-47bb-8167-22e7d71f990c, '...
+1   0a08438b-9b56-4dae-9536-49046bd8ed6f       Adam     Lewis    patrick.hill@macrosoft.com  ...   2020-06-16        2020-07-02  47ef332b-2a8a-46fb-8e34-4ae61a6923b3  {'id': 113acde3-9d8e-4e5e-8252-11868034dbb4, '...
+2   e124f667-dcf5-4b04-b3ae-3ea4fa1de887      April    Guzman     samuel.martinez@email.com  ...   2020-06-16        2020-06-20  1b886ad8-27ef-480b-977b-36391c81ad08  {'id': 0835f590-7669-4538-a6e1-77e209ebcd0d, '...
+3   395243b6-6d18-4e62-958c-87dbf6b36890     Alexis    Palmer             dawn.sosa@mzn.com  ...   2020-06-16        2020-07-13  5e721c1d-a267-461b-ad19-31fb08de7e55  {'id': 0835f590-7669-4538-a6e1-77e209ebcd0d, '...
+4   4653bb65-e9a0-449e-b5fd-58a4eeefa67b     Joshua     Black     paige.duran@macrosoft.com  ...   2020-06-16        2020-06-24  2e8b1cc7-d507-4042-9d28-52740e4620ff  {'id': 4ad1c258-5471-47bb-8167-22e7d71f990c, '...
+..                                   ...        ...       ...                           ...  ...          ...               ...                                   ...                                                ...
+95  cbba649b-483b-46ab-9f8b-10bb27130731    Crystal    Miller        linda.dalton@email.com  ...   2020-06-16        2020-07-12  a7f13eda-92c5-4a1a-811a-ed443c1b5ae7  {'id': 113acde3-9d8e-4e5e-8252-11868034dbb4, '...
+96  8ab1682a-a6da-4ba0-a36f-0c466b38adc0      Shawn    Carter  christine.johnston@email.com  ...   2020-06-16        2020-07-03  af77ef99-64df-4bee-9733-7cb89130e588  {'id': 113acde3-9d8e-4e5e-8252-11868034dbb4, '...
+97  bd0e59f7-5ae1-41cb-930b-278948a893db     Ashley  Peterson       brian.morgan@inlook.com  ...   2020-06-16        2020-07-18  ab7610e3-ac67-421d-a45a-65d94adac4f1  {'id': 44cbb6d2-7fc0-4a08-a497-903610480d7d, '...
+98  9f7762b0-1632-4ba3-88e6-4255ad163431       Eric   Collier    jeremy.matthews@inlook.com  ...   2020-06-16        2020-07-19  c08f490b-b4cc-4101-b0c5-70be582b3087  {'id': 44cbb6d2-7fc0-4a08-a497-903610480d7d, '...
+99  05778ee4-f96b-4990-9f84-52a93a1dfba2     Martin    Hughes        christina.ross@aio.net  ...   2020-06-16        2020-07-26  852f9152-720f-4e63-96de-1cbd223e4d84  {'id': 4ad1c258-5471-47bb-8167-22e7d71f990c, '...
+
+[100 rows x 19 columns]  
+2023-02-10 15:54:50,627  |  INFO  |  ----------  
+2023-02-10 15:54:50,628  |  INFO  |  ============================ FLIGHT SCHEDULES ============================  
+2023-02-10 15:54:50,628  |  INFO  |                                 flight_id    departure_city         arrival_city departure_time arrival_time flight_date
+0   c4f49293-a15b-4e49-b040-9d3da4f7ed7f       Valeriebury          Lake Amanda       13:37:28     04:38:17  2020-04-28
+1   f06dfb9b-dde2-488e-80db-a3dd91220f10        Millertown         Lake Amyview       15:40:45     21:24:31  2021-02-16
+2   50d0bce3-f6e0-403c-a0b7-158109880c51  South Jamesburgh  Lake Christinaburgh       15:13:50     17:22:19  2022-09-06
+3   f1ca1582-a003-4759-906b-58ed5fa817d6        North John       East Peterbury       00:27:44     17:13:43  2023-01-06
+4   5ac3aca6-b69e-4ca5-b412-86ad923f589b  Port Chelseaview         Lake Crystal       21:25:27     01:32:33  2020-05-17
+..                                   ...               ...                  ...            ...          ...         ...
+95  e14e53a3-116e-41fd-8756-5d485a4586e3  South Caseyburgh             Tamibury       16:36:50     00:56:26  2021-12-07
+96  b0cda7f0-89d6-4ecc-a76e-ca7759a45233       New Kristen     North Jessehaven       11:39:44     10:22:23  2021-02-12
+97  218b279f-b4b0-4e94-a2ed-4e30aead79a2       Joseborough           Thomasview       17:14:32     10:13:08  2020-02-11
+98  216e65d0-df0e-4ef4-8db1-f1edaf412f3a        Mariamouth            Karenport       13:08:05     20:53:51  2022-12-17
+99  6df61885-7bc2-431e-baca-f028f5e4ec22       Arthurmouth       Lake Jennytown       22:40:22     20:24:25  2020-06-10
+
+[100 rows x 6 columns]  
+2023-02-10 15:54:50,749  |  INFO  |  ----------  
+2023-02-10 15:54:50,751  |  INFO  |  ============================ TICKET PRICES ============================  
+2023-02-10 15:54:50,751  |  INFO  |                                 flight_id  ticket_price ticket_price_date
+0   d34962cf-a00c-4509-901a-7b86e38742f3           289        2021-12-14
+1   53b49ecf-04ea-4891-abb1-83c0c5245464           356        2020-01-30
+2   49f57972-c9a8-4a93-aa27-2267544c3902           620        2021-12-03
+3   cb8a1c95-1615-48f5-86f9-8558d4d76b91           418        2022-07-13
+4   ed60764d-314b-409a-a2a6-8c2b9f49d902           654        2021-05-20
+..                                   ...           ...               ...
+95  e6d57998-7691-4b68-ac63-a071caf1d386           394        2020-08-24
+96  231a4935-4959-4518-acd1-4efe8c4a103c           368        2021-05-07
+97  f3b38bee-2fe3-4858-9e7e-3692ee2dec4d           260        2022-02-07
+98  4bfc67f9-100f-43c7-9f24-65178810af69           664        2022-07-22
+99  d34962cf-a00c-4509-901a-7b86e38742f3           175        2022-04-23
+
+[100 rows x 3 columns]  
+2023-02-10 15:54:50,860  |  INFO  |  ----------  
+2023-02-10 15:54:50,861  |  INFO  |  ============================ FLIGHT BOOKINGS ============================  
+2023-02-10 15:54:50,861  |  INFO  |                         flight_booking_id                           customer_id                             flight_id  ticket_price booking_date payment_method confirmation_code checked_in
+0   8d43f8af-e7d0-48ca-89e9-435f27bf6c83  0ba88c09-bbd1-47e9-b220-0233818cc163  5dcab1a4-b171-4c6c-866b-de840c00c224           164   2021-02-03     Debit card        BEM88KKHOR         No
+1   e3442259-9e8c-4a79-a53f-a552f7b4347b  9d79a51e-338b-43d1-af18-1edeecea0a8f  499b2b2b-338f-457b-bc21-0205b2fd4c94           502   2020-11-09    Credit card        STPV85PK3S        Yes
+2   ad7a9249-44ae-4730-b345-7cdf38bc83af  b55be29b-092c-4b46-af36-b1bf006f8db6  3d9f335a-7c9b-4a81-adeb-2603bb1af022           581   2022-03-23         PayPal        FZ2XK4YGF1        Yes
+3   a0f7cb4e-27e5-4de3-951a-49fdc0442fac  f16a8916-4913-45df-9381-b403240b16ac  f1ca1582-a003-4759-906b-58ed5fa817d6           456   2021-05-01    Credit card        P6H55303VO        Yes
+4   8e452a22-d804-455b-a77e-3303ba6cf2c6  5f15dea8-d801-4a9e-9eb3-b2a21989d21d  0e6e5e84-190a-49f8-bd7b-62a73c40111d           485   2020-11-08         PayPal        U7LNL8M89X        Yes
+..                                   ...                                   ...                                   ...           ...          ...            ...               ...        ...
+95  9b32e248-4f28-4d02-aa24-69413fe1b10a  18ca568e-d192-4498-a49f-e99b331fa879  c0921df7-cab0-4a75-8dc2-c3bf0318bf51           570   2021-05-19    Credit card        T4KFALIKD2         No
+96  2dd07c8f-38b9-4e1f-87d4-cad8683eaed5  9fba0d97-9990-442b-94e6-178793ebc612  0536e41e-1b9d-4a6b-a43a-73ca11fca53f           475   2022-10-12     Debit card        G2I4BG5B7W        Yes
+97  901af34d-472a-4d7d-ad5e-aba6fb32ba9a  5b6be1dc-60ab-4f77-9fb3-5b80e190bb48  3325a5d7-5716-4c8c-8662-63804ab15f05           498   2022-10-04         PayPal        P18R9SDNVV        Yes
+98  6a21071d-6c6d-436f-8d22-fe37085f954c  d5eb733f-aeeb-4ed5-a073-e2d97b01980a  bdb9a049-a662-4aa8-a08c-9ed0f99b5c4b           286   2020-04-17    Credit card        S1XJ5YKJQY         No
+99  b42aa013-bad4-4538-a297-ade7b0a18a5a  9d79a51e-338b-43d1-af18-1edeecea0a8f  a7e56c39-27d5-4686-99d8-d487c9ff1323           272   2022-01-23    Credit card        C28WB99MXZ        Yes
+
+[100 rows x 8 columns]  
+2023-02-10 15:54:50,989  |  INFO  |  ----------  
+2023-02-10 15:54:50,990  |  INFO  |  ============================ CUSTOMER FEEDBACKS ============================  
+2023-02-10 15:54:50,991  |  INFO  |                               feedback_id                           customer_id                     flight_booking_id                                      feedback_text feedback_date
+0   7b661583-5ece-4eb2-a4f1-baedb643a8b7  0a08438b-9b56-4dae-9536-49046bd8ed6f  e3442259-9e8c-4a79-a53f-a552f7b4347b  Quickly leave college arrive three similar. Yo...    2022-01-18
+1   e2cfc0dc-af92-4514-8d54-183d4a496ecb  1329ff72-73eb-478c-91f9-58f1f6b4fb6d  814b197c-66db-47ae-b3f5-4f7f12c71ed4  Leg easy growth success finish nature long bod...    2021-02-11
+2   72180fbd-c370-470a-b988-ce014552567f  d777911b-ded7-41d3-8d06-8792b92d95f7  150569c8-674b-4578-aa47-3e33827529b8  Leave PM final level any. Surface accept techn...    2022-01-17
+3   0152962b-0064-4f3b-8e05-fb342790b49d  ea0809c9-9cb3-4116-ab17-1dc0126bde1a  f7fc1009-bfa3-4c80-88ad-d4d8a1ec65d1  Well size green. Prepare happy measure office ...    2022-04-19
+4   2bf0b6a9-86f4-46f1-a286-c5bdd9e7ddd2  60b56656-932a-494b-a3e2-37c793df5543  4722fb46-abf6-4dc9-832b-a11c339a10a9  Decade culture spring site use. Door right com...    2020-11-12
+..                                   ...                                   ...                                   ...                                                ...           ...
+95  e0060043-2f69-4990-8a50-ee3db79601b1  eb44256d-5752-4017-af7e-e28f451154a6  780753c1-028f-47af-aa18-decfae856009  Must discussion condition agreement. Too futur...    2022-06-12
+96  5e6a78a5-60f9-4037-ad27-3e72a5170792  a3b2f30e-855b-4641-b783-a7bd7c22f7b1  45e7251c-d9db-4eb0-9e68-6330a834c01b  Care second sense wait stock. Any public popul...    2021-09-23
+97  fc500cfa-9b90-4eed-a925-8857e8678c22  18ca568e-d192-4498-a49f-e99b331fa879  ca574035-4e38-4ba9-9c07-7f6d955d03a5  Then give able example open serious meeting in...    2021-03-01
+98  128f655c-7824-4bb3-9059-b66eb1ed6a44  bcc2cd98-b2b1-415b-bcaf-b035aa089dbf  e93433f5-4bc8-442b-b1e1-e4d72b82f385  Than institution serious amount. Agree huge at...    2020-05-06
+99  a6af7a38-1602-4b3c-8cec-34f9e4eb5f87  d07312ba-ccad-425d-aa29-8e696b9df965  3cb2154e-1ccb-4281-ad03-80b333d911c3  Sport lawyer fast industry president college o...    2021-12-16
+
+[100 rows x 5 columns]  
+2023-02-10 15:54:51,136  |  INFO  |  ----------  
+2023-02-10 15:54:51,136  |  INFO  |  ============================ SALES AGENTS ============================  
+2023-02-10 15:54:51,138  |  INFO  |                                        id first_name  last_name                           email                  phone  ... service_speciality years_experience  commission                        nationality seniority_level
+0   c7a98cdc-7fdf-4b2f-a6bb-1a36680e5363        Amy  Mccormick         amy.mccormick@gmail.com             3000921316  ...                Air                9    0.232165                            Uruguay          Junior
+1   76fa54e8-9abf-4df5-9cb9-614af5a3ed48     Rhonda     Briggs         rhonda.briggs@gmail.com           729.802.5478  ...               Land                8    0.286451                            Armenia          Senior
+2   8060725e-5a3f-49a8-b377-d9cd037211dc    Phillip     Patton      phillip.patton@outlook.com     (506)889-8932x6124  ...                Air                7    0.123380                            Ukraine          Senior
+3   bbff7ab6-7f56-4a48-8df2-00e8a64c5696   Nicholas    Sanders  nicholas.sanders@microsoft.com  +1-864-355-8088x56124  ...                Air                3    0.117813                             Greece          Junior
+4   337fbf97-e30a-4a75-a95c-55ca6afd5c32      James     Parker        james.parker@outlook.com           857.016.9595  ...                Air                3    0.162598                           Suriname          Senior
+..                                   ...        ...        ...                             ...                    ...  ...                ...              ...         ...                                ...             ...
+95  6fa82f29-7ad0-4d22-a2bf-ab1f0b1d1bf3      Nancy      Moore       nancy.moore@microsoft.com   001-794-428-4660x177  ...               Land                5    0.190733                            Austria          Junior
+96  09b8d193-9552-4820-ad4b-0819a96ae6de     Philip       Long             philip.long@aoi.net             5280136994  ...                Sea               10    0.257057                           Botswana          Senior
+97  be2d8c8c-796f-4736-9381-c629b6edd225    Stephen       Bond      stephen.bond@microsoft.com    +1-304-705-8631x754  ...                Sea                7    0.123993                            Comoros          Senior
+98  e83e5923-6a5e-49e1-9b15-7011d4c8dbd1     Brenda  Zimmerman        brenda.zimmerman@msn.com   001-725-951-5583x757  ...                Air                8    0.164293  Heard Island and McDonald Islands       Mid-Level
+99  48d06111-6be0-48b0-8646-ab4dffe25103     Jeanne        Key              jeanne.key@aoi.net    +1-989-438-9762x227  ...                Air                8    0.171323                             Serbia          Senior
+
+[100 rows x 11 columns]  
+2023-02-10 15:54:51,298  |  INFO  |  ----------  
+2023-02-10 15:54:51,299  |  INFO  |  ============================ FLIGHT DESTINATIONS ============================  
+2023-02-10 15:54:51,299  |  INFO  |                                 flight_id     departure_city           arrival_city
+0   71da378f-cd4c-400c-97bd-3a3facdcffca  Port Helenborough     South Williamhaven
+1   fdeeeeb5-921d-41fb-91c0-597b332ba9f5         Gabrielton      Port Jasonborough
+2   5ac3aca6-b69e-4ca5-b412-86ad923f589b      West Ericfurt         East Peterstad
+3   4bfc67f9-100f-43c7-9f24-65178810af69  East Kathleentown  East Christopherville
+4   33d70a14-d046-455a-8dfb-be88f343ad6d     New Jacqueline              Perezberg
+..                                   ...                ...                    ...
+95  e4c227e5-846f-473e-8603-96f93544f34c         West Erica           Shawnchester
+96  f1ca1582-a003-4759-906b-58ed5fa817d6     Port Jillhaven           Wheelerburgh
+97  c1471495-7d97-47a7-952e-a8e4a4a8452c    Port Davidmouth            Danielshire
+98  05793cc4-0def-40c3-97d8-2a9965164b32    Humphreyborough       West Darrellfort
+99  1f002d77-5f56-469f-b276-93263d5762d6     East Erikafurt             Josephfurt
+
+[100 rows x 3 columns]  
+2023-02-10 15:54:51,406  |  INFO  |  ----------  
+2023-02-10 15:54:51,407  |  INFO  |  ============================ FLIGHT PROMOTIONS & DEALS ============================  
+2023-02-10 15:54:51,407  |  INFO  |                              promotion_id                                     promotion_name                     flight_booking_id  applied_discount
+0   0ea545f0-f597-405c-95fe-a8275e54d85e                  Somebody main bring present play.  71e67220-3540-45a2-99fa-842d3c9f2241                60
+1   ad076a5b-caf8-449a-a76a-59561e5c1796                       Almost agent music business.  bbdc9aff-e433-4c7d-96f5-d8e3976be0c3               350
+2   d1348fc6-b1ea-42fb-9f04-d1121f8a6871   Against prepare event article fine however page.  feab0b61-7597-4c65-ae33-ad82e5bd26a5               227
+3   aa01255d-db97-4bf2-902c-4cb05763df8a  Significant population thank authority bar res...  ad7a9249-44ae-4730-b345-7cdf38bc83af               313
+4   5ebb3423-df9f-4ec6-881a-4abd7d10935a        Detail skin material affect teacher letter.  efa2402e-7c4b-4b45-8736-10ef549be452               331
+..                                   ...                                                ...                                   ...               ...
+95  445489d4-e941-4104-bd4c-0e5bf25bfd64           Occur space focus war career allow yard.  5bfba11a-032d-4bb7-9cab-dcbcc1e9db19                65
+96  5fb45cff-b50d-4257-8ab3-15e27d65fd91                         Box choice subject center.  4de6e763-4f77-47b6-8c06-9c3c7bfea840               214
+97  d5ac78bf-826e-478f-b3fb-51e974b1da74                    Decade chance rate wonder film.  5d3c42e2-8a48-4958-b2c0-3dd67c6c3f06               152
+98  78f73f6e-af19-4561-a1eb-045c12746346      Measure true military several large strategy.  6dae241e-f5a5-44da-90b1-e2756eb21984               310
+99  46a92017-2ffa-4f6a-b5e6-844bed0e93b9                 College debate difficult like kid.  b4095cc9-4af4-4678-aaa5-61f634361e83               266
+
+[100 rows x 4 columns]  
+2023-02-10 15:54:51,531  |  INFO  |  ----------  
+2023-02-10 15:54:51,532  |  INFO  |  ============================ FLIGHT TICKET SALES ============================  
+2023-02-10 15:54:51,532  |  INFO  |                         flight_booking_id                           customer_id customer_first_name  ...                          promotion_id                                     promotion_name discount
+0   71da378f-cd4c-400c-97bd-3a3facdcffca  9fac7544-9b64-44d8-8264-a093be5cd2d8               Erica  ...  2ea0fb94-0251-4159-ae2c-719f42912cd7        Arm central why collection piece unit form.      151
+1   0536e41e-1b9d-4a6b-a43a-73ca11fca53f  fe143a53-55bd-4338-9caf-ab1e0bb12dac             Matthew  ...  ba1ad294-b369-4fb2-aca7-9ccf54db6df2                  Spend company five wonder senior.      334
+2   0536e41e-1b9d-4a6b-a43a-73ca11fca53f  492cea58-0f6e-4d17-9045-7c76dd8eb374                Mary  ...  24447729-2d2a-4512-b6d2-557c387638a8        Goal almost sell girl hand whatever do fly.      233
+3   fa37357a-1d27-4a0b-89e1-84be5809830a  943925d1-0fe0-4f03-8442-e05210386395             Michael  ...  b7494e17-c027-40d8-a0d6-ea761356dd6d                              Everybody off happen.       81
+4   9264614e-e49b-41f0-b265-b92e900a104d  e53d6b64-4cf5-4ef6-b2c7-5d2ccd75b19b              Ashley  ...  76222bfe-6bda-4d70-8ec0-36c2fa93500d                     Police situation enough story.      227
+..                                   ...                                   ...                 ...  ...                                   ...                                                ...      ...
+95  68d07111-ea95-415e-ba60-eb4c5192ac13  cf66e5bd-3c95-4035-80aa-7b04d6ce59e7                Mark  ...  95162c40-f52f-430c-921b-52d9692f8409         Series economic never partner war billion.       43
+96  98097efd-fd20-4cd6-ac28-666c5e3ba8e6  05778ee4-f96b-4990-9f84-52a93a1dfba2                Dawn  ...  ee29c135-a422-4d8d-ba93-5990e6b694ff          Several movie either same hear sometimes.       19
+97  3325a5d7-5716-4c8c-8662-63804ab15f05  5f1be568-27a0-44be-ae92-e85c456d1b9e               Shawn  ...  c0d2d45d-ae95-47d5-a3ed-8fa226eba0e9  Hot matter anything structure whom point ago c...      159
+98  fdeeeeb5-921d-41fb-91c0-597b332ba9f5  e8d73498-db91-4455-bd0d-90b30872e468            Jermaine  ...  76222bfe-6bda-4d70-8ec0-36c2fa93500d                        As produce whatever factor.       63
+99  49f57972-c9a8-4a93-aa27-2267544c3902  a26c78f2-4d98-4c32-ba88-368d48cd6af6         Christopher  ...  5f2ab5ef-a212-4329-911f-f86b4c5767fa       Conference may shake issue section audience.       80
+
+[100 rows x 12 columns]  
+2023-02-10 15:55:13,472  |  INFO  |  ----------  
+2023-02-10 15:55:13,473  |  INFO  |  ============================ ACCOMMODATION BOOKINGS ============================  
+2023-02-10 15:55:13,474  |  INFO  |                                           id              location room_type check_in_date check_out_date booking_date  ...  num_adults num_children     status payment_method  confirmation_code  checked_in
+0      33f8eda6-5ef4-407f-b10b-3b5a057c9521    South Brianchester    Luxury    2018-10-22     2018-10-24   2015-12-14  ...           1            2  Confirmed    Credit card         DS8IKMJUL0          No
+1      24359646-894e-447b-985e-14d0f4fbb194             Evansstad    Single    2018-10-22     2018-10-24   2012-10-07  ...           4            0  Confirmed         PayPal         75YRYFVUEZ         Yes
+2      8b320901-cc8d-44ff-999f-becc8831bb84            Keithmouth    Luxury    2018-10-22     2018-11-04   2022-11-14  ...           2            1  Cancelled  Bank transfer         XFNKMKLONW         Yes
+3      dbf92873-e2c0-4524-ac78-1c7879181c2a             Judymouth    Family    2018-10-22     2018-10-26   2014-07-09  ...           1            1    Pending  Bank transfer         YGOVQUKW8M         Yes
+4      3f5b6c95-a77a-4a3a-b264-c96807b74c47            Durhamfort    Family    2018-10-22     2018-10-25   2021-01-08  ...           4            0    Pending         PayPal         EEMHW0OHHV          No
+...                                     ...                   ...       ...           ...            ...          ...  ...         ...          ...        ...            ...                ...         ...
+39995  2cee206b-fcfa-4d3d-ae65-42048e072c8f      Lake Johnnymouth    Single    2018-10-22     2018-10-25   2014-12-15  ...           4            0  Confirmed    Credit card         V22UDTADI3          No
+39996  1b297d8e-58d8-492d-975c-07ed1be0e556  North Christopherton    Luxury    2018-10-22     2018-10-27   2014-10-26  ...           1            1  Confirmed  Bank transfer         59VS7CBS95         Yes
+39997  14c2898a-e86b-49ca-8827-c4d0fea4610a          Brandonhaven    Single    2018-10-22     2018-10-29   2019-03-10  ...           1            1  Cancelled     Debit card         JX9ZCJQFBE         Yes
+39998  d106ab05-d286-44b4-ada9-eb5191f26894          Lake Rachael    Double    2018-10-22     2018-10-24   2019-02-06  ...           3            1  Confirmed    Credit card         NZHB95JOBR         Yes
+39999  2a249038-666a-4b2c-83de-ad5330ddf21f    East Christinaview    Luxury    2018-10-22     2018-10-29   2014-05-24  ...           3            1    Pending  Bank transfer         MDXOH5HWDV         Yes
+
+[40000 rows x 16 columns]  

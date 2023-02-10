@@ -490,8 +490,8 @@ def load_data_to_raw_layer(postgres_connection):
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 
-        note_1 = """NOTE: Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information.          """
-        note_2 = """      Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information. """
+        note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
+        note_2 = """      Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information. """
         note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
         
         root_logger.warning(f'')
