@@ -430,7 +430,9 @@ def load_data_to_raw_layer(postgres_connection):
         sql_result = cursor.fetchone()[0]
         root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
         root_logger.debug(f"")
-
+        
+        cursor.execute('EXPLAIN (ANALYZE, BUFFERS) ' + insert_accommodation_bookings_data, values)
+        QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT = cursor.fetchall()
 
         for accommodation_bookings in accommodation_bookings_data:
             values = (
@@ -458,8 +460,7 @@ def load_data_to_raw_layer(postgres_connection):
                 'RAW'
                 )
 
-            cursor.execute('EXPLAIN (ANALYZE, BUFFERS)  ' + insert_accommodation_bookings_data, values)
-            QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT = cursor.fetchall()
+            
 
 
             # Validate if each row inserted into the table exists 
@@ -468,8 +469,8 @@ def load_data_to_raw_layer(postgres_connection):
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
                 root_logger.info(f'INSERT SUCCESS: Uploaded accommodation_bookings record no {row_counter} ')
+                root_logger.info(f"Query Execution Plan: {QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT}")
                 root_logger.debug(f'---------------------------------')
-                root_logger.debug(f"Query Execution Plan: {QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT}")
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
@@ -630,8 +631,12 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         if successful_rows_upload_count != total_rows_in_table:
-            root_logger.error(f"ERROR: There are only {successful_rows_upload_count} records upload to '{table_name}' table....")
-            raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
+            if successful_rows_upload_count == 0:
+                root_logger.error(f"ERROR: No records were upload to '{table_name}' table....")
+                raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
+            else:
+                root_logger.error(f"ERROR: There are only {successful_rows_upload_count} records upload to '{table_name}' table....")
+                raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
         
 
         elif failed_rows_upload_count > 0:

@@ -1,43 +1,43 @@
-2023-02-10 03:19:06,117  |  INFO  |    
-2023-02-10 03:19:06,119  |  INFO  |  ---------------------------------------------  
-2023-02-10 03:19:06,121  |  INFO  |  Beginning the source data extraction process...  
-2023-02-10 03:19:06,300  |  INFO  |  Successfully located 'accommodation_bookings.json'  
-2023-02-10 03:19:06,302  |  INFO  |  Data type: '<class 'list'>'  
-2023-02-10 03:19:06,430  |  DEBUG  |    
-2023-02-10 03:19:06,432  |  INFO  |  =================================================================================  
-2023-02-10 03:19:06,434  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
-2023-02-10 03:19:06,436  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
-2023-02-10 03:19:06,438  |  INFO  |  =================================================================================  
-2023-02-10 03:19:06,439  |  DEBUG  |    
-2023-02-10 03:19:06,477  |  INFO  |  main  
-2023-02-10 03:19:06,478  |  DEBUG  |    
-2023-02-10 03:19:06,479  |  INFO  |  =================================================================================================  
-2023-02-10 03:19:06,480  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
-2023-02-10 03:19:06,481  |  INFO  |  Schema name in Postgres: main   
-2023-02-10 03:19:06,482  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
+2023-02-10 03:34:13,793  |  INFO  |    
+2023-02-10 03:34:13,794  |  INFO  |  ---------------------------------------------  
+2023-02-10 03:34:13,795  |  INFO  |  Beginning the source data extraction process...  
+2023-02-10 03:34:13,973  |  INFO  |  Successfully located 'accommodation_bookings.json'  
+2023-02-10 03:34:13,974  |  INFO  |  Data type: '<class 'list'>'  
+2023-02-10 03:34:14,070  |  DEBUG  |    
+2023-02-10 03:34:14,070  |  INFO  |  =================================================================================  
+2023-02-10 03:34:14,071  |  INFO  |  CONNECTION SUCCESS: Managed to connect successfully to the raw_db database!!  
+2023-02-10 03:34:14,072  |  INFO  |  Connection details: user=postgres password=xxx dbname=raw_db host=localhost port=5434   
+2023-02-10 03:34:14,073  |  INFO  |  =================================================================================  
+2023-02-10 03:34:14,074  |  DEBUG  |    
+2023-02-10 03:34:14,113  |  INFO  |  main  
+2023-02-10 03:34:14,114  |  DEBUG  |    
+2023-02-10 03:34:14,115  |  INFO  |  =================================================================================================  
+2023-02-10 03:34:14,116  |  INFO  |  SCHEMA CREATION SUCCESS: Managed to create main schema in raw_db   
+2023-02-10 03:34:14,118  |  INFO  |  Schema name in Postgres: main   
+2023-02-10 03:34:14,119  |  INFO  |  SQL Query for validation check:     SELECT schema_name from information_schema.schemata WHERE schema_name= 'main';
            
-2023-02-10 03:19:06,483  |  INFO  |  =================================================================================================  
-2023-02-10 03:19:06,484  |  DEBUG  |    
-2023-02-10 03:19:06,519  |  INFO  |  False  
-2023-02-10 03:19:06,520  |  DEBUG  |    
-2023-02-10 03:19:06,521  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-10 03:19:06,523  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
-2023-02-10 03:19:06,523  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-10 03:34:14,120  |  INFO  |  =================================================================================================  
+2023-02-10 03:34:14,122  |  DEBUG  |    
+2023-02-10 03:34:14,158  |  INFO  |  False  
+2023-02-10 03:34:14,159  |  DEBUG  |    
+2023-02-10 03:34:14,160  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-10 03:34:14,161  |  ERROR  |  TABLE DELETION FAILURE: Unable to delete raw_accommodation_bookings_tbl. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist.   
+2023-02-10 03:34:14,162  |  ERROR  |  SQL Query for validation check:     SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-10 03:19:06,526  |  ERROR  |  ==========================================================================================================================================================================  
-2023-02-10 03:19:06,528  |  DEBUG  |    
-2023-02-10 03:19:06,557  |  INFO  |  True  
-2023-02-10 03:19:06,558  |  DEBUG  |    
-2023-02-10 03:19:06,559  |  INFO  |  =============================================================================================================================================================================  
-2023-02-10 03:19:06,560  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
-2023-02-10 03:19:06,561  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
+2023-02-10 03:34:14,163  |  ERROR  |  ==========================================================================================================================================================================  
+2023-02-10 03:34:14,164  |  DEBUG  |    
+2023-02-10 03:34:14,194  |  INFO  |  True  
+2023-02-10 03:34:14,195  |  DEBUG  |    
+2023-02-10 03:34:14,196  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 03:34:14,197  |  INFO  |  TABLE CREATION SUCCESS: Managed to create raw_accommodation_bookings_tbl table in raw_db.    
+2023-02-10 03:34:14,198  |  INFO  |  SQL Query for validation check:         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'raw_accommodation_bookings_tbl' );
            
-2023-02-10 03:19:06,563  |  INFO  |  =============================================================================================================================================================================  
-2023-02-10 03:19:06,564  |  DEBUG  |    
-2023-02-10 03:19:06,621  |  DEBUG  |    
-2023-02-10 03:19:06,621  |  INFO  |  =============================================================================================================================================================================  
-2023-02-10 03:19:06,622  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
-2023-02-10 03:19:06,624  |  INFO  |  SQL Query for validation check:          
+2023-02-10 03:34:14,200  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 03:34:14,202  |  DEBUG  |    
+2023-02-10 03:34:14,260  |  DEBUG  |    
+2023-02-10 03:34:14,261  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 03:34:14,262  |  INFO  |  DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in main.raw_accommodation_bookings_tbl.    
+2023-02-10 03:34:14,263  |  INFO  |  SQL Query for validation check:          
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = 'raw_accommodation_bookings_tbl' 
@@ -49,400 +49,12 @@
                                                                         OR      column_name     = 'dwh_layer');
                                                                               
            
-2023-02-10 03:19:06,630  |  INFO  |  =============================================================================================================================================================================  
-2023-02-10 03:19:06,631  |  DEBUG  |    
-2023-02-10 03:19:06,637  |  INFO  |  Rows before SQL insert in Postgres: 0   
-2023-02-10 03:19:06,639  |  DEBUG  |    
-2023-02-10 03:19:06,645  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,649  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 1   
-2023-02-10 03:19:06,651  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,653  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,654  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 2   
-2023-02-10 03:19:06,656  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,659  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,660  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 3   
-2023-02-10 03:19:06,660  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,662  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,663  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 4   
-2023-02-10 03:19:06,664  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,667  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,668  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 5   
-2023-02-10 03:19:06,669  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,672  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,673  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 6   
-2023-02-10 03:19:06,674  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,676  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,677  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 7   
-2023-02-10 03:19:06,678  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,680  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,681  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 8   
-2023-02-10 03:19:06,682  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,685  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,686  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 9   
-2023-02-10 03:19:06,688  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,690  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,691  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 10   
-2023-02-10 03:19:06,693  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,694  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,695  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 11   
-2023-02-10 03:19:06,697  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,699  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,700  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 12   
-2023-02-10 03:19:06,701  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,704  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,705  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 13   
-2023-02-10 03:19:06,707  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,711  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,712  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 14   
-2023-02-10 03:19:06,714  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,716  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,718  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 15   
-2023-02-10 03:19:06,720  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,723  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,724  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 16   
-2023-02-10 03:19:06,725  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,728  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,729  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 17   
-2023-02-10 03:19:06,730  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,732  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,733  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 18   
-2023-02-10 03:19:06,736  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,739  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,741  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 19   
-2023-02-10 03:19:06,743  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,746  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,747  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 20   
-2023-02-10 03:19:06,748  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,751  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,754  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 21   
-2023-02-10 03:19:06,756  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,760  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,762  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 22   
-2023-02-10 03:19:06,763  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,766  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,768  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 23   
-2023-02-10 03:19:06,770  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,772  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,774  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 24   
-2023-02-10 03:19:06,776  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,778  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,780  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 25   
-2023-02-10 03:19:06,782  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,785  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,787  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 26   
-2023-02-10 03:19:06,788  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,791  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,792  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 27   
-2023-02-10 03:19:06,793  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,798  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,799  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 28   
-2023-02-10 03:19:06,800  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,803  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,805  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 29   
-2023-02-10 03:19:06,806  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,809  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,810  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 30   
-2023-02-10 03:19:06,811  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,813  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,817  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 31   
-2023-02-10 03:19:06,819  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,822  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,823  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 32   
-2023-02-10 03:19:06,825  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,827  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,829  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 33   
-2023-02-10 03:19:06,830  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,831  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,832  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 34   
-2023-02-10 03:19:06,833  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,836  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,837  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 35   
-2023-02-10 03:19:06,839  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,843  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,843  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 36   
-2023-02-10 03:19:06,845  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,847  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,848  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 37   
-2023-02-10 03:19:06,850  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,853  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,854  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 38   
-2023-02-10 03:19:06,856  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,858  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,859  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 39   
-2023-02-10 03:19:06,861  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,863  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,864  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 40   
-2023-02-10 03:19:06,865  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,868  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,869  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 41   
-2023-02-10 03:19:06,870  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,873  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,875  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 42   
-2023-02-10 03:19:06,876  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,879  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,880  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 43   
-2023-02-10 03:19:06,881  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,884  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,887  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 44   
-2023-02-10 03:19:06,890  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,893  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,894  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 45   
-2023-02-10 03:19:06,896  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,898  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,899  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 46   
-2023-02-10 03:19:06,901  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,905  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,906  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 47   
-2023-02-10 03:19:06,907  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,910  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,911  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 48   
-2023-02-10 03:19:06,913  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,916  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,918  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 49   
-2023-02-10 03:19:06,920  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,923  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,924  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 50   
-2023-02-10 03:19:06,925  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,928  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,929  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 51   
-2023-02-10 03:19:06,930  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,936  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,942  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 52   
-2023-02-10 03:19:06,948  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,956  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,957  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 53   
-2023-02-10 03:19:06,959  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,960  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,961  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 54   
-2023-02-10 03:19:06,962  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,965  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,966  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 55   
-2023-02-10 03:19:06,968  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,971  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,972  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 56   
-2023-02-10 03:19:06,973  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,977  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,978  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 57   
-2023-02-10 03:19:06,979  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,982  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,983  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 58   
-2023-02-10 03:19:06,986  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,989  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,990  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 59   
-2023-02-10 03:19:06,992  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,996  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:06,997  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 60   
-2023-02-10 03:19:06,998  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,001  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,004  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 61   
-2023-02-10 03:19:07,005  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,008  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,010  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 62   
-2023-02-10 03:19:07,010  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,012  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,013  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 63   
-2023-02-10 03:19:07,014  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,017  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,019  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 64   
-2023-02-10 03:19:07,020  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,022  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,024  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 65   
-2023-02-10 03:19:07,026  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,029  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,030  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 66   
-2023-02-10 03:19:07,031  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,033  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,035  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 67   
-2023-02-10 03:19:07,037  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,040  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,042  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 68   
-2023-02-10 03:19:07,045  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,047  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,048  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 69   
-2023-02-10 03:19:07,049  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,053  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,055  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 70   
-2023-02-10 03:19:07,056  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,059  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,060  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 71   
-2023-02-10 03:19:07,062  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,064  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,066  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 72   
-2023-02-10 03:19:07,067  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,071  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,071  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 73   
-2023-02-10 03:19:07,072  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,074  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,075  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 74   
-2023-02-10 03:19:07,077  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,079  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,079  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 75   
-2023-02-10 03:19:07,081  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,082  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,085  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 76   
-2023-02-10 03:19:07,086  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,088  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,089  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 77   
-2023-02-10 03:19:07,090  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,093  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,097  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 78   
-2023-02-10 03:19:07,113  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,156  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,171  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 79   
-2023-02-10 03:19:07,173  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,179  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,180  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 80   
-2023-02-10 03:19:07,181  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,184  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,185  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 81   
-2023-02-10 03:19:07,187  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,190  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,191  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 82   
-2023-02-10 03:19:07,192  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,195  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,196  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 83   
-2023-02-10 03:19:07,198  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,199  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,201  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 84   
-2023-02-10 03:19:07,204  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,205  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,207  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 85   
-2023-02-10 03:19:07,208  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,210  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,211  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 86   
-2023-02-10 03:19:07,212  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,215  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,217  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 87   
-2023-02-10 03:19:07,218  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,221  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,225  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 88   
-2023-02-10 03:19:07,226  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,229  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,231  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 89   
-2023-02-10 03:19:07,233  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,242  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,243  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 90   
-2023-02-10 03:19:07,245  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,247  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,248  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 91   
-2023-02-10 03:19:07,249  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,252  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,253  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 92   
-2023-02-10 03:19:07,255  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,258  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,258  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 93   
-2023-02-10 03:19:07,260  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,261  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,262  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 94   
-2023-02-10 03:19:07,263  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,266  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,267  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 95   
-2023-02-10 03:19:07,269  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,272  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,274  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 96   
-2023-02-10 03:19:07,275  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,277  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,278  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 97   
-2023-02-10 03:19:07,280  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,282  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,283  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 98   
-2023-02-10 03:19:07,284  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,287  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,289  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 99   
-2023-02-10 03:19:07,290  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,292  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,294  |  ERROR  |  INSERT FAILED: Unable to insert accommodation_bookings record no 100   
-2023-02-10 03:19:07,295  |  ERROR  |  ---------------------------------  
-2023-02-10 03:19:07,298  |  INFO  |  Rows after SQL insert in Postgres: 100   
-2023-02-10 03:19:07,299  |  DEBUG  |    
-2023-02-10 03:19:07,316  |  INFO  |  -------------------------------------------   
-2023-02-10 03:19:07,317  |  INFO  |  Query Execution Plan for INSERT statement: []   
-2023-02-10 03:19:07,318  |  INFO  |  -------------------------------------------   
-2023-02-10 03:19:07,320  |  INFO  |    
-2023-02-10 03:19:07,321  |  INFO  |    
-2023-02-10 03:19:07,323  |  INFO  |  ================================================  
-2023-02-10 03:19:07,323  |  INFO  |  DATA PROFILING METRICS  
-2023-02-10 03:19:07,325  |  INFO  |  ================================================  
-2023-02-10 03:19:07,326  |  INFO  |    
-2023-02-10 03:19:07,327  |  INFO  |  Now calculating table statistics...  
-2023-02-10 03:19:07,328  |  INFO  |    
-2023-02-10 03:19:07,329  |  INFO  |    
-2023-02-10 03:19:07,330  |  INFO  |  Number of rows in table:                     100   
-2023-02-10 03:19:07,331  |  INFO  |  Number of columns in table:                  22   
-2023-02-10 03:19:07,332  |  INFO  |    
-2023-02-10 03:19:07,333  |  INFO  |  Successful records uploaded total :          0 / 100     
-2023-02-10 03:19:07,334  |  INFO  |  Failed/Errored records uploaded total:       100 / 100         
-2023-02-10 03:19:07,335  |  INFO  |    
-2023-02-10 03:19:07,336  |  INFO  |  Successful records uploaded % :              0.0      
-2023-02-10 03:19:07,338  |  INFO  |  Failed/Errored records uploaded %:           100.0         
-2023-02-10 03:19:07,340  |  INFO  |    
-2023-02-10 03:19:07,341  |  INFO  |  Number of unique records:                    100 / 100  
-2023-02-10 03:19:07,342  |  INFO  |  Number of duplicate records:                 0 / 100  
-2023-02-10 03:19:07,344  |  INFO  |    
-2023-02-10 03:19:07,344  |  INFO  |  Unique records %:                            100.0   
-2023-02-10 03:19:07,345  |  INFO  |  Duplicate records %:                         0.0   
-2023-02-10 03:19:07,346  |  INFO  |    
-2023-02-10 03:19:07,348  |  INFO  |  Column name: sales_agent_id,  Column no: 1,  Number of NULL values: 0   
-2023-02-10 03:19:07,349  |  INFO  |  Column name: customer_id,  Column no: 2,  Number of NULL values: 0   
-2023-02-10 03:19:07,352  |  INFO  |  Column name: total_price,  Column no: 3,  Number of NULL values: 0   
-2023-02-10 03:19:07,355  |  INFO  |  Column name: created_at,  Column no: 4,  Number of NULL values: 0   
-2023-02-10 03:19:07,356  |  INFO  |  Column name: updated_at,  Column no: 5,  Number of NULL values: 0   
-2023-02-10 03:19:07,359  |  INFO  |  Column name: flight_booking_id,  Column no: 6,  Number of NULL values: 0   
-2023-02-10 03:19:07,360  |  INFO  |  Column name: check_out_date,  Column no: 7,  Number of NULL values: 0   
-2023-02-10 03:19:07,362  |  INFO  |  Column name: load_timestamp,  Column no: 8,  Number of NULL values: 0   
-2023-02-10 03:19:07,364  |  INFO  |  Column name: id,  Column no: 9,  Number of NULL values: 0   
-2023-02-10 03:19:07,365  |  INFO  |  Column name: num_adults,  Column no: 10,  Number of NULL values: 0   
-2023-02-10 03:19:07,368  |  INFO  |  Column name: num_children,  Column no: 11,  Number of NULL values: 0   
-2023-02-10 03:19:07,370  |  INFO  |  Column name: booking_date,  Column no: 12,  Number of NULL values: 0   
-2023-02-10 03:19:07,373  |  INFO  |  Column name: check_in_date,  Column no: 13,  Number of NULL values: 0   
-2023-02-10 03:19:07,375  |  INFO  |  Column name: dwh_layer,  Column no: 14,  Number of NULL values: 0   
-2023-02-10 03:19:07,377  |  INFO  |  Column name: checked_in,  Column no: 15,  Number of NULL values: 0   
-2023-02-10 03:19:07,378  |  INFO  |  Column name: confirmation_code,  Column no: 16,  Number of NULL values: 0   
-2023-02-10 03:19:07,380  |  INFO  |  Column name: location,  Column no: 17,  Number of NULL values: 0   
-2023-02-10 03:19:07,381  |  INFO  |  Column name: payment_method,  Column no: 18,  Number of NULL values: 0   
-2023-02-10 03:19:07,383  |  INFO  |  Column name: room_type,  Column no: 19,  Number of NULL values: 0   
-2023-02-10 03:19:07,385  |  INFO  |  Column name: status,  Column no: 20,  Number of NULL values: 0   
-2023-02-10 03:19:07,389  |  INFO  |  Column name: source_system,  Column no: 21,  Number of NULL values: 0   
-2023-02-10 03:19:07,390  |  INFO  |  Column name: source_file,  Column no: 22,  Number of NULL values: 0   
-2023-02-10 03:19:07,391  |  INFO  |    
-2023-02-10 03:19:07,392  |  INFO  |  ================================================  
-2023-02-10 03:19:07,393  |  INFO  |    
-2023-02-10 03:19:07,394  |  INFO  |  Now calculating performance statistics (from a Python standpoint)...  
-2023-02-10 03:19:07,395  |  INFO  |    
-2023-02-10 03:19:07,395  |  INFO  |    
-2023-02-10 03:19:07,396  |  INFO  |  1. Execution time for CREATING schema: 6.961822509765625 ms  
-2023-02-10 03:19:07,397  |  INFO  |    
-2023-02-10 03:19:07,397  |  INFO  |  2. Execution time for CREATING schema (VAL CHECK): 28.878450393676758 ms  
-2023-02-10 03:19:07,398  |  INFO  |    
-2023-02-10 03:19:07,399  |  INFO  |  3. Execution time for DELETING schema: 12.996435165405273 ms  
-2023-02-10 03:19:07,400  |  INFO  |    
-2023-02-10 03:19:07,401  |  INFO  |  4. Execution time for DELETING schema (VAL CHECK): 21.004199981689453 ms  
-2023-02-10 03:19:07,402  |  INFO  |    
-2023-02-10 03:19:07,402  |  INFO  |  5. Execution time for CREATING table: 25.39372444152832 ms  
-2023-02-10 03:19:07,404  |  INFO  |    
-2023-02-10 03:19:07,405  |  INFO  |  6. Execution time for CREATING table (VAL CHECK): 1.9993782043457031 ms  
-2023-02-10 03:19:07,406  |  INFO  |    
-2023-02-10 03:19:07,407  |  INFO  |  7. Execution time for ADDING data lineage: 12.987852096557617 ms  
-2023-02-10 03:19:07,410  |  INFO  |    
-2023-02-10 03:19:07,411  |  INFO  |  8. Execution time for ADDING data lineage (VAL CHECK): 42.853355407714844 ms  
-2023-02-10 03:19:07,412  |  INFO  |    
-2023-02-10 03:19:07,412  |  INFO  |  9. Execution time for INSERTING rows to table: 665.3659343719482 ms  
-2023-02-10 03:19:07,413  |  INFO  |    
-2023-02-10 03:19:07,414  |  INFO  |  10. Execution time for COUNTING uploaded rows to table: 0.5633831024169922 ms  
-2023-02-10 03:19:07,415  |  INFO  |    
-2023-02-10 03:19:07,415  |  INFO  |    
-2023-02-10 03:19:07,416  |  INFO  |    
-2023-02-10 03:19:07,417  |  INFO  |  Now calculating performance statistics (from a Postgres standpoint)...  
-2023-02-10 03:19:07,419  |  INFO  |    
-2023-02-10 03:19:07,420  |  INFO  |    
-2023-02-10 03:19:07,421  |  INFO  |    
-2023-02-10 03:19:07,422  |  INFO  |    
-2023-02-10 03:19:07,423  |  INFO  |    
-2023-02-10 03:19:07,424  |  INFO  |    
-2023-02-10 03:19:07,424  |  INFO  |  ================================================  
-2023-02-10 03:19:07,426  |  ERROR  |  ERROR: There are only 0 records upload to 'raw_accommodation_bookings_tbl' table....  
-2023-02-10 03:19:07,427  |  INFO  |  Trace filepath to highlight the root cause of the missing rows...  
-2023-02-10 03:19:07,429  |  DEBUG  |    
-2023-02-10 03:19:07,438  |  DEBUG  |  Closing cursor.  
-2023-02-10 03:19:07,471  |  DEBUG  |    
-2023-02-10 03:19:07,491  |  DEBUG  |  Closing postgres connection.  
+2023-02-10 03:34:14,267  |  INFO  |  =============================================================================================================================================================================  
+2023-02-10 03:34:14,268  |  DEBUG  |    
+2023-02-10 03:34:14,275  |  INFO  |  Rows before SQL insert in Postgres: 0   
+2023-02-10 03:34:14,275  |  DEBUG  |    
+2023-02-10 03:34:14,276  |  INFO  |  local variable 'values' referenced before assignment  
+2023-02-10 03:34:14,277  |  DEBUG  |    
+2023-02-10 03:34:14,278  |  DEBUG  |  Closing cursor.  
+2023-02-10 03:34:14,279  |  DEBUG  |    
+2023-02-10 03:34:14,280  |  DEBUG  |  Closing postgres connection.  
