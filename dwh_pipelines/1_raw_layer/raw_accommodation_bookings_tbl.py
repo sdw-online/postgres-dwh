@@ -13,32 +13,31 @@ import random
 # ================================================ LOGGER ================================================
 
 # Set up root root_logger 
-root_logger = logging.getLogger(__name__)
+root_logger     =   logging.getLogger(__name__)
 root_logger.setLevel(logging.DEBUG)
 
-# Add colour to the console prints 
-coloredlogs.install(level='DEBUG', logger=root_logger, fmt='%(message)s')
-
 # Set up formatter for logs 
-file_handler_log_formatter = logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
-console_handler_log_formatter = coloredlogs.ColoredFormatter(fmt='%(message)s', level_styles=dict(
-                                                                                        debug=dict(color='green'),
-                                                                                        info=dict(color='blue'),
-                                                                                        warning=dict(color='orange'),
-                                                                                        error=dict(color='red', bold=True, bright=True),
-                                                                                        critical=dict(color='black', bold=True, background='red')
+file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
+console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
+                                                                                                debug           =   dict    (color  =   'green'),
+                                                                                                info            =   dict    (color  =   'blue'),
+                                                                                                warning         =   dict    (color  =   'orange'),
+                                                                                                error           =   dict    (color  =   'red',      bold    =   True,   bright      =   True),
+                                                                                                critical        =   dict    (color  =   'black',    bold    =   True,   background  =   'red')
                                                                                             ),
+
                                                                                     field_styles=dict(
-                                                                                        messages=dict(color='white')
-                                                                                    ))
+                                                                                        messages            =   dict    (color  =   'white')
+                                                                                    )
+                                                                                    )
 
 # Set up file handler object for logging events to file
-current_filepath = Path(__file__).stem
-file_handler = logging.FileHandler('logs/raw_layer/' + current_filepath + '.log', mode='w')
+current_filepath    =   Path(__file__).stem
+file_handler        =   logging.FileHandler('logs/raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 # Set up console handler object for writing event logs to console in real time (i.e. streams events to stderr)
-console_handler = logging.StreamHandler()
+console_handler     =   logging.StreamHandler()
 console_handler.setFormatter(console_handler_log_formatter)
 
 
@@ -56,48 +55,49 @@ root_logger.addHandler(console_handler)
 
 
 
+
 # ================================================ CONFIG ================================================
 
 # Add a flag/switch indicating whether Airflow is in use or not 
-USING_AIRFLOW = False
+USING_AIRFLOW   =   False
 
 # Create source file variable 
-src_file = 'accommodation_bookings.json'
+src_file    =   'accommodation_bookings.json'
 
 
 # Create a config file for storing environment variables
-config = configparser.ConfigParser()
+config  =   configparser.ConfigParser()
 if USING_AIRFLOW:
 
     # Use the airflow config file from the airflow container 
     config.read('/usr/local/airflow/dags/etl_to_postgres/airflow_config.ini')
     accommodation_bookings_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
 
-    host                = config['postgres_airflow_config']['HOST']
-    port                = config['postgres_airflow_config']['PORT']
-    database            = config['postgres_airflow_config']['RAW_DB']
-    username            = config['postgres_airflow_config']['USERNAME']
-    password            = config['postgres_airflow_config']['PASSWORD']
+    host                    =   config['postgres_airflow_config']['HOST']
+    port                    =   config['postgres_airflow_config']['PORT']
+    database                =   config['postgres_airflow_config']['RAW_DB']
+    username                =   config['postgres_airflow_config']['USERNAME']
+    password                =   config['postgres_airflow_config']['PASSWORD']
     
-    postgres_connection     = None
-    cursor                  = None
+    postgres_connection     =   None
+    cursor                  =   None
 
     
 else:
 
     # Use the local config file from the local machine 
-    path = os.path.abspath('dwh_pipelines/local_config.ini')
+    path    =   os.path.abspath('dwh_pipelines/local_config.ini')
     config.read(path)
-    accommodation_bookings_path = config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + "accommodation_bookings.json"
+    accommodation_bookings_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + "accommodation_bookings.json"
 
-    host                = config['travel_data_filepath']['HOST']
-    port                = config['travel_data_filepath']['PORT']
-    database            = config['travel_data_filepath']['RAW_DB']
-    username            = config['travel_data_filepath']['USERNAME']
-    password            = config['travel_data_filepath']['PASSWORD']
+    host                    =   config['travel_data_filepath']['HOST']
+    port                    =   config['travel_data_filepath']['PORT']
+    database                =   config['travel_data_filepath']['RAW_DB']
+    username                =   config['travel_data_filepath']['USERNAME']
+    password                =   config['travel_data_filepath']['PASSWORD']
 
-    postgres_connection     = None
-    cursor                  = None
+    postgres_connection     =   None
+    cursor                  =   None
 
 
 
@@ -105,7 +105,7 @@ else:
 root_logger.info("")
 root_logger.info("---------------------------------------------")
 root_logger.info("Beginning the source data extraction process...")
-COMPUTE_START_TIME = time.time()
+COMPUTE_START_TIME  =   time.time()
 
 
 with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:    
@@ -122,11 +122,11 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
     
 
 postgres_connection = psycopg2.connect(
-            host = host,
-            port = port,
-            dbname = database,
-            user = username,
-            password = password,
+                host        =   host,
+                port        =   port,
+                dbname      =   database,
+                user        =   username,
+                password    =   password,
         )
 
 
@@ -134,24 +134,20 @@ def load_data_to_raw_layer(postgres_connection):
     try:
         
         # Set up constants
-        CURRENT_TIMESTAMP = datetime.now()
-        source_system = ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
-        row_counter = 0 
-        total_rows_before_insert_operation = 0 
-        total_rows_after_insert_operation = 0 
-        column_index = 0 
-        total_null_values_in_table = 0 
-        
-        successful_rows_upload_count  =   0 
-        failed_rows_upload_count      =   0 
-
-        db_layer_name = database
-        schema_name = 'main'
-        table_name = 'raw_accommodation_bookings_tbl'
+        CURRENT_TIMESTAMP               =   datetime.now()
+        db_layer_name                   =   database
+        schema_name                     =   'main'
+        table_name                      =   'raw_accommodation_bookings_tbl'
+        source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
+        row_counter                     =   0 
+        column_index                    =   0 
+        total_null_values_in_table      =   0 
+        successful_rows_upload_count    =   0 
+        failed_rows_upload_count        =   0 
 
 
         # Create a cursor object to execute the PG-SQL commands 
-        cursor = postgres_connection.cursor()
+        cursor      =   postgres_connection.cursor()
 
 
 
@@ -178,18 +174,18 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for schema creation and validation check  
-        create_schema = f'''    CREATE SCHEMA IF NOT EXISTS {schema_name};
+        create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {schema_name};
         '''
 
-        check_if_schema_exists = f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{schema_name}';
+        check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{schema_name}';
         '''
 
 
         # Set up SQL statements for table deletion and validation check  
-        delete_raw_accommodation_bookings_tbl_if_exists = f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
+        delete_raw_accommodation_bookings_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_raw_accommodation_bookings_tbl_is_deleted = f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_accommodation_bookings_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
@@ -216,7 +212,7 @@ def load_data_to_raw_layer(postgres_connection):
 
         '''
 
-        check_if_raw_accommodation_bookings_tbl_exists = f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_accommodation_bookings_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -224,7 +220,7 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_raw_accommodation_bookings_tbl = f'''        ALTER TABLE {schema_name}.{table_name}
+        add_data_lineage_to_raw_accommodation_bookings_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
                                                                             ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                             ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                             ADD COLUMN  source_system               VARCHAR(255),
@@ -234,7 +230,7 @@ def load_data_to_raw_layer(postgres_connection):
                                                                         ;
         '''
 
-        check_if_data_lineage_fields_are_added_to_tbl = f'''        
+        check_if_data_lineage_fields_are_added_to_tbl   =   f'''        
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = '{table_name}' 
@@ -247,11 +243,11 @@ def load_data_to_raw_layer(postgres_connection):
                                                                               
         '''
         
-        check_total_row_count_before_insert_statement = f'''   SELECT COUNT(*) FROM {schema_name}.{table_name}
+        check_total_row_count_before_insert_statement   =   f'''   SELECT COUNT(*) FROM {schema_name}.{table_name}
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_accommodation_bookings_data = f'''                       INSERT INTO {schema_name}.{table_name} (
+        insert_accommodation_bookings_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
                                                                                 id,
                                                                                 booking_date,
                                                                                 check_in_date,
@@ -280,21 +276,21 @@ def load_data_to_raw_layer(postgres_connection):
                                                                             );
         '''
 
-        check_total_row_count_after_insert_statement = f'''        SELECT COUNT(*) FROM {schema_name}.{table_name}
+        check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {schema_name}.{table_name}
         '''
 
 
         
-        count_total_no_of_columns_in_table = f'''           SELECT          COUNT(column_name) 
+        count_total_no_of_columns_in_table  =   f'''           SELECT          COUNT(column_name) 
                                                             FROM            information_schema.columns 
                                                             WHERE           table_name = '{table_name}'
                                                             AND             table_schema = '{schema_name}'
         '''
 
-        count_total_no_of_unique_records_in_table = f'''        SELECT COUNT(*) FROM 
+        count_total_no_of_unique_records_in_table   =   f'''        SELECT COUNT(*) FROM 
                                                                             (SELECT DISTINCT * FROM {schema_name}.{table_name}) as unique_records   
         '''
-        get_list_of_column_names = f'''           SELECT      column_name
+        get_list_of_column_names    =   f'''           SELECT      column_name
                                                                 FROM        information_schema.columns  
                                                                 WHERE       table_name = '{table_name}'
         '''
@@ -303,13 +299,14 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Create schema in Postgres
-        CREATING_SCHEMA_PROCESSING_START_TIME = time.time()
+        CREATING_SCHEMA_PROCESSING_START_TIME   =   time.time()
         cursor.execute(create_schema)
-        CREATING_SCHEMA_PROCESSING_END_TIME = time.time()
+        CREATING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
-        CREATING_SCHEMA_VAL_CHECK_START_TIME = time.time()
+
+        CREATING_SCHEMA_VAL_CHECK_START_TIME    =   time.time()
         cursor.execute(check_if_schema_exists)
-        CREATING_SCHEMA_VAL_CHECK_END_TIME = time.time()
+        CREATING_SCHEMA_VAL_CHECK_END_TIME      =   time.time()
 
 
 
@@ -335,14 +332,14 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Delete table if it exists in Postgres
-        DELETING_SCHEMA_PROCESSING_START_TIME = time.time()
+        DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
         cursor.execute(delete_raw_accommodation_bookings_tbl_if_exists)
-        DELETING_SCHEMA_PROCESSING_END_TIME = time.time()
+        DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
-        DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME = time.time()
+        DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
         cursor.execute(check_if_raw_accommodation_bookings_tbl_is_deleted)
-        DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME = time.time()
+        DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
         sql_result = cursor.fetchone()[0]
@@ -365,14 +362,14 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Create table if it doesn't exist in Postgres  
-        CREATING_TABLE_PROCESSING_START_TIME = time.time()
+        CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
         cursor.execute(create_raw_accommodation_bookings_tbl)
-        CREATING_TABLE_PROCESSING_END_TIME = time.time()
+        CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
-        CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME = time.time()
+        CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
         cursor.execute(check_if_raw_accommodation_bookings_tbl_exists)
-        CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME = time.time()
+        CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
         sql_result = cursor.fetchone()[0]
@@ -395,18 +392,18 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Add data lineage to table 
-        ADDING_DATA_LINEAGE_PROCESSING_START_TIME = time.time()
+        ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
         cursor.execute(add_data_lineage_to_raw_accommodation_bookings_tbl)
-        ADDING_DATA_LINEAGE_PROCESSING_END_TIME = time.time()
+        ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
-        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME = time.time()
+        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME  =  time.time()
         cursor.execute(check_if_data_lineage_fields_are_added_to_tbl)
-        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME = time.time()
+        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME    =  time.time()
 
 
         sql_results = cursor.fetchall()
-        # root_logger.info(sql_results)
+        
         if len(sql_results) == 6:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
@@ -425,7 +422,7 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Add insert rows to table 
-        ROW_INSERTION_PROCESSING_START_TIME = time.time()
+        ROW_INSERTION_PROCESSING_START_TIME     =   time.time()
         cursor.execute(check_total_row_count_before_insert_statement)
         sql_result = cursor.fetchone()[0]
         root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
@@ -459,7 +456,6 @@ def load_data_to_raw_layer(postgres_connection):
                 )
 
             cursor.execute(insert_accommodation_bookings_data, values)
-            # QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT = cursor.fetchall()
 
 
             # Validate if each row inserted into the table exists 
@@ -468,7 +464,6 @@ def load_data_to_raw_layer(postgres_connection):
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
                 root_logger.info(f'INSERT SUCCESS: Uploaded accommodation_bookings record no {row_counter} ')
-                # root_logger.info(f"Query Execution Plan: {QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT}")
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
@@ -477,13 +472,12 @@ def load_data_to_raw_layer(postgres_connection):
                 root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
     
-        # QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT = cursor.fetchall()
-        ROW_INSERTION_PROCESSING_END_TIME = time.time()
+        ROW_INSERTION_PROCESSING_END_TIME   =   time.time()
 
 
-        ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME = time.time()
+        ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME   =   time.time()
         cursor.execute(check_total_row_count_after_insert_statement)
-        ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME = time.time()
+        ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME     =   time.time()
 
 
         total_rows_in_table = cursor.fetchone()[0]
@@ -492,7 +486,10 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
-        # Display data profiling metrics 
+
+        # Prepare data profiling metrics 
+
+
         # --------- A. Table statistics 
         cursor.execute(count_total_no_of_columns_in_table)
         total_columns_in_table = cursor.fetchone()[0]
@@ -541,15 +538,8 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
-        # --------- C. Performance statistics (Postgres)
 
-        # cursor.execute('EXPLAIN (ANALYZE BUFFERS) ' + insert_accommodation_bookings_data)
-        # root_logger.info(f'------------------------------------------- ')
-        # root_logger.info(f'Query Execution Plan for INSERT statement: {QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT} ')
-        # root_logger.info(f'------------------------------------------- ')
-
-
-
+        # Display data profiling metrics
         
         root_logger.info(f'')
         root_logger.info(f'')
@@ -619,15 +609,10 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'')
-        # root_logger.info(f'Now calculating performance statistics (from a Postgres standpoint)...')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'')
         root_logger.info('================================================')
 
+
+        # Add conditional statements for data profile metrics 
 
         if successful_rows_upload_count != total_rows_in_table:
             if successful_rows_upload_count == 0:
@@ -657,8 +642,7 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} NULL values in '{table_name}' table....")
             raise ImportError("Examine table to highlight the columns with the NULL values - justify if these fields should contain NULLs ...")
 
-        
-
+    
 
         else:
             root_logger.debug("")
@@ -667,7 +651,9 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
-        # Commit the changes made above 
+
+
+        # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
         postgres_connection.commit()
 
