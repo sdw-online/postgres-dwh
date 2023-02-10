@@ -65,7 +65,7 @@ def generate_travel_data():
   NO_OF_FLIGHT_TICKET_SALES = 100
   NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
   NO_OF_SALES_AGENTS = 100
-  NO_OF_ACCOMMODATION_BOOKINGS = 40000 
+  NO_OF_ACCOMMODATION_BOOKINGS = 400 
 
 
   # Set up environment variables 
@@ -74,15 +74,6 @@ def generate_travel_data():
   config.read(path)
 
   DATASETS_LOCATION_PATH = config['travel_data_filepath']['DATASETS_LOCATION_PATH']
-
-
-  root_logger.debug('------------------------------------------------')
-  root_logger.debug('------------------------------------------------')
-  root_logger.info(f'DATASET DESTINATION PATH: {DATASETS_LOCATION_PATH} ')
-  root_logger.debug('------------------------------------------------')
-  root_logger.debug('------------------------------------------------')
-
-
 
 
 
@@ -565,8 +556,182 @@ def generate_travel_data():
 
 
 
+ 
+  root_logger.info(f'')
+  root_logger.info(f'')
+  root_logger.info('================================================')
+  root_logger.info('              DATA PROFILING METRICS              ')
+  root_logger.info('================================================')
+  root_logger.info(f'')
+  root_logger.info(f'Now calculating statistics for data generated ...')
+  root_logger.info(f'')
+  root_logger.info(f'')
+  root_logger.info(f'')
+  root_logger.info(f'')
+
+
+  # Define constants for query execution times 
+  EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO                      =     (  CUSTOMER_INFO_PROCESSING_END_TIME             -      CUSTOMER_INFO_PROCESSING_START_TIME            )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES                   =     (  FLIGHT_SCHEDULES_PROCESSING_END_TIME          -      FLIGHT_SCHEDULES_PROCESSING_START_TIME         )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES                      =     (  TICKET_PRICES_PROCESSING_END_TIME             -      TICKET_PRICES_PROCESSING_START_TIME            )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS                    =     (  FLIGHT_BOOKINGS_PROCESSING_END_TIME           -      FLIGHT_BOOKINGS_PROCESSING_START_TIME          )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS                 =     (  CUSTOMER_FEEDBACKS_PROCESSING_END_TIME        -      CUSTOMER_FEEDBACKS_PROCESSING_START_TIME       )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS                       =     (  SALES_AGENTS_PROCESSING_END_TIME              -      SALES_AGENTS_PROCESSING_START_TIME             )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS                =     (  FLIGHT_DESTINATION_PROCESSING_END_TIME        -      FLIGHT_DESTINATION_PROCESSING_START_TIME       )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS            =     (  FLIGHT_PROMOTIONS_PROCESSING_END_TIME         -      FLIGHT_PROMOTIONS_PROCESSING_START_TIME        )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES                =     (  FLIGHT_TICKET_SALES_PROCESSING_END_TIME       -      FLIGHT_TICKET_SALES_PROCESSING_START_TIME      )   *   1000
+  EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS      =     (  ACCOMMODATION_BOOKINGS_PROCESSING_END_TIME    -      ACCOMMODATION_BOOKINGS_PROCESSING_START_TIME   )   *   1000
 
 
 
+
+  if (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO > 1000) and (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO < 60000):
+    root_logger.info(f'1. Execution time for generating CUSTOMER INFO : {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO  /   1000, 2)   } secs) ')
+    root_logger.info(f'')
+    root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO >= 60000):
+      root_logger.info(f'1. Execution time for generating CUSTOMER INFO :  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'1. Execution time for generating CUSTOMER INFO :  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_INFO} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES < 60000):
+      root_logger.info(f'2. Execution time for generating FLIGHT SCHEDULES : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES >= 60000):
+      root_logger.info(f'2. Execution time for generating FLIGHT SCHEDULES  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'2. Execution time for generating FLIGHT SCHEDULES  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_SCHEDULES} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+
+  
+
+  if (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES > 1000) and (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES < 60000):
+      root_logger.info(f'3. Execution time for generating TICKET PRICES : {EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES >= 60000):
+      root_logger.info(f'3. Execution time for generating TICKET PRICES:  {EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'3. Execution time for generating TICKET PRICES:  {EXECUTION_TIME_FOR_GENERATING_TICKET_PRICES} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS < 60000):
+      root_logger.info(f'4. Execution time for generating FLIGHT BOOKINGS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS >= 60000):
+      root_logger.info(f'4. Execution time for generating FLIGHT BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'4. Execution time for generating FLIGHT BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_BOOKINGS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS > 1000) and (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS < 60000):
+    root_logger.info(f'5. Execution time for generating CUSTOMER FEEDBACKS : {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS  /   1000, 2)   } secs) ')
+    root_logger.info(f'')
+    root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS >= 60000):
+      root_logger.info(f'5. Execution time for generating CUSTOMER FEEDBACKS:  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'5. Execution time for generating CUSTOMER FEEDBACKS:  {EXECUTION_TIME_FOR_GENERATING_CUSTOMER_FEEDBACKS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS > 1000) and (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS < 60000):
+      root_logger.info(f'6. Execution time for generating SALES AGENTS : {EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS >= 60000):
+      root_logger.info(f'6. Execution time for generating SALES AGENTS:  {EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'6. Execution time for generating SALES AGENTS:  {EXECUTION_TIME_FOR_GENERATING_SALES_AGENTS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS < 60000):
+      root_logger.info(f'7. Execution time for generating FLIGHT DESTINATIONS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS >= 60000):
+      root_logger.info(f'7. Execution time for generating FLIGHT DESTINATIONS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'7. Execution time for generating FLIGHT DESTINATIONS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_DESTINATIONS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS < 60000):
+      root_logger.info(f'8. Execution time for generating FLIGHT PROMOS AND DEALS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS >= 60000):
+      root_logger.info(f'8. Execution time for generating FLIGHT PROMOS AND DEALS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'8. Execution time for generating FLIGHT PROMOS AND DEALS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_PROMOS_AND_DEALS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES < 60000):
+      root_logger.info(f'9. Execution time for generating FLIGHT TICKET SALES : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES >= 60000):
+      root_logger.info(f'9. Execution time for generating FLIGHT TICKET SALES:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'9. Execution time for generating FLIGHT TICKET SALES:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_TICKET_SALES} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
+      
+
+  if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS < 60000):
+      root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS  /   1000, 2)   } secs) ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  elif (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS >= 60000):
+      root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms  ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS  /   1000, 2)   } secs)  ({   round  ((EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS  /   1000) / 60, 4)     } mins)   ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+  else:
+      root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms ')
+      root_logger.info(f'')
+      root_logger.info(f'')
+      
 
 generate_travel_data()
