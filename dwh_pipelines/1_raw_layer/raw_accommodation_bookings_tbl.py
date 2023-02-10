@@ -139,6 +139,8 @@ def load_data_to_raw_layer(postgres_connection):
         row_counter = 0 
         total_rows_before_insert_operation = 0 
         total_rows_after_insert_operation = 0 
+        column_index = 0 
+        total_null_values_in_table = 0 
         
         successful_rows_upload_count  =   0 
         failed_rows_upload_count      =   0 
@@ -292,10 +294,9 @@ def load_data_to_raw_layer(postgres_connection):
         count_total_no_of_unique_records_in_table = f'''        SELECT COUNT(*) FROM 
                                                                             (SELECT DISTINCT * FROM {schema_name}.{table_name}) as unique_records   
         '''
-        count_total_no_of_null_values_in_table = f'''           SELECT      column_name, COUNT(*) 
-                                                                FROM        {schema_name}.{table_name}  
-                                                                WHERE       column_name is NULL 
-                                                                GROUP BY    column_name;
+        get_list_of_column_names = f'''           SELECT      column_name
+                                                                FROM        information_schema.columns  
+                                                                WHERE       table_name = '{table_name}'
         '''
 
 
@@ -458,8 +459,9 @@ def load_data_to_raw_layer(postgres_connection):
         total_duplicate_records_in_table = total_rows_in_table - total_unique_records_in_table
 
 
-        cursor.execute(count_total_no_of_null_values_in_table)
-        total_null_results = cursor.fetchall()
+        cursor.execute(get_list_of_column_names)
+        list_of_column_names = cursor.fetchall()
+        column_names = [sql_result[0] for sql_result in list_of_column_names]
 
 
         
@@ -468,6 +470,10 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info('================================================')
         root_logger.info('DATA PROFILING METRICS')
         root_logger.info('================================================')
+        root_logger.info(f'')
+        root_logger.info(f'Now calculating table statistics...')
+        root_logger.info(f'')
+        root_logger.info(f'')
         root_logger.info(f'Number of rows in table:                     {total_rows_in_table} ')
         root_logger.info(f'Number of columns in table:                  {total_columns_in_table} ')
         root_logger.info(f'')
@@ -484,14 +490,23 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
         root_logger.info(f'')
         
-        for sql_result in total_null_results:
-
-            root_logger.info(f'')
-            root_logger.info(f'Column name: {sql_result[0]}, Number of NULL values: {sql_result[1]} ')
+        for column_name in column_names:
+            cursor.execute(f'''
+                    SELECT COUNT(*)
+                    FROM {schema_name}.{table_name}
+                    WHERE {column_name} is NULL
+            
+            ''')
+            sql_result = cursor.fetchone()[0]
+            total_null_values_in_table += sql_result
+            column_index += 1
+            # root_logger.info(f'')
+            root_logger.info(f'Column name: {column_name},  Column no: {column_index},  Number of NULL values: {sql_result} ')
         
 
 
 
+        root_logger.info('================================================')
         root_logger.info('================================================')
 
 
@@ -499,17 +514,25 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.error(f"ERROR: There are only {successful_rows_upload_count} records upload to '{table_name}' table....")
             raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
         
+
         elif failed_rows_upload_count > 0:
             root_logger.error(f"ERROR: A total of {failed_rows_upload_count} records failed to upload to '{table_name}' table....")
             raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
         
+
         elif total_unique_records_in_table != total_rows_in_table:
             root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} duplicated records in the uploads for '{table_name}' table....")
             raise ImportError("Trace filepath to highlight the root cause of the duplicated rows...")
 
+
         elif total_duplicate_records_in_table > 0:
             root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} duplicated records in the uploads for '{table_name}' table....")
             raise ImportError("Trace filepath to highlight the root cause of the duplicated rows...")
+        
+
+        elif total_null_values_in_table > 0:
+            root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} NULL values in '{table_name}' table....")
+            raise ImportError("Examine table to highlight the columns with the NULL values - justify if these fields should contain NULLs ...")
 
         
 
