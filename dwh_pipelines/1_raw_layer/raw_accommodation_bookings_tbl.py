@@ -105,7 +105,7 @@ else:
 root_logger.info("")
 root_logger.info("---------------------------------------------")
 root_logger.info("Beginning the source data extraction process...")
-extraction_start_time = time.time()
+COMPUTE_START_TIME = time.time()
 
 
 with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:    
@@ -303,8 +303,16 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Create schema in Postgres
+        CREATING_SCHEMA_PROCESSING_START_TIME = time.time()
         cursor.execute(create_schema)
+        CREATING_SCHEMA_PROCESSING_END_TIME = time.time()
+
+        CREATING_SCHEMA_VAL_CHECK_START_TIME = time.time()
         cursor.execute(check_if_schema_exists)
+        CREATING_SCHEMA_VAL_CHECK_END_TIME = time.time()
+
+
+
         sql_result = cursor.fetchone()[0]
         root_logger.info(sql_result)
         if sql_result:
@@ -327,8 +335,16 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Delete table if it exists in Postgres
+        DELETING_SCHEMA_PROCESSING_START_TIME = time.time()
         cursor.execute(delete_raw_accommodation_bookings_tbl_if_exists)
+        DELETING_SCHEMA_PROCESSING_END_TIME = time.time()
+
+        
+        DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME = time.time()
         cursor.execute(check_if_raw_accommodation_bookings_tbl_is_deleted)
+        DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME = time.time()
+
+
         sql_result = cursor.fetchone()[0]
         root_logger.info(sql_result)
         if sql_result:
@@ -349,8 +365,16 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Create table if it doesn't exist in Postgres  
+        CREATING_TABLE_PROCESSING_START_TIME = time.time()
         cursor.execute(create_raw_accommodation_bookings_tbl)
+        CREATING_TABLE_PROCESSING_END_TIME = time.time()
+
+        
+        CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME = time.time()
         cursor.execute(check_if_raw_accommodation_bookings_tbl_exists)
+        CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME = time.time()
+
+
         sql_result = cursor.fetchone()[0]
         root_logger.info(sql_result)
         if sql_result:
@@ -371,8 +395,16 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Add data lineage to table 
+        ADDING_DATA_LINEAGE_PROCESSING_START_TIME = time.time()
         cursor.execute(add_data_lineage_to_raw_accommodation_bookings_tbl)
+        ADDING_DATA_LINEAGE_PROCESSING_END_TIME = time.time()
+
+        
+        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME = time.time()
         cursor.execute(check_if_data_lineage_fields_are_added_to_tbl)
+        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME = time.time()
+
+
         sql_results = cursor.fetchall()
         # root_logger.info(sql_results)
         if len(sql_results) == 6:
@@ -393,6 +425,7 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Add insert rows to table 
+        ROW_INSERTION_PROCESSING_START_TIME = time.time()
         cursor.execute(check_total_row_count_before_insert_statement)
         sql_result = cursor.fetchone()[0]
         root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
@@ -427,6 +460,7 @@ def load_data_to_raw_layer(postgres_connection):
 
             cursor.execute(insert_accommodation_bookings_data, values)
 
+
             # Validate if each row inserted into the table exists 
             if cursor.rowcount == 1:
                 row_counter += 1
@@ -440,13 +474,20 @@ def load_data_to_raw_layer(postgres_connection):
                 root_logger.error(f'---------------------------------')
                 root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
+    
+        ROW_INSERTION_PROCESSING_END_TIME = time.time()
 
 
-
+        AFTER_ROW_INSERTION_VAL_CHECK_PROCESSING_START_TIME = time.time()
         cursor.execute(check_total_row_count_after_insert_statement)
+        AFTER_ROW_INSERTION_VAL_CHECK_PROCESSING_END_TIME = time.time()
+
+
         total_rows_in_table = cursor.fetchone()[0]
         root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
         root_logger.debug(f"")
+
+
 
         # Display data profiling metrics 
         cursor.execute(count_total_no_of_columns_in_table)
@@ -500,13 +541,17 @@ def load_data_to_raw_layer(postgres_connection):
             sql_result = cursor.fetchone()[0]
             total_null_values_in_table += sql_result
             column_index += 1
-            # root_logger.info(f'')
             root_logger.info(f'Column name: {column_name},  Column no: {column_index},  Number of NULL values: {sql_result} ')
         
 
 
 
+        root_logger.info(f'')
         root_logger.info('================================================')
+        root_logger.info(f'')
+        root_logger.info(f'Now calculating processing statistics...')
+        root_logger.info(f'')
+        root_logger.info(f'')
         root_logger.info('================================================')
 
 
