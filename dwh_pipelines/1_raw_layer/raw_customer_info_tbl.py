@@ -134,6 +134,7 @@ def load_data_to_raw_layer(postgres_connection):
         db_layer_name                   =   database
         schema_name                     =   'main'
         table_name                      =   'raw_customer_info_tbl'
+        data_warehouse_layer            =   'RAW'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
         column_index                    =   0 
@@ -515,10 +516,27 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = [None
+        sensitive_columns_selected = ['customer_id',
+                                        'address',
+                                        'age',
+                                        'city',
+                                        'created_date',
+                                        'credit_card',
+                                        'credit_card_provider',
+                                        'customer_contact_preference_desc',
+                                        'customer_contact_preference_id',
+                                        'dob',
+                                        'email'  ,
+                                        'first_name',
+                                        'last_name',
+                                        'last_updated_date',
+                                        'nationality',
+                                        'phone_number',
+                                        'place_of_birth',
+                                        'state',
+                                        'zip'
                             ]
         
-        # sensitive_columns_selected = []
         
 
         if len(sensitive_columns_selected) == 0:
@@ -590,6 +608,8 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
+
+
         # ======================================= DATA PROFILING METRICS =======================================
 
 
@@ -652,6 +672,12 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info('================================================')
         root_logger.info(f'')
         root_logger.info(f'Now calculating table statistics...')
+        root_logger.info(f'')
+        root_logger.info(f'')
+        root_logger.info(f'Table name:                                  {table_name} ')
+        root_logger.info(f'Schema name:                                 {schema_name} ')
+        root_logger.info(f'Database name:                               {database} ')
+        root_logger.info(f'Data warehouse layer:                        {data_warehouse_layer} ')
         root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'Number of rows in table:                     {total_rows_in_table} ')
