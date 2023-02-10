@@ -458,7 +458,7 @@ def load_data_to_raw_layer(postgres_connection):
                 'RAW'
                 )
 
-            cursor.execute('EXPLAIN (ANALYZE, BUFFERS) ' + insert_accommodation_bookings_data, values)
+            cursor.execute('EXPLAIN (ANALYZE, BUFFERS)  ' + insert_accommodation_bookings_data, values)
             QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT = cursor.fetchall()
 
 
