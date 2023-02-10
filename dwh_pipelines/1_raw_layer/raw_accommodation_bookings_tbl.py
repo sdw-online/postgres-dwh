@@ -507,46 +507,34 @@ def load_data_to_raw_layer(postgres_connection):
         
         
         # --------- B. Performance statistics (Python)
-        EXECUTION_TIME_FOR_CREATING_SCHEMA = (CREATING_SCHEMA_PROCESSING_END_TIME - CREATING_SCHEMA_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for CREATING schema: {EXECUTION_TIME_FOR_CREATING_SCHEMA} ms')
+        EXECUTION_TIME_FOR_CREATING_SCHEMA                      =   (CREATING_SCHEMA_PROCESSING_END_TIME - CREATING_SCHEMA_PROCESSING_START_TIME) * 1000
 
 
-        EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK = (CREATING_SCHEMA_VAL_CHECK_END_TIME - CREATING_SCHEMA_VAL_CHECK_START_TIME) * 1000
-        root_logger.info(f'Execution time for CREATING schema (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK} ms')
+        EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK            =   (CREATING_SCHEMA_VAL_CHECK_END_TIME - CREATING_SCHEMA_VAL_CHECK_START_TIME) * 1000
 
 
-        EXECUTION_TIME_FOR_DROPPING_SCHEMA = (DELETING_SCHEMA_PROCESSING_END_TIME - DELETING_SCHEMA_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for DELETING schema: {EXECUTION_TIME_FOR_DROPPING_SCHEMA} ms')
+        EXECUTION_TIME_FOR_DROPPING_SCHEMA                      =   (DELETING_SCHEMA_PROCESSING_END_TIME - DELETING_SCHEMA_PROCESSING_START_TIME) * 1000
 
 
-        EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK = (DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME - DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for DELETING schema (VAL CHECK): {EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK} ms')
+        EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK            =   (DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME - DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME) * 1000
 
 
-        
-        EXECUTION_TIME_FOR_CREATING_TABLE = (CREATING_TABLE_PROCESSING_END_TIME - CREATING_TABLE_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for CREATING table: {EXECUTION_TIME_FOR_CREATING_TABLE} ms')
+        EXECUTION_TIME_FOR_CREATING_TABLE                       =   (CREATING_TABLE_PROCESSING_END_TIME - CREATING_TABLE_PROCESSING_START_TIME) * 1000
 
 
-        
-        EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK = (CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME - CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for CREATING table (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK} ms')
+        EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK             =   (CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME - CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME) * 1000
 
 
-        EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE= (ADDING_DATA_LINEAGE_PROCESSING_END_TIME - ADDING_DATA_LINEAGE_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for ADDING data lineage: {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE} ms')
+        EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE                  =   (ADDING_DATA_LINEAGE_PROCESSING_END_TIME - ADDING_DATA_LINEAGE_PROCESSING_START_TIME) * 1000
 
 
-        EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK = (ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME - ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for ADDING data lineage (VAL CHECK): {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK} ms')
+        EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK        =   (ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME - ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME) * 1000
 
 
-        EXECUTION_TIME_FOR_ROW_INSERTION = (ROW_INSERTION_PROCESSING_END_TIME - ROW_INSERTION_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for INSERTING rows to table: {EXECUTION_TIME_FOR_ROW_INSERTION} ms')
+        EXECUTION_TIME_FOR_ROW_INSERTION                        =   (ROW_INSERTION_PROCESSING_END_TIME - ROW_INSERTION_PROCESSING_START_TIME) * 1000
 
 
-        EXECUTION_TIME_FOR_ROW_COUNT = (ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME - ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME) * 1000
-        root_logger.info(f'Execution time for COUNTING uploaded rows to table: {EXECUTION_TIME_FOR_ROW_COUNT} ms')
+        EXECUTION_TIME_FOR_ROW_COUNT                            =   (ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME - ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME) * 1000
 
 
 
@@ -598,8 +586,32 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'Now calculating performance statistics (from a Python standpoint)...')
         root_logger.info(f'')
         root_logger.info(f'')
+        root_logger.info(f'1. Execution time for CREATING schema: {EXECUTION_TIME_FOR_CREATING_SCHEMA} ms')
+        root_logger.info(f'')
+        root_logger.info(f'2. Execution time for CREATING schema (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK} ms')
+        root_logger.info(f'')
+        root_logger.info(f'3. Execution time for DELETING schema: {EXECUTION_TIME_FOR_DROPPING_SCHEMA} ms')
+        root_logger.info(f'')
+        root_logger.info(f'4. Execution time for DELETING schema (VAL CHECK): {EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK} ms')
+        root_logger.info(f'')
+        root_logger.info(f'5. Execution time for CREATING table: {EXECUTION_TIME_FOR_CREATING_TABLE} ms')
+        root_logger.info(f'')
+        root_logger.info(f'6. Execution time for CREATING table (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK} ms')
+        root_logger.info(f'')
+        root_logger.info(f'7. Execution time for ADDING data lineage: {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE} ms')
+        root_logger.info(f'')
+        root_logger.info(f'8. Execution time for ADDING data lineage (VAL CHECK): {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK} ms')
+        root_logger.info(f'')
+        root_logger.info(f'9. Execution time for INSERTING rows to table: {EXECUTION_TIME_FOR_ROW_INSERTION} ms')
+        root_logger.info(f'')
+        root_logger.info(f'10. Execution time for COUNTING uploaded rows to table: {EXECUTION_TIME_FOR_ROW_COUNT} ms')
+        root_logger.info(f'')
+        root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'Now calculating performance statistics (from a Postgres standpoint)...')
+        root_logger.info(f'')
+        root_logger.info(f'')
+        root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'')
