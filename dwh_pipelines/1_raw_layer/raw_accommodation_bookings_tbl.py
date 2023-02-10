@@ -19,8 +19,8 @@ root_logger.setLevel(logging.DEBUG)
 # Set up formatter for logs 
 file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
 console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
-                                                                                                debug           =   dict    (color  =   'green'),
-                                                                                                info            =   dict    (color  =   'blue'),
+                                                                                                debug           =   dict    (color  =   'blue'),
+                                                                                                info            =   dict    (color  =   'green'),
                                                                                                 warning         =   dict    (color  =   'orange'),
                                                                                                 error           =   dict    (color  =   'red',      bold    =   True,   bright      =   True),
                                                                                                 critical        =   dict    (color  =   'black',    bold    =   True,   background  =   'red')
@@ -553,19 +553,41 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'Number of rows in table:                     {total_rows_in_table} ')
         root_logger.info(f'Number of columns in table:                  {total_columns_in_table} ')
         root_logger.info(f'')
-        root_logger.info(f'Successful records uploaded total :          {successful_rows_upload_count} / {total_rows_in_table}   ')
-        root_logger.info(f'Failed/Errored records uploaded total:       {failed_rows_upload_count} / {total_rows_in_table}       ')
-        root_logger.info(f'')
-        root_logger.info(f'Successful records uploaded % :              {(successful_rows_upload_count / total_rows_in_table) * 100}    ')
-        root_logger.info(f'Failed/Errored records uploaded %:           {(failed_rows_upload_count/total_rows_in_table) * 100}       ')
-        root_logger.info(f'')
-        root_logger.info(f'Number of unique records:                    {total_unique_records_in_table} / {total_rows_in_table}')
-        root_logger.info(f'Number of duplicate records:                 {total_duplicate_records_in_table} / {total_rows_in_table}')
-        root_logger.info(f'')
-        root_logger.info(f'Unique records %:                            {(total_unique_records_in_table / total_rows_in_table) * 100} ')
-        root_logger.info(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
-        root_logger.info(f'')
+
+
+        if successful_rows_upload_count == total_rows_in_table:
+            root_logger.info(f'Successful records uploaded total :          {successful_rows_upload_count} / {total_rows_in_table}   ')
+            root_logger.info(f'Failed/Errored records uploaded total:       {failed_rows_upload_count} / {total_rows_in_table}       ')
+            root_logger.info(f'')
+            root_logger.info(f'Successful records uploaded % :              {(successful_rows_upload_count / total_rows_in_table) * 100}    ')
+            root_logger.info(f'Failed/Errored records uploaded %:           {(failed_rows_upload_count/total_rows_in_table) * 100}       ')
+            root_logger.info(f'')
+        else:
+            root_logger.warning(f'Successful records uploaded total :          {successful_rows_upload_count} / {total_rows_in_table}   ')
+            root_logger.warning(f'Failed/Errored records uploaded total:       {failed_rows_upload_count} / {total_rows_in_table}       ')
+            root_logger.warning(f'')
+            root_logger.warning(f'Successful records uploaded % :              {(successful_rows_upload_count / total_rows_in_table) * 100}    ')
+            root_logger.warning(f'Failed/Errored records uploaded %:           {(failed_rows_upload_count/total_rows_in_table) * 100}       ')
+            root_logger.warning(f'')
+
+
+        if total_unique_records_in_table == total_rows_in_table:
+            root_logger.info(f'Number of unique records:                    {total_unique_records_in_table} / {total_rows_in_table}')
+            root_logger.info(f'Number of duplicate records:                 {total_duplicate_records_in_table} / {total_rows_in_table}')
+            root_logger.info(f'')
+            root_logger.info(f'Unique records %:                            {(total_unique_records_in_table / total_rows_in_table) * 100} ')
+            root_logger.info(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
+            root_logger.info(f'')
         
+        else:
+            root_logger.warning(f'Number of unique records:                    {total_unique_records_in_table} / {total_rows_in_table}')
+            root_logger.warning(f'Number of duplicate records:                 {total_duplicate_records_in_table} / {total_rows_in_table}')
+            root_logger.warning(f'')
+            root_logger.warning(f'Unique records %:                            {(total_unique_records_in_table / total_rows_in_table) * 100} ')
+            root_logger.warning(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
+            root_logger.warning(f'')
+        
+
         for column_name in column_names:
             cursor.execute(f'''
                     SELECT COUNT(*)
@@ -576,7 +598,10 @@ def load_data_to_raw_layer(postgres_connection):
             sql_result = cursor.fetchone()[0]
             total_null_values_in_table += sql_result
             column_index += 1
-            root_logger.info(f'Column name: {column_name},  Column no: {column_index},  Number of NULL values: {sql_result} ')
+            if sql_result == 0:
+                root_logger.info(f'Column name: {column_name},  Column no: {column_index},  Number of NULL values: {sql_result} ')
+            else:
+                root_logger.warning(f'Column name: {column_name},  Column no: {column_index},  Number of NULL values: {sql_result} ')
         
 
 
