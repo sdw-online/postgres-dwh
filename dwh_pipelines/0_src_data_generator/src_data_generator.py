@@ -77,6 +77,11 @@ def generate_travel_data():
 
 
 
+
+  root_logger.debug("")
+  root_logger.debug("")
+  root_logger.debug("Now beginning session for generating data...")
+
   # ========================================================================================================================================================================
 
   # ============================ CUSTOMER INFORMATION ============================
@@ -718,7 +723,7 @@ def generate_travel_data():
       root_logger.info(f'')
       root_logger.info(f'')
       
-      
+
 
   if (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS > 1000) and (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS < 60000):
       root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS : {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms ({    round   (EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS  /   1000, 2)   } secs) ')
@@ -732,6 +737,14 @@ def generate_travel_data():
       root_logger.info(f'10. Execution time for generating ACCOMMODATION BOOKINGS:  {EXECUTION_TIME_FOR_GENERATING_FLIGHT_ACCOMMODATION_BOOKINGS} ms ')
       root_logger.info(f'')
       root_logger.info(f'')
+
+
+  
+  root_logger.debug("Successfully completed generating data")
+  root_logger.debug("")
+  root_logger.debug("")
+  root_logger.debug("Terminating data generation job...")
+  root_logger.debug("Session ended.")
       
 
 generate_travel_data()
