@@ -545,7 +545,7 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info('================================================')
-        root_logger.info('DATA PROFILING METRICS')
+        root_logger.info('              DATA PROFILING METRICS              ')
         root_logger.info('================================================')
         root_logger.info(f'')
         root_logger.info(f'Now calculating table statistics...')
@@ -612,31 +612,157 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f'Now calculating performance statistics (from a Python standpoint)...')
         root_logger.info(f'')
         root_logger.info(f'')
-        root_logger.info(f'1. Execution time for CREATING schema: {EXECUTION_TIME_FOR_CREATING_SCHEMA} ms')
-        root_logger.info(f'')
-        root_logger.info(f'2. Execution time for CREATING schema (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK} ms')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'3. Execution time for DELETING schema: {EXECUTION_TIME_FOR_DROPPING_SCHEMA} ms')
-        root_logger.info(f'')
-        root_logger.info(f'4. Execution time for DELETING schema (VAL CHECK): {EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK} ms')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'5. Execution time for CREATING table: {EXECUTION_TIME_FOR_CREATING_TABLE} ms')
-        root_logger.info(f'')
-        root_logger.info(f'6. Execution time for CREATING table (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK} ms')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'7. Execution time for ADDING data lineage: {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE} ms')
-        root_logger.info(f'')
-        root_logger.info(f'8. Execution time for ADDING data lineage (VAL CHECK): {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK} ms')
-        root_logger.info(f'')
-        root_logger.info(f'')
-        root_logger.info(f'9. Execution time for INSERTING rows to table: {EXECUTION_TIME_FOR_ROW_INSERTION} ms')
-        root_logger.info(f'')
-        root_logger.info(f'10. Execution time for COUNTING uploaded rows to table: {EXECUTION_TIME_FOR_ROW_COUNT} ms')
-        root_logger.info(f'')
-        root_logger.info(f'')
+
+
+        if (EXECUTION_TIME_FOR_CREATING_SCHEMA > 1000) and (EXECUTION_TIME_FOR_CREATING_SCHEMA < 60000):
+            root_logger.info(f'1. Execution time for CREATING schema: {EXECUTION_TIME_FOR_CREATING_SCHEMA} ms ({    round   (EXECUTION_TIME_FOR_CREATING_SCHEMA  /   1000, 4)   } secs) ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_CREATING_SCHEMA >= 60000):
+            root_logger.info(f'1. Execution time for CREATING schema: {EXECUTION_TIME_FOR_CREATING_SCHEMA} ms  ({    round   (EXECUTION_TIME_FOR_CREATING_SCHEMA  /   1000, 4)   } secs)  ({   round  ((EXECUTION_TIME_FOR_CREATING_SCHEMA  /   1000) / 60, 4)     } mins)   ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'1. Execution time for CREATING schema: {EXECUTION_TIME_FOR_CREATING_SCHEMA} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK > 1000) and (EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK < 60000):
+            root_logger.info(f'2. Execution time for CREATING schema (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK >= 60000):
+            root_logger.info(f'2. Execution time for CREATING schema (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK  /   1000, 4)} secs)    ({  round ((EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'2. Execution time for CREATING schema (VAL CHECK): {EXECUTION_TIME_FOR_CREATING_SCHEMA_VAL_CHECK} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+
+        if (EXECUTION_TIME_FOR_DROPPING_SCHEMA > 1000) and (EXECUTION_TIME_FOR_DROPPING_SCHEMA < 60000):
+            root_logger.info(f'3. Execution time for DELETING schema:  {EXECUTION_TIME_FOR_DROPPING_SCHEMA} ms ({  round   (EXECUTION_TIME_FOR_DROPPING_SCHEMA  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_DROPPING_SCHEMA >= 60000):
+            root_logger.info(f'3. Execution time for DELETING schema:  {EXECUTION_TIME_FOR_DROPPING_SCHEMA} ms ({  round   (EXECUTION_TIME_FOR_DROPPING_SCHEMA  /   1000, 4)} secs)    ({  round ((EXECUTION_TIME_FOR_DROPPING_SCHEMA  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'3. Execution time for DELETING schema:  {EXECUTION_TIME_FOR_DROPPING_SCHEMA} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK > 1000) and (EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK < 60000):
+            root_logger.info(f'4. Execution time for DELETING schema (VAL CHECK):  {EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK >= 60000):
+            root_logger.info(f'4. Execution time for DELETING schema (VAL CHECK):  {EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK  /   1000, 4)} secs)    ({  round ((EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'4. Execution time for DELETING schema (VAL CHECK):  {EXECUTION_TIME_FOR_DROPPING_SCHEMA_VAL_CHECK} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+        
+
+        if (EXECUTION_TIME_FOR_CREATING_TABLE > 1000) and (EXECUTION_TIME_FOR_CREATING_TABLE < 60000):
+            root_logger.info(f'5. Execution time for CREATING table:  {EXECUTION_TIME_FOR_CREATING_TABLE} ms ({  round   (EXECUTION_TIME_FOR_CREATING_TABLE  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_CREATING_TABLE >= 60000):
+            root_logger.info(f'5. Execution time for CREATING table:  {EXECUTION_TIME_FOR_CREATING_TABLE} ms ({  round   (EXECUTION_TIME_FOR_CREATING_TABLE  /   1000, 4)} secs)    ({  round ((EXECUTION_TIME_FOR_CREATING_TABLE  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'5. Execution time for CREATING table:  {EXECUTION_TIME_FOR_CREATING_TABLE} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK > 1000) and (EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK < 60000):
+            root_logger.info(f'6. Execution time for CREATING table (VAL CHECK):  {EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK >= 60000):
+            root_logger.info(f'6. Execution time for CREATING table (VAL CHECK):  {EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK  /   1000, 4)} secs)  ({  round ((EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'6. Execution time for CREATING table (VAL CHECK):  {EXECUTION_TIME_FOR_CREATING_TABLE_VAL_CHECK} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE > 1000) and (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE < 60000):
+            root_logger.info(f'7. Execution time for ADDING data lineage:  {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE} ms ({  round   (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE >= 60000):
+            root_logger.info(f'7. Execution time for ADDING data lineage:  {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE} ms ({  round   (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE  /   1000, 4)} secs)  ({  round ((EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'7. Execution time for ADDING data lineage:  {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK > 1000) and (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK < 60000):
+            root_logger.info(f'8. Execution time for ADDING data lineage (VAL CHECK):  {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK >= 60000):
+            root_logger.info(f'8. Execution time for ADDING data lineage (VAL CHECK):  {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK} ms ({  round   (EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK  /   1000, 4)} secs)   ({  round ((EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'8. Execution time for ADDING data lineage (VAL CHECK):  {EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_ROW_INSERTION > 1000) and (EXECUTION_TIME_FOR_ROW_INSERTION < 60000):
+            root_logger.info(f'9. Execution time for INSERTING rows to table:  {EXECUTION_TIME_FOR_ROW_INSERTION} ms ({  round   (EXECUTION_TIME_FOR_ROW_INSERTION  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_ROW_INSERTION >= 60000):
+            root_logger.info(f'9. Execution time for INSERTING rows to table:  {EXECUTION_TIME_FOR_ROW_INSERTION} ms ({  round   (EXECUTION_TIME_FOR_ROW_INSERTION  /   1000, 4)} secs)   ({  round ((EXECUTION_TIME_FOR_ROW_INSERTION  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'9. Execution time for INSERTING rows to table:  {EXECUTION_TIME_FOR_ROW_INSERTION} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_ROW_COUNT > 1000) and (EXECUTION_TIME_FOR_ROW_COUNT < 60000):
+            root_logger.info(f'10. Execution time for COUNTING uploaded rows to table:  {EXECUTION_TIME_FOR_ROW_COUNT} ms ({  round   (EXECUTION_TIME_FOR_ROW_COUNT  /   1000, 4)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_ROW_COUNT >= 60000):
+            root_logger.info(f'10. Execution time for COUNTING uploaded rows to table:  {EXECUTION_TIME_FOR_ROW_COUNT} ms ({  round   (EXECUTION_TIME_FOR_ROW_COUNT  /   1000, 4)} secs)    ({  round ((EXECUTION_TIME_FOR_ROW_COUNT  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'10. Execution time for COUNTING uploaded rows to table:  {EXECUTION_TIME_FOR_ROW_COUNT} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
         root_logger.info(f'')
         root_logger.info('================================================')
 
