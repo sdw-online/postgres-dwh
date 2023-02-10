@@ -8,9 +8,51 @@ from datetime import datetime, timedelta
 import configparser
 import os 
 import time
+import logging, coloredlogs
+from pathlib import Path
 
 
 def generate_travel_data():
+
+
+  # ================================================ LOGGER ================================================
+
+  # Set up root root_logger 
+  root_logger     =   logging.getLogger(__name__)
+  root_logger.setLevel(logging.DEBUG)
+
+
+  # Set up formatter for logs 
+  file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
+  console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
+                                                                                                  debug           =   dict    (color  =   'white'),
+                                                                                                  info            =   dict    (color  =   'green'),
+                                                                                                  warning         =   dict    (color  =   'orange'),
+                                                                                                  error           =   dict    (color  =   'red',      bold    =   True,   bright      =   True),
+                                                                                                  critical        =   dict    (color  =   'black',    bold    =   True,   background  =   'red')
+                                                                                              ),
+
+                                                                                      field_styles=dict(
+                                                                                          messages            =   dict    (color  =   'white')
+                                                                                      )
+                                                                                      )
+
+
+  # Set up file handler object for logging events to file
+  current_filepath    =   Path(__file__).stem
+  file_handler        =   logging.FileHandler('logs/0_src_data_generator/' + current_filepath + '.log', mode='w')
+  file_handler.setFormatter(file_handler_log_formatter)
+
+
+  # Set up console handler object for writing event logs to console in real time (i.e. streams events to stderr)
+  console_handler     =   logging.StreamHandler()
+  console_handler.setFormatter(console_handler_log_formatter)
+
+
+  # Add the file and console handlers 
+  root_logger.addHandler(file_handler)
+  root_logger.addHandler(console_handler)
+
 
   # Establish the relevant constants for generating the synthetic travel data 
 
@@ -34,11 +76,11 @@ def generate_travel_data():
   DATASETS_LOCATION_PATH = config['travel_data_filepath']['DATASETS_LOCATION_PATH']
 
 
-  print('------------------------------------------------')
-  print('------------------------------------------------')
-  print(f'DATASET DESTINATION PATH: {DATASETS_LOCATION_PATH} ')
-  print('------------------------------------------------')
-  print('------------------------------------------------')
+  root_logger.debug('------------------------------------------------')
+  root_logger.debug('------------------------------------------------')
+  root_logger.info(f'DATASET DESTINATION PATH: {DATASETS_LOCATION_PATH} ')
+  root_logger.debug('------------------------------------------------')
+  root_logger.debug('------------------------------------------------')
 
 
 
@@ -94,7 +136,7 @@ def generate_travel_data():
 
 
   customer_info_df = pd.DataFrame(customer_info_records)
-  # print(customer_info_df)
+  # root_logger.info(customer_info_df)
 
 
    # Write dataframe to JSON file
@@ -109,9 +151,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ CUSTOMER INFORMATION ============================')
-  print(customer_info_df)
+  root_logger.info('----------')
+  root_logger.info('============================ CUSTOMER INFORMATION ============================')
+  root_logger.info(customer_info_df)
   
 
   CUSTOMER_INFO_PROCESSING_END_TIME = time.time()
@@ -142,7 +184,7 @@ def generate_travel_data():
 
 
     flight_schedules_df = pd.DataFrame(flight_schedules)
-    # print(flight_schedules_df)
+    # root_logger.info(flight_schedules_df)
 
 
      # Write dataframe to JSON file
@@ -157,9 +199,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT SCHEDULES ============================')
-  print(flight_schedules_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT SCHEDULES ============================')
+  root_logger.info(flight_schedules_df)
   FLIGHT_SCHEDULES_PROCESSING_END_TIME = time.time()
   
 
@@ -195,9 +237,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ TICKET PRICES ============================')
-  print(ticket_prices_df)
+  root_logger.info('----------')
+  root_logger.info('============================ TICKET PRICES ============================')
+  root_logger.info(ticket_prices_df)
   TICKET_PRICES_PROCESSING_END_TIME = time.time()
   
 
@@ -237,9 +279,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT BOOKINGS ============================')
-  print(flight_bookings_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT BOOKINGS ============================')
+  root_logger.info(flight_bookings_df)
   FLIGHT_BOOKINGS_PROCESSING_END_TIME = time.time()
   
 
@@ -278,9 +320,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ CUSTOMER FEEDBACKS ============================')
-  print(customer_feedbacks_df)
+  root_logger.info('----------')
+  root_logger.info('============================ CUSTOMER FEEDBACKS ============================')
+  root_logger.info(customer_feedbacks_df)
   CUSTOMER_FEEDBACKS_PROCESSING_END_TIME = time.time()
   
     
@@ -335,9 +377,9 @@ def generate_travel_data():
 
 
   # Print the data frame
-  print('----------')
-  print('============================ SALES AGENTS ============================')
-  print(sales_agents_df)
+  root_logger.info('----------')
+  root_logger.info('============================ SALES AGENTS ============================')
+  root_logger.info(sales_agents_df)
   SALES_AGENTS_PROCESSING_END_TIME = time.time()
 
 
@@ -373,9 +415,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT DESTINATIONS ============================')
-  print(flight_destinations_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT DESTINATIONS ============================')
+  root_logger.info(flight_destinations_df)
   FLIGHT_DESTINATION_PROCESSING_END_TIME = time.time()
   
     
@@ -411,9 +453,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT PROMOTIONS & DEALS ============================')
-  print(flight_promotion_deals_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT PROMOTIONS & DEALS ============================')
+  root_logger.info(flight_promotion_deals_df)
   FLIGHT_PROMOTIONS_PROCESSING_END_TIME = time.time()
   
 
@@ -457,9 +499,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ FLIGHT TICKET SALES ============================')
-  print(flight_ticket_sales_df)
+  root_logger.info('----------')
+  root_logger.info('============================ FLIGHT TICKET SALES ============================')
+  root_logger.info(flight_ticket_sales_df)
   FLIGHT_TICKET_SALES_PROCESSING_END_TIME = time.time()
   
 
@@ -513,9 +555,9 @@ def generate_travel_data():
 
 
   # Print the customer information title in console
-  print('----------')
-  print('============================ ACCOMMODATION BOOKINGS ============================')
-  print(accommodation_bookings_df)
+  root_logger.info('----------')
+  root_logger.info('============================ ACCOMMODATION BOOKINGS ============================')
+  root_logger.info(accommodation_bookings_df)
   ACCOMMODATION_BOOKINGS_PROCESSING_END_TIME = time.time()
   
      
