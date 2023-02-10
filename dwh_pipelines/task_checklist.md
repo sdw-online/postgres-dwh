@@ -10,7 +10,7 @@ This is a recollection of all the micro tasks for each DWH layer
 | task_no | layer_name      | task                                                                                                      | task_type| completion_status |
 | -----   | --------------  | ---------------                                                                                           | ---------------  | --------------- |
 | DWH-001 | RAW             | Load source data for “Customer information” into raw table `raw_customer_tbl`                            | SRC_TO_RAW  | COMPLETED |
-| DWH-002 | RAW             | Load source data for “Flight schedules” into raw table `raw_flight_schedules_tbl`| SRC_TO_RAW | NOT_STARTED |
+| DWH-002 | RAW             | Load source data for “Flight schedules” into raw table `raw_flight_schedules_tbl`| SRC_TO_RAW | COMPLETED |
 | DWH-003 | RAW             | Load source data for “Customer feedback” into raw table `raw_customer_feedback_tbl`| SRC_TO_RAW | NOT_STARTED |
 | DWH-004 | RAW             | Load source data for “Ticket price data” into raw table `raw_ticket_price_tbl`| SRC_TO_RAW | NOT_STARTED |
 | DWH-005 | RAW             | Load source data for “Raw customer demographic data” into raw table `raw_customer_demographic_tbl`| SRC_TO_RAW | NOT_STARTED |
@@ -24,7 +24,7 @@ This is a recollection of all the micro tasks for each DWH layer
 | DWH-013 | RAW             | Load source data for “Flight bookings data” into raw table `raw_flight_bookings_tbl`| SRC_TO_RAW | NOT_STARTED |
 | DWH-014 | RAW             | Load source data for “Fight destination revenue” into raw table `raw_flight_destination_revenue_tbl`| SRC_TO_RAW | NOT_STARTED |
 | DWH-015 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_customer_tbl`| SENSITIVE_DATA_MARKING  | COMPLETED |
-| DWH-016 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_flight_schedules_tbl`| SENSITIVE_DATA_MARKING | NOT_STARTED |
+| DWH-016 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_flight_schedules_tbl`| SENSITIVE_DATA_MARKING | COMPLETED |
 | DWH-017 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_customer_feedback_tbl`| SENSITIVE_DATA_MARKING | NOT_STARTED |
 | DWH-018 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_ticket_price_tbl`| SENSITIVE_DATA_MARKING | NOT_STARTED |
 | DWH-019 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_customer_demographic_tbl`| SENSITIVE_DATA_MARKING | NOT_STARTED |
@@ -37,7 +37,7 @@ This is a recollection of all the micro tasks for each DWH layer
 | DWH-026 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_flight_bookings_tbl`| SENSITIVE_DATA_MARKING | NOT_STARTED |
 | DWH-027 | RAW             | Mark the sensitive fields (PII/PHI) in `raw_flight_destination_revenue_tbl`| SENSITIVE_DATA_MARKING | NOT_STARTED |
 | DWH-028 | RAW             | Add event logs to `raw_customer_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | COMPLETED |
-| DWH-029 | RAW             | Add event logs to `raw_flight_schedules_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | NOT_STARTED |
+| DWH-029 | RAW             | Add event logs to `raw_flight_schedules_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | COMPLETED |
 | DWH-030 | RAW             | Add event logs to `raw_customer_feedback_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | NOT_STARTED |
 | DWH-031 | RAW             | Add event logs to `raw_ticket_price_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | NOT_STARTED |
 | DWH-032 | RAW             | Add event logs to `raw_customer_demographic_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | NOT_STARTED |
@@ -50,7 +50,7 @@ This is a recollection of all the micro tasks for each DWH layer
 | DWH-039 | RAW             | Add event logs to `raw_flight_bookings_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | NOT_STARTED |
 | DWH-040 | RAW             | Add event logs to `raw_flight_destination_revenue_tbl`|    LOGGING_RAW_LEVEL_EVENTS  | NOT_STARTED |
 | DWH-041 | RAW             | Design and run data profiling checks on `raw_customer_tbl`|    DATA_PROFILING_CHECKS  | COMPLETED |
-| DWH-042 | RAW             | Design and run data profiling checks on `raw_flight_schedules_tbl`|    DATA_PROFILING_CHECKS  | NOT_STARTED |
+| DWH-042 | RAW             | Design and run data profiling checks on `raw_flight_schedules_tbl`|    DATA_PROFILING_CHECKS  | COMPLETED |
 | DWH-043 | RAW             | Design and run data profiling checks on `raw_customer_feedback_tbl`|    DATA_PROFILING_CHECKS  | NOT_STARTED |
 | DWH-044 | RAW             | Design and run data profiling checks on `raw_ticket_price_tbl`|    DATA_PROFILING_CHECKS  | NOT_STARTED |
 | DWH-045 | RAW             | Design and run data profiling checks on `raw_customer_demographic_tbl`|    DATA_PROFILING_CHECKS  | NOT_STARTED |
