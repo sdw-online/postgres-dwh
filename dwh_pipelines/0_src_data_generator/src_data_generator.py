@@ -51,6 +51,7 @@ def generate_travel_data():
   NO_OF_FLIGHT_TICKET_SALES = 100
   NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
   NO_OF_SALES_AGENTS = 100
+  NO_OF_ACCOMMODATION_BOOKINGS = 15000
 
 
 
@@ -221,7 +222,10 @@ def generate_travel_data():
         'customer_id' : random.choice(customer_info_df['customer_id']),
         'flight_id' : random.choice(flight_schedules_df['flight_id']),
         'ticket_price' : random.randint(0, 700),
-        'booking_date': fake.date_this_decade()
+        'booking_date': fake.date_this_decade(),
+        'payment_method': random.choice(['Credit card', 'Debit card', 'PayPal', 'Bank transfer']),
+        'confirmation_code': ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
+        'checked_in': random.choice(['Yes', 'No'])
      }
      flight_bookings.append(flight_booking)
   
@@ -456,7 +460,55 @@ def generate_travel_data():
 
 
 
+  # ============================ ACCOMMODATION BOOKINGS ============================
 
+   # Create a Faker instance to generate fake data
+  fake = Faker()
+
+  accommodation_options = ['Drayton Manners Hotel', 'Hannah Wilson Hotel', 'Ladberry Sapphire Hotel', 'D.Q Hotel', 'Royal Baked Beans Hotel', 'Breakfast Abroad Hotel', 'Benny Toast Hotel', 'Test DWH Hotel']
+  check_in_date = fake.date_between(start_date='today', end_date='+30d')
+
+  accommodation_bookings = []
+
+  for i in range(NO_OF_ACCOMMODATION_BOOKINGS):
+     accommodation_booking = {
+        'id': uuid.uuid4(),
+        'location' : fake.address(),
+        'room_type' : random.choice(["Single", "Double", "Family", "Luxury"]),
+        'check_in_date' : check_in_date,
+        'check_out_date' : check_in_date + pd.Timedelta(days=random.randint(1, 14)),
+        'booking_date' : fake.date_between(start_date='-365d', end_date='today'),
+        'total_price' : random.randint(50, 500),
+        'customer_id' : random.choice(customer_info_df['customer_id']),
+        'flight_booking_id' : random.choice(flight_bookings_df['flight_booking_id']),
+        'sales_agent_id': random.choice(sales_agents_df['id']),
+        'num_adults': random.randint(1, 4),
+        'num_children': random.randint(0, 2),
+        'total_price': random.uniform(100, 1000),
+        'status': random.choice(['Confirmed', 'Cancelled', 'Pending']),
+        'payment_method': random.choice(['Credit card', 'Debit card', 'PayPal', 'Bank transfer']),
+        'confirmation_code': ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
+        'checked_in': random.choice(['Yes', 'No'])
+     
+     }
+     accommodation_bookings.append(accommodation_booking)
+  
+
+  accommodation_bookings_df = pd.DataFrame(accommodation_bookings)
+
+  # Write dataframe to JSON file
+  with open(f'{DATASETS_LOCATION_PATH}/accommodation_bookings.json', 'w') as accommodation_bookings_file:
+      accommodation_bookings_df_to_json = accommodation_bookings_df.to_json(orient="records", default_handler=str)
+      accommodation_bookings_df_to_json = json.loads(accommodation_bookings_df_to_json)
+      accommodation_bookings_file.write(json.dumps(accommodation_bookings_df_to_json, indent=4, sort_keys=True)) 
+
+
+
+  # Print the customer information title in console
+  print('----------')
+  print('============================ ACCOMMODATION BOOKINGS ============================')
+  print(accommodation_bookings_df)
+  
      
 
 
