@@ -1,13 +1,13 @@
-import psycopg2
-import json
-import configparser
-import logging, coloredlogs
-import pandas as pd 
-from datetime import datetime
+
 import os 
-from pathlib import Path
+import json
 import time 
 import random
+import psycopg2
+import configparser
+from pathlib import Path
+import logging, coloredlogs
+from datetime import datetime
 
 
 # ================================================ LOGGER ================================================
@@ -19,7 +19,7 @@ root_logger.setLevel(logging.DEBUG)
 # Set up formatter for logs 
 file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
 console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
-                                                                                                debug           =   dict    (color  =   'blue'),
+                                                                                                debug           =   dict    (color  =   'white'),
                                                                                                 info            =   dict    (color  =   'green'),
                                                                                                 warning         =   dict    (color  =   'orange'),
                                                                                                 error           =   dict    (color  =   'red',      bold    =   True,   bright      =   True),
@@ -88,7 +88,7 @@ else:
     # Use the local config file from the local machine 
     path    =   os.path.abspath('dwh_pipelines/local_config.ini')
     config.read(path)
-    accommodation_bookings_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + "accommodation_bookings.json"
+    accommodation_bookings_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
 
     host                    =   config['travel_data_filepath']['HOST']
     port                    =   config['travel_data_filepath']['PORT']
@@ -144,6 +144,25 @@ def load_data_to_raw_layer(postgres_connection):
         total_null_values_in_table      =   0 
         successful_rows_upload_count    =   0 
         failed_rows_upload_count        =   0 
+
+        test_bad_row = {
+            'id': 12345,
+            'booking_date': '2022-01-01',
+            'check_in_date': '2022-01-02',
+            'check_out_date': '',  # missing check_out_date
+            'checked_in': 'yes',
+            'confirmation_code': 'ABCDE',
+            'customer_id': 6789,
+            'flight_booking_id': None,
+            'location': 'London',
+            'num_adults': 2,
+            'num_children': 0,
+            'payment_method': 'credit_card',
+            'room_type': 'deluxe',
+            'sales_agent_id': 1111,
+            'status': 'confirmed',
+            'total_price': 500
+        }
 
 
         # Create a cursor object to execute the PG-SQL commands 
@@ -471,7 +490,9 @@ def load_data_to_raw_layer(postgres_connection):
                 root_logger.error(f'---------------------------------')
                 root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
-    
+
+
+        
         ROW_INSERTION_PROCESSING_END_TIME   =   time.time()
 
 
@@ -485,6 +506,9 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.debug(f"")
 
 
+
+
+        # ======================================= DATA PROFILING METRICS =======================================
 
 
         # Prepare data profiling metrics 
@@ -593,7 +617,6 @@ def load_data_to_raw_layer(postgres_connection):
                     SELECT COUNT(*)
                     FROM {schema_name}.{table_name}
                     WHERE {column_name} is NULL
-            
             ''')
             sql_result = cursor.fetchone()[0]
             total_null_values_in_table += sql_result
@@ -681,6 +704,7 @@ def load_data_to_raw_layer(postgres_connection):
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
         postgres_connection.commit()
+        root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 
     except Exception as e:
@@ -692,13 +716,13 @@ def load_data_to_raw_layer(postgres_connection):
         if cursor is not None:
             cursor.close()
             root_logger.debug("")
-            root_logger.debug("Closing cursor.")
+            root_logger.debug("Cursor closed successfully.")
 
         # Close the database connection to Postgres if it exists 
         if postgres_connection is not None:
             postgres_connection.close()
-            root_logger.debug("")
-            root_logger.debug("Closing postgres connection.")
+            # root_logger.debug("")
+            root_logger.debug("Session connected to Postgres database closed.")
 
 
 
