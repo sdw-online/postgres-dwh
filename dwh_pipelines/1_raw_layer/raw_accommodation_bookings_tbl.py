@@ -22,7 +22,7 @@ file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelna
 console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
                                                                                                 debug           =   dict    (color  =   'white'),
                                                                                                 info            =   dict    (color  =   'green'),
-                                                                                                warning         =   dict    (color  =   'orange'),
+                                                                                                warning         =   dict    (color  =   'cyan'),
                                                                                                 error           =   dict    (color  =   'red',      bold    =   True,   bright      =   True),
                                                                                                 critical        =   dict    (color  =   'black',    bold    =   True,   background  =   'red')
                                                                                             ),
@@ -490,23 +490,48 @@ def load_data_to_raw_layer(postgres_connection):
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 
-        """
-        NOTE: It is best practice to engage relevant stakeholders in the process of identifying sensitive data fields from the source data. 
+        note_1 = """NOTE: Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information.          """
+        note_2 = """      Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information. """
+        note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
         
-        Approach this step with caution by taking time to properly understand the underlying data fields to avoid false positives like highlighting the wrong fields, or even missing out the fields containing confidential information. 
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning('================================================')
+        root_logger.warning('           SENSITIVE COLUMN IDENTIFICATION              ')
+        root_logger.warning('================================================')
+        root_logger.warning(f'')
+        root_logger.error(f'{note_1}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_2}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_3}')
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning(f'Here are the sensitive columns in this table ...')
+        
+        sensitive_columns = ['customer_id',
+                            'num_adults',
+                            'num_children',
+                            'sales_agent_id'
+                            ]
+        
+        list_all_columns_in_table = f"""        
+        SELECT * FROM information_schema.columns 
+        WHERE   table_name = '{table_name}'
+        ORDER BY ordinal_position 
+        """
+        total_sensitive_columns = 0
+        for sensitive_column in sensitive_columns:
+            total_sensitive_columns += 1
+            # root_logger.warning(f'')
+            root_logger.warning(f'{total_sensitive_columns} : {sensitive_column}  ')
+        
 
-        Failure to adhere to this could result in exposing your customers and company to harm (e.g. cybersecurity hacks, data breaches, unauthorized personnel  ) 
         
-        """
-
-        
-        
-        sensitive_columns = []
-        sql_script = f"""       SELECT * 
-                                FROM    information_schema.columns 
-                                WHERE   table_name      = '{table_name}'
-                                ORDER BY ordinal_position 
-        """
+        root_logger.warning(f'')
+        root_logger.warning(f'You can list all columns for this table using:')
+        root_logger.warning(f'              {list_all_columns_in_table}                ')
 
 
 
