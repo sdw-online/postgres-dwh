@@ -458,7 +458,8 @@ def load_data_to_raw_layer(postgres_connection):
                 'RAW'
                 )
 
-            cursor.execute(insert_accommodation_bookings_data, values)
+            cursor.execute('EXPLAIN (ANALYZE, BUFFERS) ' + insert_accommodation_bookings_data, values)
+            QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT = cursor.fetchall()
 
 
             # Validate if each row inserted into the table exists 
@@ -468,6 +469,7 @@ def load_data_to_raw_layer(postgres_connection):
                 root_logger.debug(f'---------------------------------')
                 root_logger.info(f'INSERT SUCCESS: Uploaded accommodation_bookings record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
+                root_logger.debug(f"Query Execution Plan: {QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT}")
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
@@ -475,6 +477,7 @@ def load_data_to_raw_layer(postgres_connection):
                 root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
     
+        QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT = cursor.fetchall()
         ROW_INSERTION_PROCESSING_END_TIME = time.time()
 
 
@@ -536,6 +539,14 @@ def load_data_to_raw_layer(postgres_connection):
 
         EXECUTION_TIME_FOR_ROW_COUNT                            =   (ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME - ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME) * 1000
 
+
+
+        # --------- C. Performance statistics (Postgres)
+
+        # cursor.execute('EXPLAIN (ANALYZE BUFFERS) ' + insert_accommodation_bookings_data)
+        root_logger.info(f'------------------------------------------- ')
+        root_logger.info(f'Query Execution Plan for INSERT statement: {QUERY_EXECUTION_PLAN_FOR_INSERT_STATEMENT} ')
+        root_logger.info(f'------------------------------------------- ')
 
 
 
