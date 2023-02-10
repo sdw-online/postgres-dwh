@@ -7,11 +7,26 @@ from faker import Faker
 from datetime import datetime, timedelta
 import configparser
 import os 
+import time
 
 
 def generate_travel_data():
 
-  # Establish the relevant constants for generating the synthetic travel data  
+  # Establish the relevant constants for generating the synthetic travel data 
+
+  NO_OF_CUSTOMER_INFO_ROWS = 100
+  NO_OF_FLIGHT_SCHEDULES = 100
+  NO_OF_CUSTOMER_FEEDBACKS = 100
+  NO_OF_TICKET_PRICES = 100
+  NO_OF_FLIGHT_BOOKINGS = 100
+  NO_OF_FLIGHT_DESTINATIONS = 100
+  NO_OF_FLIGHT_TICKET_SALES = 100
+  NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
+  NO_OF_SALES_AGENTS = 100
+  NO_OF_ACCOMMODATION_BOOKINGS = 40000 
+
+
+  # Set up environment variables 
   config = configparser.ConfigParser()
   path = os.path.abspath('dwh_pipelines/local_config.ini')
   config.read(path)
@@ -26,32 +41,6 @@ def generate_travel_data():
   print('------------------------------------------------')
 
 
-  NUM_TRAVEL_OPTIONS = 30
-  NUM_CUSTOMERS = 1500
-  NUM_FX_RATES = 800
-  NUM_TRAVEL_BOOKINGS = 200
-  NUM_SALES = 20000
-  NUM_SALES_AGENTS = 65
-  NUM_ACCOMMODATION_BOOKINGS = 20000
-  DESTINATIONS = ['Paris', 'Rome', 'Barcelona', 'Amsterdam', 'London', 'New York', 'Sydney', 'Bali', 'Maldives', 'Tokyo',
-                  'Dubai', 'Bangkok', 'Istanbul', 'Cancun', 'Phuket', 'Bora Bora', 'Santorini', 'Cancun', 
-                  'Maui', 'Serengeti', 'Venice', 'Prague', 'Maui']
-  INCLUSIONS = ['Accommodation', 'Breakfast', 'Lunch', 'Dinner', 'Transportation', 'Guided tours', 'Entrance fees', 'Sightseeing', 'Airport transfers', 'Cruise']
-  EXCLUSIONS = ['Flights', 'Visas', 'Insurance', 'Personal expenses', 'Optional activities', 'Tips and gratuities', 'Extra meals', 'Beverages', 'Laundry services', 'Phone calls']
-  CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'DKK', 'HKD', 'NOK', 'SEK', 'SGD', 'THB', 'TWD', 'ZAR']
-
-
-
-  NO_OF_CUSTOMER_INFO_ROWS = 100
-  NO_OF_FLIGHT_SCHEDULES = 100
-  NO_OF_CUSTOMER_FEEDBACKS = 100
-  NO_OF_TICKET_PRICES = 100
-  NO_OF_FLIGHT_BOOKINGS = 100
-  NO_OF_FLIGHT_DESTINATIONS = 100
-  NO_OF_FLIGHT_TICKET_SALES = 100
-  NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
-  NO_OF_SALES_AGENTS = 100
-  NO_OF_ACCOMMODATION_BOOKINGS = 40000
 
 
 
@@ -60,6 +49,7 @@ def generate_travel_data():
   # ============================ CUSTOMER INFORMATION ============================
 
    # Create a Faker instance to generate fake data
+  CUSTOMER_INFO_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -124,6 +114,7 @@ def generate_travel_data():
   print(customer_info_df)
   
 
+  CUSTOMER_INFO_PROCESSING_END_TIME = time.time()
 
   # ========================================================================================================================================================================
 
@@ -132,6 +123,7 @@ def generate_travel_data():
   # ============================ FLIGHT SCHEDULES ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_SCHEDULES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -168,6 +160,7 @@ def generate_travel_data():
   print('----------')
   print('============================ FLIGHT SCHEDULES ============================')
   print(flight_schedules_df)
+  FLIGHT_SCHEDULES_PROCESSING_END_TIME = time.time()
   
 
 
@@ -177,6 +170,7 @@ def generate_travel_data():
    # ============================ TICKET PRICES ============================
 
    # Create a Faker instance to generate fake data
+  TICKET_PRICES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -204,6 +198,7 @@ def generate_travel_data():
   print('----------')
   print('============================ TICKET PRICES ============================')
   print(ticket_prices_df)
+  TICKET_PRICES_PROCESSING_END_TIME = time.time()
   
 
 
@@ -211,6 +206,7 @@ def generate_travel_data():
   # ============================ FLIGHT BOOKINGS ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_BOOKINGS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -244,6 +240,7 @@ def generate_travel_data():
   print('----------')
   print('============================ FLIGHT BOOKINGS ============================')
   print(flight_bookings_df)
+  FLIGHT_BOOKINGS_PROCESSING_END_TIME = time.time()
   
 
 
@@ -252,6 +249,7 @@ def generate_travel_data():
   # ============================ CUSTOMER FEEDBACK ============================
 
    # Create a Faker instance to generate fake data
+  CUSTOMER_FEEDBACKS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
 
@@ -283,12 +281,14 @@ def generate_travel_data():
   print('----------')
   print('============================ CUSTOMER FEEDBACKS ============================')
   print(customer_feedbacks_df)
+  CUSTOMER_FEEDBACKS_PROCESSING_END_TIME = time.time()
   
     
 
   # ============================ SALES AGENTS ============================
 
 
+  SALES_AGENTS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   
@@ -338,6 +338,7 @@ def generate_travel_data():
   print('----------')
   print('============================ SALES AGENTS ============================')
   print(sales_agents_df)
+  SALES_AGENTS_PROCESSING_END_TIME = time.time()
 
 
 
@@ -346,6 +347,7 @@ def generate_travel_data():
   # ============================ FLIGHT DESTINATION ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_DESTINATION_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   flight_destinations = []
@@ -374,6 +376,7 @@ def generate_travel_data():
   print('----------')
   print('============================ FLIGHT DESTINATIONS ============================')
   print(flight_destinations_df)
+  FLIGHT_DESTINATION_PROCESSING_END_TIME = time.time()
   
     
 
@@ -381,6 +384,7 @@ def generate_travel_data():
   # ============================ FLIGHT PROMOTIONS & DEALS ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_PROMOTIONS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   flight_promotion_deals = []
@@ -410,6 +414,7 @@ def generate_travel_data():
   print('----------')
   print('============================ FLIGHT PROMOTIONS & DEALS ============================')
   print(flight_promotion_deals_df)
+  FLIGHT_PROMOTIONS_PROCESSING_END_TIME = time.time()
   
 
      
@@ -418,6 +423,7 @@ def generate_travel_data():
   # ============================ FLIGHT TICKET SALES ============================
 
    # Create a Faker instance to generate fake data
+  FLIGHT_TICKET_SALES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   flight_ticket_sales = []
@@ -454,6 +460,7 @@ def generate_travel_data():
   print('----------')
   print('============================ FLIGHT TICKET SALES ============================')
   print(flight_ticket_sales_df)
+  FLIGHT_TICKET_SALES_PROCESSING_END_TIME = time.time()
   
 
      
@@ -463,21 +470,22 @@ def generate_travel_data():
   # ============================ ACCOMMODATION BOOKINGS ============================
 
    # Create a Faker instance to generate fake data
+  ACCOMMODATION_BOOKINGS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
   accommodation_options = ['Drayton Manners Hotel', 'Hannah Wilson Hotel', 'Ladberry Sapphire Hotel', 'D.Q Hotel', 'Royal Baked Beans Hotel', 'Breakfast Abroad Hotel', 'Benny Toast Hotel', 'Test DWH Hotel']
-  check_in_date = fake.date_between(start_date='today', end_date='+30d')
+  check_in_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
 
   accommodation_bookings = []
 
   for i in range(NO_OF_ACCOMMODATION_BOOKINGS):
      accommodation_booking = {
         'id': uuid.uuid4(),
-        'location' : fake.address(),
+        'location' : fake.city(),
         'room_type' : random.choice(["Single", "Double", "Family", "Luxury"]),
         'check_in_date' : check_in_date,
         'check_out_date' : check_in_date + pd.Timedelta(days=random.randint(1, 14)),
-        'booking_date' : fake.date_between(start_date='-365d', end_date='today'),
+        'booking_date' : random.choice(pd.date_range(start='2012-01-01', end='2022-12-31')),
         'total_price' : random.randint(50, 500),
         'customer_id' : random.choice(customer_info_df['customer_id']),
         'flight_booking_id' : random.choice(flight_bookings_df['flight_booking_id']),
@@ -508,6 +516,7 @@ def generate_travel_data():
   print('----------')
   print('============================ ACCOMMODATION BOOKINGS ============================')
   print(accommodation_bookings_df)
+  ACCOMMODATION_BOOKINGS_PROCESSING_END_TIME = time.time()
   
      
 
