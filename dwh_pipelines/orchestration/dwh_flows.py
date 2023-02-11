@@ -1,4 +1,6 @@
 from prefect import task, flow
+from prefect.deployments import Deployment
+from prefect.orion.schemas.schedules import IntervalSchedule
 import logging, coloredlogs
 from pathlib import Path
 
@@ -41,7 +43,10 @@ root_logger.addHandler(file_handler)
 
 
 # Only add the console handler if the script is running directly from this location 
-if __name__=="__main__":
+
+ACTIVATE_PREFECT_CONSOLE_STREAMS_VIA_CUSTOM_LOGGER = False
+
+if ACTIVATE_PREFECT_CONSOLE_STREAMS_VIA_CUSTOM_LOGGER:
     root_logger.addHandler(console_handler)
 
 
@@ -240,7 +245,7 @@ def run_raw_layer_flow():
     load_data_to_raw_ticket_prices_tbl()
     root_logger.info("SUCCESS! Completed loading source data into 'raw_ticket_prices_tbl'! ")
 
-    
+
     root_logger.info("Now terminating session for raw layer tasks...")
     root_logger.info("")
     root_logger.info("Raw tables processing session ended.")
@@ -250,6 +255,6 @@ def run_raw_layer_flow():
 
 
 # Specify flow execution order in DAG-less manner  
-
-generate_source_data_flow()
-run_raw_layer_flow()
+if __name__=="__main__":
+    generate_source_data_flow()
+    run_raw_layer_flow()
