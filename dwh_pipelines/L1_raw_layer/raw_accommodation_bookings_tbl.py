@@ -135,7 +135,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_raw_table(postgres_connection):
+def load_accommodation_bookings_data_to_raw_table(postgres_connection):
     try:
         
         # Set up constants
@@ -941,5 +941,5 @@ def load_data_to_raw_table(postgres_connection):
 
 
 
-load_data_to_raw_table(postgres_connection)
+load_accommodation_bookings_data_to_raw_table(postgres_connection)
 
