@@ -40,7 +40,7 @@ def generate_travel_data():
 
   # Set up file handler object for logging events to file
   current_filepath    =   Path(__file__).stem
-  file_handler        =   logging.FileHandler('logs/0_src_data_generator/' + current_filepath + '.log', mode='w')
+  file_handler        =   logging.FileHandler('logs/L0_src_data_generator/' + current_filepath + '.log', mode='w')
   file_handler.setFormatter(file_handler_log_formatter)
 
 

@@ -35,7 +35,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/1_raw_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L1_raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -58,7 +58,7 @@ root_logger.addHandler(console_handler)
 USING_AIRFLOW   =   False
 
 # Create source file variable 
-src_file    =   'flight_destinations.json'
+src_file    =   'sales_agents.json'
 
 
 # Create a config file for storing environment variables
@@ -67,7 +67,7 @@ if USING_AIRFLOW:
 
     # Use the airflow config file from the airflow container 
     config.read('/usr/local/airflow/dags/etl_to_postgres/airflow_config.ini')
-    flight_destinations_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
+    sales_agents_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
 
     host                    =   config['postgres_airflow_config']['HOST']
     port                    =   config['postgres_airflow_config']['PORT']
@@ -84,7 +84,7 @@ else:
     # Use the local config file from the local machine 
     path    =   os.path.abspath('dwh_pipelines/local_config.ini')
     config.read(path)
-    flight_destinations_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
+    sales_agents_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
 
     host                    =   config['travel_data_filepath']['HOST']
     port                    =   config['travel_data_filepath']['PORT']
@@ -104,18 +104,18 @@ root_logger.info("Beginning the source data extraction process...")
 COMPUTE_START_TIME  =   time.time()
 
 
-with open(flight_destinations_path, 'r') as flight_destinations_file:    
+with open(sales_agents_path, 'r') as sales_agents_file:    
     
     try:
-        flight_destinations_data = json.load(flight_destinations_file)
-        flight_destinations_data = flight_destinations_data[0:100]
+        sales_agents_data = json.load(sales_agents_file)
+        sales_agents_data = sales_agents_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
-        root_logger.info(f"File type: '{type(flight_destinations_data)}'")
+        root_logger.info(f"File type: '{type(sales_agents_data)}'")
 
     except:
         root_logger.error("Unable to locate source file...terminating process...")
         raise Exception("No source file located")
-    
+
 
 postgres_connection = psycopg2.connect(
                 host        =   host,
@@ -133,7 +133,7 @@ def load_data_to_raw_layer(postgres_connection):
         CURRENT_TIMESTAMP               =   datetime.now()
         db_layer_name                   =   database
         schema_name                     =   'main'
-        table_name                      =   'raw_flight_destinations_tbl'
+        table_name                      =   'raw_sales_agents_tbl'
         data_warehouse_layer            =   'RAW'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -176,24 +176,32 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for table deletion and validation check  
-        delete_raw_flight_destinations_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
+        delete_raw_sales_agents_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_raw_flight_destinations_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_sales_agents_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_raw_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                                                                            flight_id          UUID PRIMARY KEY,
-                                                                            arrival_city       VARCHAR(255),
-                                                                            departure_city     VARCHAR(255)
+        create_raw_sales_agents_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                                                                            id                              UUID PRIMARY KEY,
+                                                                            first_name                      VARCHAR(255) NOT NULL,
+                                                                            last_name                       VARCHAR(255) NOT NULL,
+                                                                            email                           VARCHAR(255) NOT NULL,
+                                                                            phone                           VARCHAR(255) NOT NULL,
+                                                                            location                        VARCHAR(255) NOT NULL,
+                                                                            nationality                     VARCHAR(255) NOT NULL,
+                                                                            seniority_level                 VARCHAR(255) NOT NULL,
+                                                                            service_speciality              VARCHAR(255) NOT NULL,
+                                                                            commission                      NUMERIC(18, 6) NOT NULL,
+                                                                            years_experience                INTEGER NOT NULL
                                                                         );
 
 
 
         '''
 
-        check_if_raw_flight_destinations_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_sales_agents_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -201,7 +209,7 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_raw_flight_destinations_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
+        add_data_lineage_to_raw_sales_agents_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -228,10 +236,18 @@ def load_data_to_raw_layer(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_flight_destinations_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
-                                                                                flight_id, 
-                                                                                arrival_city, 
-                                                                                departure_city,
+        insert_sales_agents_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
+                                                                                id,
+                                                                                first_name,
+                                                                                last_name,
+                                                                                email,
+                                                                                phone,
+                                                                                location,
+                                                                                nationality,
+                                                                                seniority_level,
+                                                                                service_speciality,
+                                                                                commission,
+                                                                                years_experience,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -240,7 +256,7 @@ def load_data_to_raw_layer(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -302,12 +318,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_raw_flight_destinations_tbl_if_exists)
+        cursor.execute(delete_raw_sales_agents_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_raw_flight_destinations_tbl_is_deleted)
+        cursor.execute(check_if_raw_sales_agents_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -316,14 +332,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_destinations_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_sales_agents_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_destinations_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_sales_agents_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -331,12 +347,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_raw_flight_destinations_tbl)
+        cursor.execute(create_raw_sales_agents_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_raw_flight_destinations_tbl_exists)
+        cursor.execute(check_if_raw_sales_agents_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -345,14 +361,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {db_layer_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_destinations_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_sales_agents_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_destinations_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_sales_agents_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -360,7 +376,7 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_raw_flight_destinations_tbl)
+        cursor.execute(add_data_lineage_to_raw_sales_agents_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -395,27 +411,29 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
         root_logger.debug(f"")
 
-        used_ids = []
 
-        for flight_destinations in flight_destinations_data:
-            flight_id = flight_destinations['flight_id']
-            if flight_id in used_ids:
-                continue
-            else:
-                used_ids.append(flight_id)
-                values = (
-                    flight_destinations['flight_id'], 
-                    flight_destinations['arrival_city'], 
-                    flight_destinations['departure_city'],
-                    CURRENT_TIMESTAMP,
-                    CURRENT_TIMESTAMP,
-                    random.choice(source_system),
-                    src_file,
-                    CURRENT_TIMESTAMP,
-                    'RAW'
-                    )
+        for sales_agents in sales_agents_data:
+            values = (
+                sales_agents['id'],
+                sales_agents['first_name'],
+                sales_agents['last_name'],
+                sales_agents['email'],
+                sales_agents['phone'],
+                sales_agents['location'],
+                sales_agents['nationality'],
+                sales_agents['seniority_level'],
+                sales_agents['service_speciality'],
+                sales_agents['commission'],
+                sales_agents['years_experience'],
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP,
+                random.choice(source_system),
+                src_file,
+                CURRENT_TIMESTAMP,
+                'RAW'
+                )
 
-                cursor.execute(insert_flight_destinations_data, values)
+            cursor.execute(insert_sales_agents_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -423,13 +441,13 @@ def load_data_to_raw_layer(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded flight_destinations record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded sales_agents record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert flight_destinations record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert sales_agents record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -472,7 +490,17 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = [None
+        sensitive_columns_selected = ['id',
+                                    'first_name',
+                                    'last_name',
+                                    'email',
+                                    'phone',
+                                    'location',
+                                    'nationality',
+                                    'seniority_level',
+                                    'service_speciality',
+                                    'commission',
+                                    'years_experience'
                             ]
         
         

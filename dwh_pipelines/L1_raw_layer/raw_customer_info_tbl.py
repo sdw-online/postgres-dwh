@@ -35,7 +35,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/1_raw_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L1_raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -58,7 +58,7 @@ root_logger.addHandler(console_handler)
 USING_AIRFLOW   =   False
 
 # Create source file variable 
-src_file    =   'flight_schedules.json'
+src_file    =   'customer_info.json'
 
 
 # Create a config file for storing environment variables
@@ -67,7 +67,7 @@ if USING_AIRFLOW:
 
     # Use the airflow config file from the airflow container 
     config.read('/usr/local/airflow/dags/etl_to_postgres/airflow_config.ini')
-    flight_schedules_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
+    customer_info_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
 
     host                    =   config['postgres_airflow_config']['HOST']
     port                    =   config['postgres_airflow_config']['PORT']
@@ -84,7 +84,7 @@ else:
     # Use the local config file from the local machine 
     path    =   os.path.abspath('dwh_pipelines/local_config.ini')
     config.read(path)
-    flight_schedules_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
+    customer_info_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
 
     host                    =   config['travel_data_filepath']['HOST']
     port                    =   config['travel_data_filepath']['PORT']
@@ -104,13 +104,13 @@ root_logger.info("Beginning the source data extraction process...")
 COMPUTE_START_TIME  =   time.time()
 
 
-with open(flight_schedules_path, 'r') as flight_schedules_file:    
+with open(customer_info_path, 'r') as customer_info_file:    
     
     try:
-        flight_schedules_data = json.load(flight_schedules_file)
-        flight_schedules_data = flight_schedules_data[0:100]
+        customer_info_data = json.load(customer_info_file)
+        customer_info_data = customer_info_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
-        root_logger.info(f"File type: '{type(flight_schedules_data)}'")
+        root_logger.info(f"File type: '{type(customer_info_data)}'")
 
     except:
         root_logger.error("Unable to locate source file...terminating process...")
@@ -133,7 +133,7 @@ def load_data_to_raw_layer(postgres_connection):
         CURRENT_TIMESTAMP               =   datetime.now()
         db_layer_name                   =   database
         schema_name                     =   'main'
-        table_name                      =   'raw_flight_schedules_tbl'
+        table_name                      =   'raw_customer_info_tbl'
         data_warehouse_layer            =   'RAW'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -176,27 +176,40 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for table deletion and validation check  
-        delete_raw_flight_schedules_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
+        delete_raw_customer_info_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_raw_flight_schedules_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_customer_info_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_raw_flight_schedules_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                                                                                flight_id           UUID PRIMARY KEY,
-                                                                                flight_date         BIGINT NOT NULL,
-                                                                                departure_city      VARCHAR(255) NOT NULL,
-                                                                                departure_time      TIME NOT NULL,
-                                                                                arrival_city        VARCHAR(255) NOT NULL,
-                                                                                arrival_time        TIME NOT NULL
+        create_raw_customer_info_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                                                                    customer_id                             UUID PRIMARY KEY,
+                                                                    address                                 varchar(255),
+                                                                    age                                     NUMERIC(18, 6),
+                                                                    city                                    varchar(255),
+                                                                    created_date                            bigint,
+                                                                    credit_card                             varchar(255),
+                                                                    credit_card_provider                    varchar(255),
+                                                                    customer_contact_preference_desc        varchar,
+                                                                    customer_contact_preference_id          UUID,
+                                                                    dob                                     bigint,
+                                                                    email                                   varchar(255),
+                                                                    first_name                              varchar(255),
+                                                                    last_name                               varchar(255),
+                                                                    last_updated_date                       bigint,
+                                                                    nationality                             varchar(255),
+                                                                    phone_number                            varchar(255),
+                                                                    place_of_birth                          varchar(255),
+                                                                    state                                   varchar(255),
+                                                                    zip                                     varchar(255)
                                                                         );
 
 
 
         '''
 
-        check_if_raw_flight_schedules_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_customer_info_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -204,7 +217,7 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_raw_flight_schedules_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
+        add_data_lineage_to_raw_customer_info_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -231,22 +244,35 @@ def load_data_to_raw_layer(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_flight_schedules_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
-                                                                                flight_id, 
-                                                                                flight_date, 
-                                                                                departure_city, 
-                                                                                departure_time, 
-                                                                                arrival_city, 
-                                                                                arrival_time,
-                                                                                created_at,
-                                                                                updated_at,
-                                                                                source_system,
-                                                                                source_file,
-                                                                                load_timestamp,
+        insert_customer_info_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
+                                                                                address, 
+                                                                                age, 
+                                                                                city, 
+                                                                                created_date, 
+                                                                                credit_card, 
+                                                                                credit_card_provider, 
+                                                                                customer_contact_preference_desc,
+                                                                                customer_contact_preference_id, 
+                                                                                customer_id, 
+                                                                                dob, 
+                                                                                email, 
+                                                                                first_name, 
+                                                                                last_name, 
+                                                                                last_updated_date, 
+                                                                                nationality,
+                                                                                phone_number, 
+                                                                                place_of_birth, 
+                                                                                state, 
+                                                                                zip, 
+                                                                                created_at, 
+                                                                                updated_at, 
+                                                                                source_system, 
+                                                                                source_file, 
+                                                                                load_timestamp, 
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -264,9 +290,11 @@ def load_data_to_raw_layer(postgres_connection):
         count_total_no_of_unique_records_in_table   =   f'''        SELECT COUNT(*) FROM 
                                                                             (SELECT DISTINCT * FROM {schema_name}.{table_name}) as unique_records   
         '''
-        get_list_of_column_names    =   f'''                SELECT column_name FROM information_schema.columns 
-                                                            WHERE   table_name = '{table_name}'
-                                                            ORDER BY ordinal_position 
+        get_list_of_column_names    =   f'''                    SELECT      column_name
+                                                                FROM        information_schema.columns  
+                                                                WHERE       table_name   =  '{table_name}'
+                                                                ORDER BY    ordinal_position 
+
         '''
 
         
@@ -308,12 +336,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_raw_flight_schedules_tbl_if_exists)
+        cursor.execute(delete_raw_customer_info_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_raw_flight_schedules_tbl_is_deleted)
+        cursor.execute(check_if_raw_customer_info_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -322,14 +350,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_customer_info_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_customer_info_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -337,12 +365,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_raw_flight_schedules_tbl)
+        cursor.execute(create_raw_customer_info_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_raw_flight_schedules_tbl_exists)
+        cursor.execute(check_if_raw_customer_info_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -351,14 +379,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {db_layer_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_customer_info_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_customer_info_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -366,7 +394,7 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_raw_flight_schedules_tbl)
+        cursor.execute(add_data_lineage_to_raw_customer_info_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -402,14 +430,27 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.debug(f"")
 
 
-        for flight_schedules in flight_schedules_data:
+        for customer_info in customer_info_data:
             values = (
-                flight_schedules['flight_id'], 
-                flight_schedules['flight_date'], 
-                flight_schedules['departure_city'], 
-                flight_schedules['departure_time'], 
-                flight_schedules['arrival_city'], 
-                flight_schedules['arrival_time'],
+                customer_info['address'], 
+                customer_info['age'], 
+                customer_info['city'], 
+                customer_info['created_date'], 
+                customer_info['credit_card'], 
+                customer_info['credit_card_provider'], 
+                json.dumps(customer_info['customer_contact_preference_desc']),
+                customer_info['customer_contact_preference_id'], 
+                customer_info['customer_id'], 
+                customer_info['dob'], 
+                customer_info['email'], 
+                customer_info['first_name'], 
+                customer_info['last_name'], 
+                customer_info['last_updated_date'], 
+                customer_info['nationality'],
+                customer_info['phone_number'], 
+                customer_info['place_of_birth'], 
+                customer_info['state'], 
+                customer_info['zip'],
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -418,7 +459,7 @@ def load_data_to_raw_layer(postgres_connection):
                 'RAW'
                 )
 
-            cursor.execute(insert_flight_schedules_data, values)
+            cursor.execute(insert_customer_info_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -426,13 +467,13 @@ def load_data_to_raw_layer(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded flight_schedules record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded customer_info record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert flight_schedules record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert customer_info record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -475,7 +516,25 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = [None
+        sensitive_columns_selected = ['customer_id',
+                                        'address',
+                                        'age',
+                                        'city',
+                                        'created_date',
+                                        'credit_card',
+                                        'credit_card_provider',
+                                        'customer_contact_preference_desc',
+                                        'customer_contact_preference_id',
+                                        'dob',
+                                        'email'  ,
+                                        'first_name',
+                                        'last_name',
+                                        'last_updated_date',
+                                        'nationality',
+                                        'phone_number',
+                                        'place_of_birth',
+                                        'state',
+                                        'zip'
                             ]
         
         
@@ -542,6 +601,10 @@ def load_data_to_raw_layer(postgres_connection):
 
         root_logger.warning(f'')
         root_logger.warning(f'')
+
+
+
+
 
 
 

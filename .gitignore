@@ -7,5 +7,5 @@
 
 
 # Folders 
-/dwh_pipelines/0_src_data_generator/src_data
+/dwh_pipelines/L0_src_data_generator/src_data
 /logs
