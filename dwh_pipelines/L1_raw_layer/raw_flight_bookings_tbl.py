@@ -35,7 +35,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/1_raw_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L1_raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -46,7 +46,11 @@ console_handler.setFormatter(console_handler_log_formatter)
 
 # Add the file and console handlers 
 root_logger.addHandler(file_handler)
-root_logger.addHandler(console_handler)
+
+
+# Only add the console handler if the script is running directly from this location 
+if __name__=="__main__":
+    root_logger.addHandler(console_handler)
 
 
 
@@ -58,7 +62,7 @@ root_logger.addHandler(console_handler)
 USING_AIRFLOW   =   False
 
 # Create source file variable 
-src_file    =   'customer_feedbacks.json'
+src_file    =   'flight_bookings.json'
 
 
 # Create a config file for storing environment variables
@@ -67,7 +71,7 @@ if USING_AIRFLOW:
 
     # Use the airflow config file from the airflow container 
     config.read('/usr/local/airflow/dags/etl_to_postgres/airflow_config.ini')
-    customer_feedbacks_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
+    flight_bookings_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
 
     host                    =   config['postgres_airflow_config']['HOST']
     port                    =   config['postgres_airflow_config']['PORT']
@@ -84,7 +88,7 @@ else:
     # Use the local config file from the local machine 
     path    =   os.path.abspath('dwh_pipelines/local_config.ini')
     config.read(path)
-    customer_feedbacks_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
+    flight_bookings_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
 
     host                    =   config['travel_data_filepath']['HOST']
     port                    =   config['travel_data_filepath']['PORT']
@@ -104,13 +108,13 @@ root_logger.info("Beginning the source data extraction process...")
 COMPUTE_START_TIME  =   time.time()
 
 
-with open(customer_feedbacks_path, 'r') as customer_feedbacks_file:    
+with open(flight_bookings_path, 'r') as flight_bookings_file:    
     
     try:
-        customer_feedbacks_data = json.load(customer_feedbacks_file)
-        customer_feedbacks_data = customer_feedbacks_data[0:100]
+        flight_bookings_data = json.load(flight_bookings_file)
+        flight_bookings_data = flight_bookings_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
-        root_logger.info(f"File type: '{type(customer_feedbacks_data)}'")
+        root_logger.info(f"File type: '{type(flight_bookings_data)}'")
 
     except:
         root_logger.error("Unable to locate source file...terminating process...")
@@ -126,14 +130,14 @@ postgres_connection = psycopg2.connect(
         )
 
 
-def load_data_to_raw_layer(postgres_connection):
+def load_flight_bookings_data_to_raw_table(postgres_connection):
     try:
         
         # Set up constants
         CURRENT_TIMESTAMP               =   datetime.now()
         db_layer_name                   =   database
         schema_name                     =   'main'
-        table_name                      =   'raw_customer_feedbacks_tbl'
+        table_name                      =   'raw_flight_bookings_tbl'
         data_warehouse_layer            =   'RAW'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -176,26 +180,29 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for table deletion and validation check  
-        delete_raw_customer_feedbacks_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
+        delete_raw_flight_bookings_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_raw_customer_feedbacks_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_flight_bookings_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_raw_customer_feedbacks_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                                                                                feedback_id         UUID         PRIMARY KEY,
-                                                                                customer_id         UUID         NOT NULL,
-                                                                                flight_booking_id   UUID         NOT NULL,
-                                                                                feedback_date       BIGINT       NOT NULL,
-                                                                                feedback_text       VARCHAR(255) NOT NULL
+        create_raw_flight_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                                                                    confirmation_code           VARCHAR(255) PRIMARY KEY,
+                                                                    booking_date                BIGINT,
+                                                                    checked_in                  VARCHAR(255),
+                                                                    customer_id                 VARCHAR(255),
+                                                                    flight_booking_id           VARCHAR(255),
+                                                                    flight_id                   VARCHAR(255),
+                                                                    payment_method              VARCHAR(255),
+                                                                    ticket_price                NUMERIC(18, 6)
                                                                         );
 
 
 
         '''
 
-        check_if_raw_customer_feedbacks_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_flight_bookings_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -203,7 +210,7 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_raw_customer_feedbacks_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
+        add_data_lineage_to_raw_flight_bookings_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -230,23 +237,24 @@ def load_data_to_raw_layer(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_customer_feedbacks_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
-                                                                                feedback_id, 
-                                                                                customer_id, 
-                                                                                flight_booking_id, 
-                                                                                feedback_date, 
-                                                                                feedback_text, 
-                                                                                created_at, 
-                                                                                updated_at, 
-                                                                                source_system, 
-                                                                                source_file, 
-                                                                                load_timestamp, 
+        insert_flight_bookings_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
+                                                                                confirmation_code,
+                                                                                booking_date,
+                                                                                checked_in,
+                                                                                customer_id,
+                                                                                flight_booking_id,
+                                                                                flight_id,
+                                                                                payment_method,
+                                                                                ticket_price,
+                                                                                created_at,
+                                                                                updated_at,
+                                                                                source_system,
+                                                                                source_file,
+                                                                                load_timestamp,
                                                                                 dwh_layer
-
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                                                                    
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -308,12 +316,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_raw_customer_feedbacks_tbl_if_exists)
+        cursor.execute(delete_raw_flight_bookings_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_raw_customer_feedbacks_tbl_is_deleted)
+        cursor.execute(check_if_raw_flight_bookings_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -322,14 +330,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_customer_feedbacks_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_bookings_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_customer_feedbacks_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_bookings_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -337,12 +345,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_raw_customer_feedbacks_tbl)
+        cursor.execute(create_raw_flight_bookings_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_raw_customer_feedbacks_tbl_exists)
+        cursor.execute(check_if_raw_flight_bookings_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -351,14 +359,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {db_layer_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_customer_feedbacks_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_bookings_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_customer_feedbacks_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_bookings_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -366,7 +374,7 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_raw_customer_feedbacks_tbl)
+        cursor.execute(add_data_lineage_to_raw_flight_bookings_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -402,13 +410,16 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.debug(f"")
 
 
-        for customer_feedbacks in customer_feedbacks_data:
+        for flight_bookings in flight_bookings_data:
             values = (
-                customer_feedbacks['feedback_id'], 
-                customer_feedbacks['customer_id'], 
-                customer_feedbacks['flight_booking_id'], 
-                customer_feedbacks['feedback_date'], 
-                customer_feedbacks['feedback_text'],
+                flight_bookings['confirmation_code'],
+                flight_bookings['booking_date'],
+                flight_bookings['checked_in'],
+                flight_bookings['customer_id'],
+                flight_bookings['flight_booking_id'],
+                flight_bookings['flight_id'],
+                flight_bookings['payment_method'],
+                flight_bookings['ticket_price'],
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -417,7 +428,7 @@ def load_data_to_raw_layer(postgres_connection):
                 'RAW'
                 )
 
-            cursor.execute(insert_customer_feedbacks_data, values)
+            cursor.execute(insert_flight_bookings_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -425,13 +436,13 @@ def load_data_to_raw_layer(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded customer_feedbacks record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded flight_bookings record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert customer_feedbacks record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert flight_bookings record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -474,7 +485,14 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['customer_id', 'flight_booking_id', 'feedback_date', 'feedback_text'
+        sensitive_columns_selected = ['confirmation_code',
+                                    'booking_date',
+                                    'checked_in',
+                                    'customer_id',
+                                    'flight_booking_id',
+                                    'flight_id',
+                                    'payment_method',
+                                    'ticket_price'
                             ]
         
         
@@ -898,5 +916,5 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
-load_data_to_raw_layer(postgres_connection)
+load_flight_bookings_data_to_raw_table(postgres_connection)
 

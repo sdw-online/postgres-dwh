@@ -35,7 +35,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/1_raw_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L1_raw_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -46,7 +46,11 @@ console_handler.setFormatter(console_handler_log_formatter)
 
 # Add the file and console handlers 
 root_logger.addHandler(file_handler)
-root_logger.addHandler(console_handler)
+
+
+# Only add the console handler if the script is running directly from this location 
+if __name__=="__main__":
+    root_logger.addHandler(console_handler)
 
 
 
@@ -58,7 +62,7 @@ root_logger.addHandler(console_handler)
 USING_AIRFLOW   =   False
 
 # Create source file variable 
-src_file    =   'flight_ticket_sales.json'
+src_file    =   'flight_schedules.json'
 
 
 # Create a config file for storing environment variables
@@ -67,7 +71,7 @@ if USING_AIRFLOW:
 
     # Use the airflow config file from the airflow container 
     config.read('/usr/local/airflow/dags/etl_to_postgres/airflow_config.ini')
-    flight_ticket_sales_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
+    flight_schedules_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
 
     host                    =   config['postgres_airflow_config']['HOST']
     port                    =   config['postgres_airflow_config']['PORT']
@@ -84,7 +88,7 @@ else:
     # Use the local config file from the local machine 
     path    =   os.path.abspath('dwh_pipelines/local_config.ini')
     config.read(path)
-    flight_ticket_sales_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
+    flight_schedules_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
 
     host                    =   config['travel_data_filepath']['HOST']
     port                    =   config['travel_data_filepath']['PORT']
@@ -104,13 +108,13 @@ root_logger.info("Beginning the source data extraction process...")
 COMPUTE_START_TIME  =   time.time()
 
 
-with open(flight_ticket_sales_path, 'r') as flight_ticket_sales_file:    
+with open(flight_schedules_path, 'r') as flight_schedules_file:    
     
     try:
-        flight_ticket_sales_data = json.load(flight_ticket_sales_file)
-        flight_ticket_sales_data = flight_ticket_sales_data[0:100]
+        flight_schedules_data = json.load(flight_schedules_file)
+        flight_schedules_data = flight_schedules_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
-        root_logger.info(f"File type: '{type(flight_ticket_sales_data)}'")
+        root_logger.info(f"File type: '{type(flight_schedules_data)}'")
 
     except:
         root_logger.error("Unable to locate source file...terminating process...")
@@ -126,14 +130,14 @@ postgres_connection = psycopg2.connect(
         )
 
 
-def load_data_to_raw_layer(postgres_connection):
+def load_flight_schedules_data_to_raw_table(postgres_connection):
     try:
         
         # Set up constants
         CURRENT_TIMESTAMP               =   datetime.now()
         db_layer_name                   =   database
         schema_name                     =   'main'
-        table_name                      =   'raw_flight_ticket_sales_tbl'
+        table_name                      =   'raw_flight_schedules_tbl'
         data_warehouse_layer            =   'RAW'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -176,35 +180,27 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for table deletion and validation check  
-        delete_raw_flight_ticket_sales_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
+        delete_raw_flight_schedules_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_raw_flight_ticket_sales_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_flight_schedules_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_raw_flight_ticket_sales_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                                                                                ticket_sales_id         SERIAL PRIMARY KEY,
-                                                                                agent_first_name        VARCHAR(255),
-                                                                                agent_id                UUID,
-                                                                                agent_last_name         VARCHAR(255),
-                                                                                customer_first_name     VARCHAR(255),
-                                                                                customer_id             UUID,
-                                                                                customer_last_name      VARCHAR(255),
-                                                                                discount                NUMERIC(18, 6),
-                                                                                flight_booking_id       UUID,
-                                                                                promotion_id            UUID,
-                                                                                promotion_name          VARCHAR(255),
-                                                                                ticket_sales            NUMERIC(18, 6),
-                                                                                ticket_sales_date       BIGINT
-                                                                        
+        create_raw_flight_schedules_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                                                                                flight_id           UUID PRIMARY KEY,
+                                                                                flight_date         BIGINT NOT NULL,
+                                                                                departure_city      VARCHAR(255) NOT NULL,
+                                                                                departure_time      TIME NOT NULL,
+                                                                                arrival_city        VARCHAR(255) NOT NULL,
+                                                                                arrival_time        TIME NOT NULL
                                                                         );
 
 
 
         '''
 
-        check_if_raw_flight_ticket_sales_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_raw_flight_schedules_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -212,7 +208,7 @@ def load_data_to_raw_layer(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_raw_flight_ticket_sales_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
+        add_data_lineage_to_raw_flight_schedules_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -239,29 +235,22 @@ def load_data_to_raw_layer(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_flight_ticket_sales_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
-                                                                                agent_first_name,
-                                                                                agent_id,
-                                                                                agent_last_name,
-                                                                                customer_first_name,
-                                                                                customer_id,
-                                                                                customer_last_name,
-                                                                                discount,
-                                                                                flight_booking_id,
-                                                                                promotion_id,
-                                                                                promotion_name,
-                                                                                ticket_sales,
-                                                                                ticket_sales_date,
+        insert_flight_schedules_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
+                                                                                flight_id, 
+                                                                                flight_date, 
+                                                                                departure_city, 
+                                                                                departure_time, 
+                                                                                arrival_city, 
+                                                                                arrival_time,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
                                                                                 source_file,
                                                                                 load_timestamp,
                                                                                 dwh_layer
-
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -323,12 +312,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_raw_flight_ticket_sales_tbl_if_exists)
+        cursor.execute(delete_raw_flight_schedules_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_raw_flight_ticket_sales_tbl_is_deleted)
+        cursor.execute(check_if_raw_flight_schedules_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -337,14 +326,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -352,12 +341,12 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_raw_flight_ticket_sales_tbl)
+        cursor.execute(create_raw_flight_schedules_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_raw_flight_ticket_sales_tbl_exists)
+        cursor.execute(check_if_raw_flight_schedules_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -366,14 +355,14 @@ def load_data_to_raw_layer(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {db_layer_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_schedules_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -381,7 +370,7 @@ def load_data_to_raw_layer(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_raw_flight_ticket_sales_tbl)
+        cursor.execute(add_data_lineage_to_raw_flight_schedules_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -417,20 +406,14 @@ def load_data_to_raw_layer(postgres_connection):
         root_logger.debug(f"")
 
 
-        for flight_ticket_sales in flight_ticket_sales_data:
+        for flight_schedules in flight_schedules_data:
             values = (
-                flight_ticket_sales['agent_first_name'],
-                flight_ticket_sales['agent_id'],
-                flight_ticket_sales['agent_last_name'],
-                flight_ticket_sales['customer_first_name'],
-                flight_ticket_sales['customer_id'],
-                flight_ticket_sales['customer_last_name'],
-                flight_ticket_sales['discount'],
-                flight_ticket_sales['flight_booking_id'],
-                flight_ticket_sales['promotion_id'],
-                flight_ticket_sales['promotion_name'],
-                flight_ticket_sales['ticket_sales'],
-                flight_ticket_sales['ticket_sales_date'],
+                flight_schedules['flight_id'], 
+                flight_schedules['flight_date'], 
+                flight_schedules['departure_city'], 
+                flight_schedules['departure_time'], 
+                flight_schedules['arrival_city'], 
+                flight_schedules['arrival_time'],
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -439,7 +422,7 @@ def load_data_to_raw_layer(postgres_connection):
                 'RAW'
                 )
 
-            cursor.execute(insert_flight_ticket_sales_data, values)
+            cursor.execute(insert_flight_schedules_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -447,13 +430,13 @@ def load_data_to_raw_layer(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded flight_ticket_sales record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded flight_schedules record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert flight_ticket_sales record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert flight_schedules record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -496,10 +479,7 @@ def load_data_to_raw_layer(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['customer_id',
-                            'num_adults',
-                            'num_children',
-                            'sales_agent_id'
+        sensitive_columns_selected = [None
                             ]
         
         
@@ -923,5 +903,5 @@ def load_data_to_raw_layer(postgres_connection):
 
 
 
-load_data_to_raw_layer(postgres_connection)
+load_flight_schedules_data_to_raw_table(postgres_connection)
 

@@ -40,7 +40,7 @@ def generate_travel_data():
 
   # Set up file handler object for logging events to file
   current_filepath    =   Path(__file__).stem
-  file_handler        =   logging.FileHandler('logs/0_src_data_generator/' + current_filepath + '.log', mode='w')
+  file_handler        =   logging.FileHandler('logs/L0_src_data_generator/' + current_filepath + '.log', mode='w')
   file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -51,7 +51,11 @@ def generate_travel_data():
 
   # Add the file and console handlers 
   root_logger.addHandler(file_handler)
-  root_logger.addHandler(console_handler)
+  
+
+    # Only add the console handler if the script is running directly from this location 
+  if __name__=="__main__":
+      root_logger.addHandler(console_handler)
 
 
   # Establish the relevant constants for generating the synthetic travel data 
