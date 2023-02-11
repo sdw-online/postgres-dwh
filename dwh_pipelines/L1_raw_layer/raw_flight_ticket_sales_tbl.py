@@ -46,7 +46,11 @@ console_handler.setFormatter(console_handler_log_formatter)
 
 # Add the file and console handlers 
 root_logger.addHandler(file_handler)
-root_logger.addHandler(console_handler)
+
+
+# Only add the console handler if the script is running directly from this location 
+if __name__=="__main__":
+    root_logger.addHandler(console_handler)
 
 
 

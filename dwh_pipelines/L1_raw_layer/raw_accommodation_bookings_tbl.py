@@ -9,8 +9,8 @@ from pathlib import Path
 import logging, coloredlogs
 from datetime import datetime
 
-
 # ================================================ LOGGER ================================================
+
 
 # Set up root root_logger 
 root_logger     =   logging.getLogger(__name__)
@@ -44,9 +44,13 @@ console_handler     =   logging.StreamHandler()
 console_handler.setFormatter(console_handler_log_formatter)
 
 
-# Add the file and console handlers 
+# Add the file handler 
 root_logger.addHandler(file_handler)
-root_logger.addHandler(console_handler)
+
+
+# Only add the console handler if the script is running directly from this location 
+if __name__=="__main__":
+    root_logger.addHandler(console_handler)
 
 
 
@@ -124,6 +128,11 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
+
+
+
+
+
 
 
 def load_data_to_raw_table(postgres_connection):
