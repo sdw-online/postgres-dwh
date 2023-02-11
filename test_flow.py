@@ -1,9 +1,6 @@
 import os 
-import time
 import subprocess
 from prefect import task, Flow
-from prefect.schedules import Interval
-from datetime import timedelta
 
 @task
 def run_data_generator_script():
@@ -16,9 +13,7 @@ def run_raw_layer_scripts():
             subprocess.run(["python", f"dwh_pipelines/1_raw_layer/{filename}"])
 
 
-schedule = Interval(interval=timedelta(minutes=10))
-
-with Flow("Execute raw layer scripts", schedule=schedule) as flow:
+with Flow("Execute raw layer scripts") as flow:
     generate_data_task = run_data_generator_script()
     execute_raw_layer_tasks = run_raw_layer_scripts()
 
