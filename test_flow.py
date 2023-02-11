@@ -6,32 +6,6 @@ from configparser import ConfigParser
 from dwh_pipelines.L0_src_data_generator.src_data_generator import generate_travel_data
 
 
-# Add environment variables for setting up Postgres connection 
-config = ConfigParser()
-
-# Use the local config file from the local machine 
-path    =   os.path.abspath('dwh_pipelines/local_config.ini')
-config.read(path)
-
-host                    =   config['travel_data_filepath']['HOST']
-port                    =   config['travel_data_filepath']['PORT']
-database                =   config['travel_data_filepath']['RAW_DB']
-username                =   config['travel_data_filepath']['USERNAME']
-password                =   config['travel_data_filepath']['PASSWORD']
-
-postgres_connection     =   None
-cursor                  =   None
-
-postgres_connection = psycopg2.connect(
-                host        =   host,
-                port        =   port,
-                dbname      =   database,
-                user        =   username,
-                password    =   password,
-        )
-
-
-
 # Set up tasks
  
 @task(log_prints=False)
@@ -53,6 +27,31 @@ def run_raw_layer_scripts(postgres_connection):
 
 # Set up main workflow (DAG)
 with Flow("Execute raw layer scripts") as flow:
+    # Add environment variables for setting up Postgres connection 
+    config = ConfigParser()
+
+    # Use the local config file from the local machine 
+    path    =   os.path.abspath('dwh_pipelines/local_config.ini')
+    config.read(path)
+
+    host                    =   config['travel_data_filepath']['HOST']
+    port                    =   config['travel_data_filepath']['PORT']
+    database                =   config['travel_data_filepath']['RAW_DB']
+    username                =   config['travel_data_filepath']['USERNAME']
+    password                =   config['travel_data_filepath']['PASSWORD']
+
+    postgres_connection     =   None
+    cursor                  =   None
+
+    postgres_connection = psycopg2.connect(
+                    host        =   host,
+                    port        =   port,
+                    dbname      =   database,
+                    user        =   username,
+                    password    =   password,
+            )
+
+
     generate_data_task = run_data_generator_script()
     execute_raw_layer_tasks = run_raw_layer_scripts(postgres_connection)
 
