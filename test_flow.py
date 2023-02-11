@@ -41,19 +41,20 @@ def run_data_generator_script():
 
 
 @task
-def run_raw_layer_scripts():
+def run_raw_layer_scripts(postgres_connection):
     for filename in os.listdir("dwh_pipelines/L1_raw_layer"):
         if filename.endswith(".py"):
             module_name = filename.split(".")[0]
-            module = __import__(f"dwh_pipelines.L1_raw_layer.{module_name}", fromlist=[module_name])
+            module = __import__(f"dwh_pipelines.L1_raw_layer.{module_name}")
             load_data_func = getattr(module, "load_data_to_raw_table")
+            print(f'Function: {load_data_func} ')
             load_data_func()
 
 
 # Set up main workflow (DAG)
 with Flow("Execute raw layer scripts") as flow:
     generate_data_task = run_data_generator_script()
-    execute_raw_layer_tasks = run_raw_layer_scripts()
+    execute_raw_layer_tasks = run_raw_layer_scripts(postgres_connection)
 
     
     execute_raw_layer_tasks.set_upstream(generate_data_task)
