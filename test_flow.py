@@ -21,6 +21,7 @@ from dwh_pipelines.L1_raw_layer.raw_ticket_prices_tbl               import  load
 
 
 # Set up source data generation task
+
 @task
 def generate_synthetic_travel_data():
     generate_travel_data()
@@ -84,27 +85,25 @@ def load_data_to_raw_ticket_prices_tbl():
 
 
 
-with Flow("Execute raw layer scripts") as flow:
-    try:
-        # Create sub-flow for 
-        generate_source_data = generate_synthetic_travel_data()
+with Flow("Generate travel data") as L0_GENERATE_DATA_FLOW:
+    
+    # Create sub-flow for 
+    generate_source_data = generate_synthetic_travel_data()
 
-        load_source_data_to_raw_accommodation_bookings_tbl     =   load_data_to_raw_accommodation_bookings_tbl()
-        load_source_data_to_raw_customer_feedbacks_tbl         =   load_data_to_raw_customer_feedbacks_tbl()
-        load_source_data_to_raw_customer_info_tbl              =   load_data_to_raw_customer_info_tbl()
-        load_source_data_to_raw_flight_bookings_tbl            =   load_data_to_raw_flight_bookings_tbl()
-        load_source_data_to_raw_flight_destinations_tbl        =   load_data_to_raw_flight_destinations_tbl()
-        load_source_data_to_raw_flight_promotion_deals_tbl     =   load_data_to_raw_flight_promotion_deals_tbl()
-        load_source_data_to_raw_flight_schedules_tbl           =   load_data_to_raw_flight_schedules_tbl()
-        load_source_data_to_raw_flight_ticket_sales_tbl        =   load_data_to_raw_flight_ticket_sales_tbl()
-        load_source_data_to_raw_flight_sales_agents_tbl        =   load_data_to_raw_sales_agents_tbl()
-        load_source_data_to_raw_flight_ticket_prices_tbl       =   load_data_to_raw_ticket_prices_tbl()
+
+with Flow("Execute tasks in raw layer") as L1_RAW_LAYER_FLOW:
+    load_source_data_to_raw_accommodation_bookings_tbl     =   load_data_to_raw_accommodation_bookings_tbl()
+    load_source_data_to_raw_customer_feedbacks_tbl         =   load_data_to_raw_customer_feedbacks_tbl()
+    load_source_data_to_raw_customer_info_tbl              =   load_data_to_raw_customer_info_tbl()
+    load_source_data_to_raw_flight_bookings_tbl            =   load_data_to_raw_flight_bookings_tbl()
+    load_source_data_to_raw_flight_destinations_tbl        =   load_data_to_raw_flight_destinations_tbl()
+    load_source_data_to_raw_flight_promotion_deals_tbl     =   load_data_to_raw_flight_promotion_deals_tbl()
+    load_source_data_to_raw_flight_schedules_tbl           =   load_data_to_raw_flight_schedules_tbl()
+    load_source_data_to_raw_flight_ticket_sales_tbl        =   load_data_to_raw_flight_ticket_sales_tbl()
+    load_source_data_to_raw_flight_sales_agents_tbl        =   load_data_to_raw_sales_agents_tbl()
+    load_source_data_to_raw_flight_ticket_prices_tbl       =   load_data_to_raw_ticket_prices_tbl()
+
+
+L1_RAW_LAYER_FLOW.set_upstream(L0_GENERATE_DATA_FLOW)
+    
         
-
-
-        load_source_data_to_raw_accommodation_bookings_tbl.set_upstream(generate_source_data)
-
-    except Exception as e:
-        print(e)
-        
-flow.run()
