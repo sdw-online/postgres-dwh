@@ -1,4 +1,6 @@
-from prefect import task, Flow, flow
+from prefect import task, Flow
+# from prefect.flows import SubFlow
+
 from dwh_pipelines.L0_src_data_generator.src_data_generator         import  generate_travel_data
 from dwh_pipelines.L1_raw_layer.raw_accommodation_bookings_tbl      import  load_accommodation_bookings_data_to_raw_table
 from dwh_pipelines.L1_raw_layer.raw_customer_feedbacks_tbl          import  load_customer_feedbacks_data_to_raw_table
@@ -82,7 +84,7 @@ def load_data_to_raw_ticket_prices_tbl():
 
 
 # Set up sub-flow for generating travel data 
-with Flow("Generate travel data") as L0_GENERATE_DATA_FLOW:
+with Flow("Generate travel data") as generate_source_data_flow:
     
     generate_source_data = generate_synthetic_travel_data()
 
@@ -90,7 +92,7 @@ with Flow("Generate travel data") as L0_GENERATE_DATA_FLOW:
 
 
 # Set up sub-flow for executing tasks in raw layer 
-with Flow("Execute tasks in raw layer") as L1_RAW_LAYER_FLOW:
+with Flow("Execute tasks in raw layer") as run_raw_layer_flow:
     
     load_source_data_to_raw_accommodation_bookings_tbl     =   load_data_to_raw_accommodation_bookings_tbl()
     load_source_data_to_raw_customer_feedbacks_tbl         =   load_data_to_raw_customer_feedbacks_tbl()
@@ -106,7 +108,13 @@ with Flow("Execute tasks in raw layer") as L1_RAW_LAYER_FLOW:
 
 
 # Set up sub-flow dependencies 
-L1_RAW_LAYER_FLOW.set_upstream(L0_GENERATE_DATA_FLOW)
+with Flow("Run data warehouse tasks") as main_dwh_flow:
+    L0_GENERATE_DATA_FLOW   =   (generate_source_data_flow)
+    L1_RAW_LAYER_FLOW       =   (run_raw_layer_flow)
+
+
+    L1_RAW_LAYER_FLOW.set_upstream(L0_GENERATE_DATA_FLOW)
     
 
-Flow.visualize()
+main_dwh_flow.run()
+main_dwh_flow.visualize()
