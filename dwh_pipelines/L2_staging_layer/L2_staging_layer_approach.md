@@ -5,7 +5,6 @@
 ## Acceptance criteria 
 
 - The raw data must load into the staging tables with no issues 
-- 
 - The transformation strategy must be established and broken down into individual steps
 - The data quality rules and constraints must be defined
 - The QA tests must be defined and executed
@@ -14,14 +13,14 @@
 - A program must log the events for the staging processes to a file and console
 - Data profiling metrics must be logged to a file and console to understand the staging data’s properties and structure
 
-### Completion 
+## Completion 
 
 Once the acceptance criteria is 100% covered and satisfied, the staging layer’s tasks are officially completed.
 
 
 
 
-### Transformation strategy
+# Transformation strategy
 
 Here is the strategy for cleaning each of the staging tables in preparation for the semantic layer:
 
@@ -118,7 +117,7 @@ The next step is data validation and quality checks, which are a series of tests
 
 2. stg_customer_feedbacks_tbl
 
-- 
+
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
 - Table existence check: Check if the table exists in the database
@@ -133,7 +132,7 @@ The next step is data validation and quality checks, which are a series of tests
 - Date range checks: Check if the date ranges are between 2012 and 2022
 
 3. stg_customer_info_tbl
-- 
+
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
 - Table existence check: Check if the table exists in the database
@@ -166,7 +165,7 @@ The next step is data validation and quality checks, which are a series of tests
 - Ticket price range check: Check if the ticket prices are between 1 and 700
 
 5. stg_flight_destinations_tbl
-- 
+
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
 - Table existence check: Check if the table exists in the database
@@ -182,7 +181,7 @@ The next step is data validation and quality checks, which are a series of tests
 - Date-time checks: Check if the date times are accurately represented
 
 6. stg_flight_promotion_deals_tbl
-- 
+
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
 - Table existence check: Check if the table exists in the database
@@ -195,7 +194,7 @@ The next step is data validation and quality checks, which are a series of tests
 - ID formatting checks: Check if the ID columns are 36 characters in length
 
 7. stg_flight_schedules_tbl
-- 
+
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
 - Table existence check: Check if the table exists in the database
@@ -228,7 +227,7 @@ The next step is data validation and quality checks, which are a series of tests
 - Ticket price range check: Check the ticket prices are between 1 and 700
 
 9. stg_sales_agents_tbl
-- 
+
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
 - Table existence check: Check if the table exists in the database
@@ -246,7 +245,7 @@ The next step is data validation and quality checks, which are a series of tests
 - Seniority domain check: Check the seniority column only contains the “Junior”, “Mid-level” and “Senior” values
 
 10. stg_ticket_prices_tbl
-- 
+
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
 - Table existence check: Check if the table exists in the database
