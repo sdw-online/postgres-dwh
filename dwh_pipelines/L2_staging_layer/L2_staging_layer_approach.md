@@ -13,9 +13,10 @@
 - A program must log the events for the staging processes to a file and console
 - Data profiling metrics must be logged to a file and console to understand the staging data’s properties and structure
 
+
 ## Completion 
 
-Once the acceptance criteria is 100% covered and satisfied, the staging layer’s tasks are officially completed.
+Once the acceptance criteria is 100% covered and satisfied by a series of acceptance tests by the end users, the staging layer’s tasks are officially completed. 
 
 
 
