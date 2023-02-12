@@ -184,7 +184,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         
 
         # Set up SQL statements for schema creation and validation check  
-        create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {}.{active_schema_name};
+        create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {active_db_name}.{active_schema_name};
         '''
 
         check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{active_schema_name}';
@@ -217,9 +217,6 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
                                                                             status                  VARCHAR(10),
                                                                             total_price             NUMERIC(18, 6)
                                                                         );
-
-
-
         '''
 
         check_if_stg_accommodation_bookings_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
