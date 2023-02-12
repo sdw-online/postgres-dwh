@@ -8,13 +8,13 @@ These are the end-user requirements for the staging layer:
 
 | index | criteria             | completion_status | 
 | ----- | -------------- | --------------- |  
-| 1     | The raw data must load into the staging tables with no issues |   <span style="color:orange">IN PROGRESS</span> |  
-| 2     | The transformation strategy must be established and broken down into individual steps | <span style="color:orange">IN PROGRESS</span> |  
-| 3     | The data quality rules and constraints must be defined | <span style="color:green">COMPLETED</span> |  
-| 4     | The QA tests must be defined and executed | <span style="color:orange">IN PROGRESS</span> |  
-| 5     | The transformation strategy must be executed (converting transformation steps into coding logic) | <span style="color:red">NOT STARTED </span> |  
-| 6     | A program must log the events for the staging processes to a file and console | <span style="color:red">NOT STARTED </span> |  
-| 6     | Data profiling metrics must be logged to a file and console to understand the staging data’s properties and structure | <span style="color:red">NOT STARTED </span> |  
+| 1     | The raw data must load into the staging tables with no issues | IN PROGRESS  |  
+| 2     | The transformation strategy must be established and broken down into individual steps | IN PROGRESS |  
+| 3     | The data quality rules and constraints must be defined | COMPLETED |  
+| 4     | The QA tests must be defined and executed | IN PROGRESS |  
+| 5     | The transformation strategy must be executed (converting transformation steps into coding logic) | NOT STARTED |  
+| 6     | A program must log the events for the staging processes to a file and console | NOT STARTED |  
+| 6     | Data profiling metrics must be logged to a file and console to understand the staging data’s properties and structure | NOT STARTED |  
 
 
 
