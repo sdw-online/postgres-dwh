@@ -98,23 +98,6 @@ The next step is data validation and quality checks, which are a series of tests
 
 ## 1. stg_accommodation_bookings_tbl
 
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
-- Confirmation code formatting check: Check the confirmation code for each booking is 10 characters in length
-- Payment method domain check: Check the payment method only contain the "Debit card", "Credit card", "Paypal" and "Bank transfer" options
-- Status domain check: Check the status column only contains "Pending", "Confirmed" and "Cancelled" values
-
 
 | index | check_type             | dq_rule |
 | ----- | -------------- | --------------- | 
@@ -136,21 +119,7 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-2. stg_customer_feedbacks_tbl
-
-
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
+## 2. stg_customer_feedbacks_tbl
 
 
 
@@ -173,23 +142,7 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-3. stg_customer_info_tbl
-
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
-- Age range check: Check the age values are between 0 and 110
-
+## 3. stg_customer_info_tbl
 
 
 | index | check_type             | dq_rule |
@@ -212,21 +165,7 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-4. stg_flight_bookings_tbl
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
-- Ticket price range check: Check if the ticket price is a positive float value
+## 4. stg_flight_bookings_tbl
 
 
 | index | check_type             | dq_rule |
@@ -247,21 +186,9 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-5. stg_flight_destinations_tbl
+## 5. stg_flight_destinations_tbl
 
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
+
 
 
 | index | check_type             | dq_rule |
@@ -280,18 +207,8 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-6. stg_flight_promotion_deals_tbl
+## 6. stg_flight_promotion_deals_tbl
 
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
 
 
 | index | check_type             | dq_rule |
@@ -308,21 +225,9 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-7. stg_flight_schedules_tbl
+## 7. stg_flight_schedules_tbl
 
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
+
 
 | index | check_type             | dq_rule |
 | ----- | -------------- | --------------- | 
@@ -341,22 +246,9 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-8. stg_flight_ticket_sales_tbl
+## 8. stg_flight_ticket_sales_tbl
 
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
-- Ticket price range check: Check the ticket prices are between 1 and 700
+
 
 | index | check_type             | dq_rule |
 | ----- | -------------- | --------------- | 
@@ -376,23 +268,9 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-9. stg_sales_agents_tbl
+## 9. stg_sales_agents_tbl
 
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
-- Ticket price range check: Check if the ticket price is a positive float value
-- Seniority domain check: Check the seniority column only contains the “Junior”, “Mid-level” and “Senior” values
+
 
 | index | check_type             | dq_rule |
 | ----- | -------------- | --------------- | 
@@ -414,22 +292,7 @@ The next step is data validation and quality checks, which are a series of tests
 
 
 
-10. stg_ticket_prices_tbl
-
-- Database connection check: Check if the connection to the database is successful
-- Schema existence check : Check if the schema exists in the database
-- Table existence check: Check if the table exists in the database
-- Columns existence checks: Check if the columns are present in the database
-- Data type checks: Check if the actual data types of each column matched the expected data types
-- Empty values checks: Check if there are any empty values present in the table
-- Not NULL checks: Check if there are any NULLs present in the table
-- Table row + column count: Calculate the total number of rows and columns in each table
-- Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
-- ID formatting checks: Check if the ID columns are 36 characters in length
-- Date formatting checks: Check if the date formats match the `yy-mm-dd` format
-- Date range checks: Check if the date ranges are between 2012 and 2022
-- Date-time checks: Check if the date times are accurately represented
-- Ticket price range check: Check if the ticket price is a positive float value
+## 10. stg_ticket_prices_tbl
 
 
 | index | check_type             | dq_rule |
