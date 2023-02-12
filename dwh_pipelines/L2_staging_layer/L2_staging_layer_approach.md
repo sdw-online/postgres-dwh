@@ -74,7 +74,7 @@ Here is the strategy for cleaning each of the staging tables in preparation for 
 - Round `ticket_price` column to 2dp
 - Convert `ticket_price_date` from integer to date type (with ‘yyyy-mm-dd’)
 
-
+***
 
 # Data Validation & Quality Checks
 
@@ -96,6 +96,8 @@ The next step is data validation and quality checks, which are a series of tests
 - Customer range check (adults)
 - Customer range check (children)
 
+
+
 ## 1. stg_accommodation_bookings_tbl
 
 
@@ -116,6 +118,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 13    | Payment method | Payment method column should only contain "Debit card", "Credit card", "PayPal" and "Bank transfer" values |
 | 14    | Status | Status column should only contain "Pending", "Confirmed" and "Cancelled" values |
 | 15    | ID format | ID columns should be strings of 36 characters in length |
+| 16    | Referential integrity | The value in a non-primary key ID column must be available in another table's column as a primary ID value |
 
 
 
@@ -136,6 +139,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
 | 10    | ID format | ID columns should be strings of 36 characters in length |
 | 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+| 12    | Referential integrity | The value in a non-primary key ID column must be available in another table's column as a primary ID value |
 
 
 
@@ -182,6 +186,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 10    | ID format | ID columns should be strings of 36 characters in length |
 | 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
 | 12    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+| 13    | Referential integrity | The value in a non-primary key ID column must be available in another table's column as a primary ID value |
 
 
 
@@ -221,6 +226,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 6     | Empty Values | The table must not contain any empty values |
 | 7     | Null Values | The table must not contain any `NULL` values |
 | 8     | ID format | ID columns should be strings of 36 characters in length |
+| 9     | Referential integrity | The value in a non-primary key ID column must be available in another table's column as a primary ID value |
 
 
 
@@ -264,6 +270,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 10    | ID format | ID columns should be strings of 36 characters in length |
 | 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
 | 12    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+| 13    | Referential integrity | The value in a non-primary key ID column must be available in another table's column as a primary ID value |
 
 
 
@@ -310,3 +317,4 @@ The next step is data validation and quality checks, which are a series of tests
 | 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
 | 12    | Ticket price | Price column should be a positive value i.e. greater than 0 |
 
+***
