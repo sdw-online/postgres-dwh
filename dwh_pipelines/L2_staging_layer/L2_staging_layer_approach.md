@@ -96,7 +96,7 @@ The next step is data validation and quality checks, which are a series of tests
 - Customer range check (adults)
 - Customer range check (children)
 
-1. stg_accommodation_bookings_tbl
+## 1. stg_accommodation_bookings_tbl
 
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
@@ -113,7 +113,28 @@ The next step is data validation and quality checks, which are a series of tests
 - Date-time checks: Check if the date times are accurately represented
 - Confirmation code formatting check: Check the confirmation code for each booking is 10 characters in length
 - Payment method domain check: Check the payment method only contain the "Debit card", "Credit card", "Paypal" and "Bank transfer" options
-- Status domain check: Check the status column only contains “confirmed” and “cancelled” options
+- Status domain check: Check the status column only contains "Pending", "Confirmed" and "Cancelled" values
+
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+| 11    | Date domain | The value in the `check_in_date` field must be before the value in the `check_out_date` field |
+| 12    | Confirmation code | Each confirmation code value must be 36 characters in length |
+| 13    | Payment method | Payment method column should only contain "Debit card", "Credit card", "PayPal" and "Bank transfer" values |
+| 14    | Status | Status column should only contain "Pending", "Confirmed" and "Cancelled" values |
+| 15    | ID format | ID columns should be strings of 36 characters in length |
+
+
 
 2. stg_customer_feedbacks_tbl
 
@@ -130,6 +151,27 @@ The next step is data validation and quality checks, which are a series of tests
 - ID formatting checks: Check if the ID columns are 36 characters in length
 - Date formatting checks: Check if the date formats match the `yy-mm-dd` format
 - Date range checks: Check if the date ranges are between 2012 and 2022
+
+
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | ID format | ID columns should be strings of 36 characters in length |
+| 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+
+
+
+
+
 
 3. stg_customer_info_tbl
 
@@ -148,6 +190,28 @@ The next step is data validation and quality checks, which are a series of tests
 - Date-time checks: Check if the date times are accurately represented
 - Age range check: Check the age values are between 0 and 110
 
+
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | ID format | ID columns should be strings of 36 characters in length |
+| 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+| 12    | Age range | Age should be a value between 0 and 110 |
+
+
+
+
+
+
 4. stg_flight_bookings_tbl
 - Database connection check: Check if the connection to the database is successful
 - Schema existence check : Check if the schema exists in the database
@@ -162,7 +226,26 @@ The next step is data validation and quality checks, which are a series of tests
 - Date formatting checks: Check if the date formats match the `yy-mm-dd` format
 - Date range checks: Check if the date ranges are between 2012 and 2022
 - Date-time checks: Check if the date times are accurately represented
-- Ticket price range check: Check if the ticket prices are between 1 and 700
+- Ticket price range check: Check if the ticket price is a positive float value
+
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | ID format | ID columns should be strings of 36 characters in length |
+| 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+| 12    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+
+
+
 
 5. stg_flight_destinations_tbl
 
@@ -180,6 +263,23 @@ The next step is data validation and quality checks, which are a series of tests
 - Date range checks: Check if the date ranges are between 2012 and 2022
 - Date-time checks: Check if the date times are accurately represented
 
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | ID format | ID columns should be strings of 36 characters in length |
+| 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+
+
+
 6. stg_flight_promotion_deals_tbl
 
 - Database connection check: Check if the connection to the database is successful
@@ -192,6 +292,21 @@ The next step is data validation and quality checks, which are a series of tests
 - Table row + column count: Calculate the total number of rows and columns in each table
 - Total records uploaded successfully/unsuccessfully: Calculate the total number of records uploaded to the table successfully
 - ID formatting checks: Check if the ID columns are 36 characters in length
+
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | ID format | ID columns should be strings of 36 characters in length |
+
+
+
 
 7. stg_flight_schedules_tbl
 
@@ -208,6 +323,23 @@ The next step is data validation and quality checks, which are a series of tests
 - Date formatting checks: Check if the date formats match the `yy-mm-dd` format
 - Date range checks: Check if the date ranges are between 2012 and 2022
 - Date-time checks: Check if the date times are accurately represented
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | ID format | ID columns should be strings of 36 characters in length |
+| 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+
+
+
 
 8. stg_flight_ticket_sales_tbl
 
@@ -226,6 +358,24 @@ The next step is data validation and quality checks, which are a series of tests
 - Date-time checks: Check if the date times are accurately represented
 - Ticket price range check: Check the ticket prices are between 1 and 700
 
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | ID format | ID columns should be strings of 36 characters in length |
+| 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+| 12    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+
+
+
+
 9. stg_sales_agents_tbl
 
 - Database connection check: Check if the connection to the database is successful
@@ -241,8 +391,28 @@ The next step is data validation and quality checks, which are a series of tests
 - Date formatting checks: Check if the date formats match the `yy-mm-dd` format
 - Date range checks: Check if the date ranges are between 2012 and 2022
 - Date-time checks: Check if the date times are accurately represented
-- Ticket price range check: Check if the ticket prices are between 1 and 700
+- Ticket price range check: Check if the ticket price is a positive float value
 - Seniority domain check: Check the seniority column only contains the “Junior”, “Mid-level” and “Senior” values
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+| 11    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+| 12    | ID format | ID columns should be strings of 36 characters in length |
+| 14    | Seniority | Seniority column should only contain “Junior”, “Mid-level” and “Senior” values |
+
+
+
+
 
 10. stg_ticket_prices_tbl
 
@@ -259,4 +429,21 @@ The next step is data validation and quality checks, which are a series of tests
 - Date formatting checks: Check if the date formats match the `yy-mm-dd` format
 - Date range checks: Check if the date ranges are between 2012 and 2022
 - Date-time checks: Check if the date times are accurately represented
-- Ticket price range check: Check if the ticket prices are between 1 and 700
+- Ticket price range check: Check if the ticket price is a positive float value
+
+
+| index | check_type             | dq_rule |
+| ----- | -------------- | --------------- | 
+| 1     | Database Connection | Program must verify if the connection to the database is successful/unsuccessful |
+| 2     | Schema Existence | Program must verify if the active schema exists in the database |
+| 3     | Table Existence | Program must verify if the active table exists in the database |
+| 4     | Columns Existence | Program must verify if the columns exists in the active table |
+| 5     | Data Type | The **actual** data types of each table column must match the **expected** data type |
+| 6     | Empty Values | The table must not contain any empty values |
+| 7     | Null Values | The table must not contain any `NULL` values |
+| 8     | Row count | The total rows in the staging table must match the total row count in the raw table version (as no strict business rules are applied at this layer)  |
+| 9     | Date format | Date columns must be in "yyyy-mm-dd" format |
+| 10    | ID format | ID columns should be strings of 36 characters in length |
+| 11    | Date range | Date columns must be between `01-01-2012` and `31-12-2022` |
+| 12    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+
