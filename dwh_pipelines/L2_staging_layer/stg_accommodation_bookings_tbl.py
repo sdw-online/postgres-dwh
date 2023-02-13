@@ -170,12 +170,40 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{active_schema_name}';
             '''
 
+
+            # Create schema in Postgres
+            CREATING_SCHEMA_PROCESSING_START_TIME   =   time.time()
             cursor.execute(create_schema)
             root_logger.info("")
             root_logger.info(f"Successfully created {active_schema_name} schema. ")
             root_logger.info("")
+            CREATING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
+
+            CREATING_SCHEMA_VAL_CHECK_START_TIME    =   time.time()
             cursor.execute(check_if_schema_exists)
+            CREATING_SCHEMA_VAL_CHECK_END_TIME      =   time.time()
+
+            
+
+            sql_result = cursor.fetchone()[0]
+            if sql_result:
+                root_logger.debug(f"")
+                root_logger.info(f"=================================================================================================")
+                root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {active_schema_name} schema in {active_db_name} ")
+                root_logger.info(f"Schema name in Postgres: {sql_result} ")
+                root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
+                root_logger.info(f"=================================================================================================")
+                root_logger.debug(f"")
+
+            else:
+                root_logger.debug(f"")
+                root_logger.error(f"=================================================================================================")
+                root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {active_db_name}...")
+                root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
+                root_logger.error(f"=================================================================================================")
+                root_logger.debug(f"")
+
             postgres_connection.commit()
 
         except Exception as e:
@@ -290,7 +318,9 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
         # ================================================== EXTRACTION STEP ==================================================
-            # Extract non-data lineage column from raw table 
+            
+        # Extract non-data lineage column from raw table 
+        try:
             data_lineage_columns = ['created_at',    
                                     'updated_at',    
                                     'source_system', 
@@ -298,37 +328,46 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
                                     'load_timestamp',
                                     'dwh_layer']
             
-            desired_columns = []
+            desired_sql_columns = []
             
 
             get_list_of_column_names    =   f'''            SELECT      column_name 
                                                             FROM        information_schema.columns 
-                                                            WHERE       table_name = '{table_name}'
+                                                            WHERE       table_name = '{src_table_name}'
                                                             ORDER BY    ordinal_position 
             '''
 
             cursor.execute(get_list_of_column_names)
+            postgres_connection.commit()
+
             list_of_column_names = cursor.fetchall()
             column_names = [sql_result[0] for sql_result in list_of_column_names]
             
 
-            total_desired_columns_added = 0
+            total_desired_sql_columns_added = 0
             for column_name in column_names:
                 if column_name not in data_lineage_columns:
-                    total_desired_columns_added += 1
-                    desired_columns.append(column_name)
-                    root_logger.info(f''' {total_desired_columns_added}: Added column '{column_name}' to desired columns list...  ''')
-            root_logger.info(f''' COMPLETED: Successfully added '{total_desired_columns_added}' columns to desired columns list.  ''')
+                    total_desired_sql_columns_added += 1
+                    desired_sql_columns.append(column_name)
+                    root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
+            root_logger.info('')
+            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {len(list_of_column_names)} columns not included were data lineage columns to be added later via ALTER command. ''')
             root_logger.info('')
             root_logger.info('')
+            # root_logger.info(f'{desired_sql_columns}')
+            
+        except Exception as e:
+            print(e)
+
 
 
         try:
             # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
-            fetch_raw_accommodation_bookings_tbl = f'''     SELECT * FROM {active_schema_name}.{src_table_name};  
+            fetch_raw_accommodation_bookings_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
+            root_logger.debug(fetch_raw_accommodation_bookings_tbl)
             root_logger.info("")
-            root_logger.info(f"Successfully IMPORTED the '{active_schema_name}.{src_table_name}' virtual table from the '{foreign_server}' server. Now advancing to data cleaning stage...")
+            root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
         except Exception as e:
@@ -384,214 +423,185 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
 
         
-        # # ================================================== LOAD RAW DATA TO STAGING TABLE =======================================
+        # ================================================== LOAD RAW DATA TO STAGING TABLE =======================================
         
 
        
 
-        # # Set up SQL statements for table deletion and validation check  
-        # delete_stg_accommodation_bookings_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
-        # '''
+        # Set up SQL statements for table deletion and validation check  
+        delete_stg_accommodation_bookings_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        '''
 
-        # check_if_stg_accommodation_bookings_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
-        # '''
+        check_if_stg_accommodation_bookings_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        '''
 
-        # # Set up SQL statements for table creation and validation check 
-        # create_stg_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-        #                                                                     id                      UUID PRIMARY KEY,
-        #                                                                     booking_date            BIGINT,
-        #                                                                     check_in_date           BIGINT,
-        #                                                                     check_out_date          BIGINT,
-        #                                                                     checked_in              VARCHAR(3),
-        #                                                                     confirmation_code       VARCHAR(12),
-        #                                                                     customer_id             UUID,
-        #                                                                     flight_booking_id       UUID,
-        #                                                                     location                VARCHAR(255),
-        #                                                                     num_adults              INTEGER,
-        #                                                                     num_children            INTEGER,
-        #                                                                     payment_method          VARCHAR(20),
-        #                                                                     room_type               VARCHAR(10),
-        #                                                                     sales_agent_id          UUID,
-        #                                                                     status                  VARCHAR(10),
-        #                                                                     total_price             NUMERIC(18, 6)
-        #                                                                 );
-        # '''
+        # Set up SQL statements for table creation and validation check 
+        create_stg_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
+                                                                                    id                      CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    booking_date            DATE NOT NULL,
+                                                                                    check_in_date           DATE NOT NULL,
+                                                                                    check_out_date          DATE NOT NULL,
+                                                                                    checked_in              VARCHAR(3) NOT NULL,
+                                                                                    confirmation_code       VARCHAR(10) NOT NULL,
+                                                                                    customer_id             CHAR(36) NOT NULL,
+                                                                                    flight_booking_id       CHAR(36) NOT NULL,
+                                                                                    location                VARCHAR(20) NOT NULL,
+                                                                                    no_of_adults            INTEGER NOT NULL,
+                                                                                    no_of_children          INTEGER NOT NULL,
+                                                                                    payment_method          VARCHAR(20) NOT NULL,
+                                                                                    room_type               VARCHAR(20) NOT NULL,
+                                                                                    sales_agent_id          CHAR(36) NOT NULL,
+                                                                                    status                  VARCHAR(20) NOT NULL,
+                                                                                    total_price             DECIMAL(10,2) NOT NULL
+                                                                        );
+        '''
 
-        # check_if_stg_accommodation_bookings_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
-        # '''
+        check_if_stg_accommodation_bookings_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        '''
 
        
 
 
 
-        # # Set up SQL statements for adding data lineage and validation check 
-        # add_data_lineage_to_stg_accommodation_bookings_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
-        #                                                                         ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        #                                                                         ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        #                                                                         ADD COLUMN  source_system               VARCHAR(255),
-        #                                                                         ADD COLUMN  source_file                 VARCHAR(255),
-        #                                                                         ADD COLUMN  load_timestamp              TIMESTAMP,
-        #                                                                         ADD COLUMN  dwh_layer                   VARCHAR(255)
-        #                                                                 ;
-        # '''
+        # Set up SQL statements for adding data lineage and validation check 
+        add_data_lineage_to_stg_accommodation_bookings_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+                                                                                ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                                ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                                                                ADD COLUMN  source_system               VARCHAR(255),
+                                                                                ADD COLUMN  source_file                 VARCHAR(255),
+                                                                                ADD COLUMN  load_timestamp              TIMESTAMP,
+                                                                                ADD COLUMN  dwh_layer                   VARCHAR(255)
+                                                                        ;
+        '''
 
-        # check_if_data_lineage_fields_are_added_to_tbl   =   f'''        
-        #                                                             SELECT * 
-        #                                                             FROM    information_schema.columns 
-        #                                                             WHERE   table_name      = '{table_name}' 
-        #                                                                 AND     (column_name    = 'created_at'
-        #                                                                 OR      column_name     = 'updated_at' 
-        #                                                                 OR      column_name     = 'source_system' 
-        #                                                                 OR      column_name     = 'source_file' 
-        #                                                                 OR      column_name     = 'load_timestamp' 
-        #                                                                 OR      column_name     = 'dwh_layer');
+        check_if_data_lineage_fields_are_added_to_tbl   =   f'''        
+                                                                    SELECT * 
+                                                                    FROM    information_schema.columns 
+                                                                    WHERE   table_name      = '{table_name}' 
+                                                                        AND     (column_name    = 'created_at'
+                                                                        OR      column_name     = 'updated_at' 
+                                                                        OR      column_name     = 'source_system' 
+                                                                        OR      column_name     = 'source_file' 
+                                                                        OR      column_name     = 'load_timestamp' 
+                                                                        OR      column_name     = 'dwh_layer');
                                                                               
-        # '''
+        '''
         
-        # check_total_row_count_before_insert_statement   =   f'''   SELECT COUNT(*) FROM {active_schema_name}.{table_name}
-        # '''
+        check_total_row_count_before_insert_statement   =   f'''   SELECT COUNT(*) FROM {active_schema_name}.{table_name}
+        '''
 
-        # # Set up SQL statements for records insert and validation check
-        # insert_accommodation_bookings_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-        #                                                                         id,
-        #                                                                         booking_date,
-        #                                                                         check_in_date,
-        #                                                                         check_out_date,
-        #                                                                         checked_in,
-        #                                                                         confirmation_code,
-        #                                                                         customer_id,
-        #                                                                         flight_booking_id,
-        #                                                                         location,
-        #                                                                         num_adults,
-        #                                                                         num_children,
-        #                                                                         payment_method,
-        #                                                                         room_type,
-        #                                                                         sales_agent_id,
-        #                                                                         status,
-        #                                                                         total_price,
-        #                                                                         created_at,
-        #                                                                         updated_at,
-        #                                                                         source_system,
-        #                                                                         source_file,
-        #                                                                         load_timestamp,
-        #                                                                         dwh_layer
-        #                                                                     )
-        #                                                                     VALUES (
-        #                                                                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-        #                                                                     );
-        # '''
+        # Set up SQL statements for records insert and validation check
+        insert_accommodation_bookings_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
+                                                                                id,
+                                                                                booking_date,
+                                                                                check_in_date,
+                                                                                check_out_date,
+                                                                                checked_in,
+                                                                                confirmation_code,
+                                                                                customer_id,
+                                                                                flight_booking_id,
+                                                                                location,
+                                                                                num_adults,
+                                                                                num_children,
+                                                                                payment_method,
+                                                                                room_type,
+                                                                                sales_agent_id,
+                                                                                status,
+                                                                                total_price,
+                                                                                created_at,
+                                                                                updated_at,
+                                                                                source_system,
+                                                                                source_file,
+                                                                                load_timestamp,
+                                                                                dwh_layer
+                                                                            )
+                                                                            VALUES (
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                            );
+        '''
 
-        # check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
-        # '''
+        check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
+        '''
 
-
-        
-        # count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
-        #                                                         FROM            information_schema.columns 
-        #                                                         WHERE           table_name      =   '{table_name}'
-        #                                                         AND             table_schema    =   '{active_schema_name}'
-        # '''
-
-        # count_total_no_of_unique_records_in_table   =   f'''        SELECT COUNT(*) FROM 
-        #                                                                     (SELECT DISTINCT * FROM {active_schema_name}.{table_name}) as unique_records   
-        # '''
-        # get_list_of_column_names    =   f'''                SELECT column_name FROM information_schema.columns 
-        #                                                     WHERE   table_name = '{table_name}'
-        #                                                     ORDER BY ordinal_position 
-        # '''
 
         
+        count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
+                                                                FROM            information_schema.columns 
+                                                                WHERE           table_name      =   '{table_name}'
+                                                                AND             table_schema    =   '{active_schema_name}'
+        '''
 
-
-
-
-        # # Create schema in Postgres
-        # CREATING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        # cursor.execute(create_schema)
-        # CREATING_SCHEMA_PROCESSING_END_TIME     =   time.time()
-
-
-        # CREATING_SCHEMA_VAL_CHECK_START_TIME    =   time.time()
-        # cursor.execute(check_if_schema_exists)
-        # CREATING_SCHEMA_VAL_CHECK_END_TIME      =   time.time()
-
-
-
-        # sql_result = cursor.fetchone()[0]
-        # if sql_result:
-        #     root_logger.debug(f"")
-        #     root_logger.info(f"=================================================================================================")
-        #     root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {active_schema_name} schema in {active_db_name} ")
-        #     root_logger.info(f"Schema name in Postgres: {sql_result} ")
-        #     root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
-        #     root_logger.info(f"=================================================================================================")
-        #     root_logger.debug(f"")
-
-        # else:
-        #     root_logger.debug(f"")
-        #     root_logger.error(f"=================================================================================================")
-        #     root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {active_db_name}...")
-        #     root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
-        #     root_logger.error(f"=================================================================================================")
-        #     root_logger.debug(f"")
+        count_total_no_of_unique_records_in_table   =   f'''        SELECT COUNT(*) FROM 
+                                                                            (SELECT DISTINCT * FROM {active_schema_name}.{table_name}) as unique_records   
+        '''
+        get_list_of_column_names    =   f'''                SELECT column_name FROM information_schema.columns 
+                                                            WHERE   table_name = '{table_name}'
+                                                            ORDER BY ordinal_position 
+        '''
 
         
 
-        # # Delete table if it exists in Postgres
-        # DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        # cursor.execute(delete_stg_accommodation_bookings_tbl_if_exists)
-        # DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
+
+
+
+
+
+
+        # Delete table if it exists in Postgres
+        DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
+        cursor.execute(delete_stg_accommodation_bookings_tbl_if_exists)
+        DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
-        # DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        # cursor.execute(check_if_stg_accommodation_bookings_tbl_is_deleted)
-        # DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
+        DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
+        cursor.execute(check_if_stg_accommodation_bookings_tbl_is_deleted)
+        DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
-        # sql_result = cursor.fetchone()[0]
-        # if sql_result:
-        #     root_logger.debug(f"")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-        #     root_logger.info(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_is_deleted} ")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.debug(f"")
-        # else:
-        #     root_logger.debug(f"")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-        #     root_logger.error(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_is_deleted} ")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.debug(f"")
+        sql_result = cursor.fetchone()[0]
+        if sql_result:
+            root_logger.debug(f"")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_is_deleted} ")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.debug(f"")
+        else:
+            root_logger.debug(f"")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_is_deleted} ")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.debug(f"")
 
 
 
-        # # Create table if it doesn't exist in Postgres  
-        # CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        # cursor.execute(create_stg_accommodation_bookings_tbl)
-        # CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
+        # Create table if it doesn't exist in Postgres  
+        CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
+        cursor.execute(create_stg_accommodation_bookings_tbl)
+        CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
-        # CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        # cursor.execute(check_if_stg_accommodation_bookings_tbl_exists)
-        # CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
+        CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
+        cursor.execute(check_if_stg_accommodation_bookings_tbl_exists)
+        CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
-        # sql_result = cursor.fetchone()[0]
-        # if sql_result:
-        #     root_logger.debug(f"")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-        #     root_logger.info(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_exists} ")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.debug(f"")
-        # else:
-        #     root_logger.debug(f"")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-        #     root_logger.error(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_exists} ")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.debug(f"")
+        sql_result = cursor.fetchone()[0]
+        if sql_result:
+            root_logger.debug(f"")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_exists} ")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.debug(f"")
+        else:
+            root_logger.debug(f"")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_accommodation_bookings_tbl_exists} ")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.debug(f"")
 
 
 
@@ -1118,10 +1128,10 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # # Commit the changes made in Postgres 
-        # root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        # postgres_connection.commit()
-        # root_logger.info("Saved successfully, now terminating cursor and current session....")
+        # Commit the changes made in Postgres 
+        root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
+        postgres_connection.commit()
+        root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 
     except Exception as e:
