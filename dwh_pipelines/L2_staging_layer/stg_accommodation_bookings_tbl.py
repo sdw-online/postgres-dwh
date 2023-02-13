@@ -121,6 +121,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         
         # Set up constants
         CURRENT_TIMESTAMP               =   datetime.now()
+        fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'raw_db_server'
         fdw_user                        =   'fdw_user'
         previous_db_name                =   'raw_db'
@@ -158,38 +159,58 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
         # ================================================== EXTRACTION: POSTGRES TO PANDAS DATA FRAME ==================================================
         
-        
-        # Drop extension postgres_fdw if it exists 
-        drop_postgres_fdw_extension = f'''  DROP EXTENSION postgres_fdw CASCADE
-                                            ;   
-        '''
-        cursor.execute(drop_postgres_fdw_extension)
+        try:
+            # Drop extension postgres_fdw if it exists 
+            drop_postgres_fdw_extension = f'''  DROP EXTENSION {fdw_extension} CASCADE
+                                                ;   
+            '''
+            cursor.execute(drop_postgres_fdw_extension)
+            root_logger.info("")
+            root_logger.info(f"Successfully DROPPED the '{fdw_extension}' extension. Now advancing to re-importing the extension...")
+            root_logger.info("")
 
 
-        # Install the postgres_fdw module 
-        import_postgres_fdw = f'''    CREATE EXTENSION postgres_fdw
-                                            ;   
-        '''
-        
-        cursor.execute(import_postgres_fdw)
+            # Install the postgres_fdw module 
+            import_postgres_fdw = f'''    CREATE EXTENSION '{fdw_extension}'
+                                                ;   
+            '''
+            
+            cursor.execute(import_postgres_fdw)
+            root_logger.info("")
+            root_logger.info(f"Successfully IMPORTED the '{fdw_extension}' extension. Now advancing to creating the foreign server...")
+            root_logger.info("")
 
 
-        # Create the foreign server 
-        create_foreign_server = f'''    CREATE SERVER {foreign_server}
-                                            FOREIGN DATA WRAPPER postgres_fdw
-                                            OPTIONS (host '{host}', dbname '{previous_db_name}')
-                                            ;
-        '''
-        cursor.execute(create_foreign_server)
+            # Create the foreign server 
+            create_foreign_server = f'''    CREATE SERVER {foreign_server}
+                                                FOREIGN DATA WRAPPER '{fdw_extension}'
+                                                OPTIONS (host '{host}', dbname '{previous_db_name}')
+                                                ;
+            '''
+            cursor.execute(create_foreign_server)
+            root_logger.info("")
+            root_logger.info(f"Successfully CREATED the {foreign_server} foreign server. Now advancing to user mapping stage...")
+            root_logger.info("")
 
 
-        # Create the user mapping between the fdw_user and local user 
-        map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
-                                                    SERVER {foreign_server}
-                                                    OPTIONS (user '{fdw_user}', password '{password}');
-        '''
+            # Create the user mapping between the fdw_user and local user 
+            map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
+                                                        SERVER {foreign_server}
+                                                        OPTIONS (user '{fdw_user}', password '{password}');
+            '''
 
-        cursor.execute(map_fdw_user_to_local_user)
+            cursor.execute(map_fdw_user_to_local_user)
+            root_logger.info("")
+            root_logger.info(f"Successfully mapped the {fdw_user} user to the {username} user. ")
+            root_logger.info("")
+
+
+            
+            root_logger.info("")
+            root_logger.info(f"You should now be able to create and interact with the virtual tables for the {previous_db_name} database. ")
+            root_logger.info("")
+        except Exception as e:
+            print(e)
 
 
 
