@@ -290,6 +290,38 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
         # ================================================== EXTRACTION STEP ==================================================
+            # Extract non-data lineage column from raw table 
+            data_lineage_columns = ['created_at',    
+                                    'updated_at',    
+                                    'source_system', 
+                                    'source_file',   
+                                    'load_timestamp',
+                                    'dwh_layer']
+            
+            desired_columns = []
+            
+
+            get_list_of_column_names    =   f'''            SELECT      column_name 
+                                                            FROM        information_schema.columns 
+                                                            WHERE       table_name = '{table_name}'
+                                                            ORDER BY    ordinal_position 
+            '''
+
+            cursor.execute(get_list_of_column_names)
+            list_of_column_names = cursor.fetchall()
+            column_names = [sql_result[0] for sql_result in list_of_column_names]
+            
+
+            total_desired_columns_added = 0
+            for column_name in column_names:
+                if column_name not in data_lineage_columns:
+                    total_desired_columns_added += 1
+                    desired_columns.append(column_name)
+                    root_logger.info(f''' {total_desired_columns_added}: Added column '{column_name}' to desired columns list...  ''')
+            root_logger.info(f''' COMPLETED: Successfully added '{total_desired_columns_added}' columns to desired columns list.  ''')
+            root_logger.info('')
+            root_logger.info('')
+
 
         try:
             # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
@@ -346,7 +378,11 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
         print(temp_df)
         
-        
+        # Write results to temp file for data validation checks 
+        with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
+            temp_results_file_df_to_json = temp_df.to_json(orient="records")
+            temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
+
         
         # # ================================================== LOAD RAW DATA TO STAGING TABLE =======================================
         
