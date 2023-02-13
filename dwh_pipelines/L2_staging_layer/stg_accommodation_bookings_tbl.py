@@ -159,7 +159,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         
     
 
-        # ================================================== EXTRACTION: POSTGRES TO PANDAS DATA FRAME ==================================================
+        # ================================================== ENABLING CROSS-DATABASE QUERYING VIA FDW ==================================================
 
 
         try:
@@ -248,11 +248,15 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
             root_logger.info("")
-            root_logger.info(f"Successfully mapped the '{fdw_user}' user to the '{username}' user. ")
+            root_logger.info(f"Successfully mapped the '{fdw_user}' fdw user to the '{username}' local user. ")
             root_logger.info("")
 
             root_logger.info("")
-            root_logger.info(f"You should now be able to create and interact with the virtual tables for the {previous_db_name} database. ")
+            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
+            root_logger.info("")
+            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{previous_db_name}' database. ")
+            root_logger.info("")
+            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
             root_logger.info("")
         except Exception as e:
             print(e)
@@ -285,10 +289,18 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
-        fetch_raw_accommodation_bookings_tbl = f'''     SELECT * FROM {active_schema_name}.{src_table_name};  
-        '''
-    
+        # ================================================== EXTRACTION: POSTGRES TO PANDAS DATA FRAME ==================================================
+
+        try:
+            # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
+            fetch_raw_accommodation_bookings_tbl = f'''     SELECT * FROM {active_schema_name}.{src_table_name};  
+            '''
+            root_logger.info("")
+            root_logger.info(f"Successfully IMPORTED the '{active_schema_name}.{src_table_name}' virtual table from the '{foreign_server}' server. Now advancing to data cleaning stage...")
+            root_logger.info("")
+
+        except Exception as e:
+            print(e)
 
 
         # Execute SQL command to interact with Postgres database
