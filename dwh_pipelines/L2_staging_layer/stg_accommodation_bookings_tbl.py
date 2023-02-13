@@ -176,7 +176,6 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             root_logger.info("")
 
             cursor.execute(check_if_schema_exists)
-
             postgres_connection.commit()
 
         except Exception as e:
@@ -227,7 +226,6 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             '''
             cursor.execute(create_foreign_server)
             postgres_connection.commit()
-            # root_logger.debug(create_foreign_server)
 
 
             root_logger.info("")
@@ -247,7 +245,6 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
             cursor.execute(map_fdw_user_to_local_user)
             postgres_connection.commit()
-            # root_logger.debug(map_fdw_user_to_local_user)
 
 
             root_logger.info("")
@@ -261,20 +258,6 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             print(e)
 
 
-        # try:
-        #     drop_foreign_table = f'''   DROP FOREIGN TABLE {active_schema_name}.{src_table_name};
-        #     '''
-        #     cursor.execute(drop_foreign_table)
-        #     postgres_connection.commit()
-
-            
-        #     root_logger.info("")
-        #     root_logger.info(f"Successfully DROPPED the '{active_schema_name}.{src_table_name}' foreign table. Now advancing to re-creating the virual table...")
-        #     root_logger.info("")
-
-        # except Exception as e:
-        #     print(e)
-
 
         try:
             import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
@@ -286,7 +269,6 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
             cursor.execute(import_foreign_schema)
             postgres_connection.commit()
-            # root_logger.debug(import_foreign_schema)
 
             
             root_logger.info("")
