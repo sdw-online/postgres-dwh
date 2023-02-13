@@ -279,7 +279,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             root_logger.info(f"Successfully imported the '{src_table_name}' table into '{active_db_name}' database . ")
             root_logger.info("")
 
-
+ 
         except Exception as e:
             print(e)
             root_logger.error("")
@@ -289,7 +289,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # ================================================== EXTRACTION: POSTGRES TO PANDAS DATA FRAME ==================================================
+        # ================================================== EXTRACTION STEP ==================================================
 
         try:
             # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
@@ -319,11 +319,35 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         accommodation_bookings_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
 
         print(accommodation_bookings_tbl_df)
-
+        temp_df = accommodation_bookings_tbl_df
 
         
 
 
+        # # ================================================== TRANSFORMATION STEP =======================================
+        
+        # Convert date fields (booking_date, check_in_date, check_out_date) from integer to date type (with yyyy-mm-dd)
+
+        temp_df['booking_date'] = temp_df['booking_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        temp_df['check_in_date'] = temp_df['check_in_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        temp_df['check_out_date'] = temp_df['check_out_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        
+        
+        # Round total_price column to 2dp
+        temp_df['total_price'] = temp_df['total_price'].astype(float)
+        temp_df['total_price'] = temp_df['total_price'].round(2)
+
+
+        # Rename 'num_adults' to 'no_of_adults'
+        temp_df = temp_df.rename(columns={'num_adults': 'no_of_adults'})
+
+        # Rename 'num_children' to 'no_of_children'
+        temp_df = temp_df.rename(columns={'num_children': 'no_of_children'})
+
+        print(temp_df)
+        
+        
+        
         # # ================================================== LOAD RAW DATA TO STAGING TABLE =======================================
         
 
