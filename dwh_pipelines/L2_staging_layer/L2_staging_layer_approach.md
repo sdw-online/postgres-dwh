@@ -15,7 +15,8 @@ These are the end-user requirements for the staging layer:
 | 5     | The transformation strategy must be executed (converting transformation steps into coding logic) | NOT STARTED |  
 | 6     | A program must log the events for the staging processes to a file and console | NOT STARTED |  
 | 7     | Data profiling metrics must be logged to a file and console to understand the staging data’s properties and structure | NOT STARTED |  
-| 8     | A PROD staging environment must be generated once the DQ checks & tests are completed in the DEV environment  | NOT STARTED |  
+| 8     | A FOREIGN DATA WRAPPER must be created to access the travel data segregated across other databases | NOT STARTED |  
+| 9     | A PROD staging environment must be generated once the DQ checks & tests are completed in the DEV environment  | NOT STARTED |  
 
 
 
@@ -23,7 +24,7 @@ These are the end-user requirements for the staging layer:
 
 Once the acceptance criteria is 100% covered and satisfied by a series of acceptance tests by the end users, the staging layer’s tasks are officially completed. 
 
-
+ 
 
 
 # Transformation strategy
@@ -32,17 +33,17 @@ Here is the strategy for cleaning each of the staging tables in preparation for 
 
 ## 1. stg_accommodation_bookings_tbl
 
-- Convert date fields (`booking_date`, `check_in_date`, `check_out_date`) from integer to date type (with ‘yyyy-mm-dd’)
+- Convert date fields (`booking_date`, `check_in_date`, `check_out_date`) from integer to date type (with `yyyy-mm-dd`)
 - Round `total_price` column to 2dp
 - Rename `num_adults` to `no_of_adults`
 - Rename `num_children` to `no_of_children`
 
 ## 2. stg_customer_feedbacks_tbl
-- Convert `feedback_date` field from integer to date type (with ‘yyyy-mm-dd’)
+- Convert `feedback_date` field from integer to date type (with `yyyy-mm-dd`)
 
 ## 3. stg_customer_info_tbl
 - Convert `age` field to integer
-- Convert date fields (`created_date`, `dob`) from integer to date type (with ‘yyyy-mm-dd’)
+- Convert date fields (`created_date`, `dob`) from integer to date type (with `yyyy-mm-dd`)
 - Concatenate `first_name` and `last_name` fields to create `full_name` column
 - Explode nested dictionary in `customer_contact_preference_desc` into separate columns
 - Replace original `customer_contact_preference_id` field with the nested one
@@ -50,7 +51,7 @@ Here is the strategy for cleaning each of the staging tables in preparation for 
 ## 4. stg_flight_bookings_tbl
 
 - Round `ticket_price` column to 2dp
-- Convert `booking_date` from integer to date type (with ‘yyyy-mm-dd’)
+- Convert `booking_date` from integer to date type (with `yyyy-mm-dd`)
 
 ## 5. stg_flight_destinations_tbl
 
@@ -62,14 +63,14 @@ Here is the strategy for cleaning each of the staging tables in preparation for 
 
 ## 7. stg_flight_schedules_tbl
 
-- Convert `flight_date` field from integer to date type (with ‘yyyy-mm-dd’)
+- Convert `flight_date` field from integer to date type (with `yyyy-mm-dd`)
 - Convert time columns (`departure_time`, `arrival_time`) from `h:m:s` to `h:m` format
 - Add `arrival_date` column (conditional column: if the hour for new arrival time is greater than 24,make the arrival date one day later than departure date and set arrival time to… )
 
 ## 8. stg_flight_ticket_sales_tbl
 
 - Round price columns (`discount`, `ticket_sales`) to 2dp
-- Convert `ticket_sales_date` from integer to date type (with ‘yyyy-mm-dd’)
+- Convert `ticket_sales_date` from integer to date type (with `yyyy-mm-dd`)
 
 ## 9. stg_sales_agents_tbl
 
@@ -78,7 +79,7 @@ Here is the strategy for cleaning each of the staging tables in preparation for 
 ## 10. stg_ticket_prices_tbl
 
 - Round `ticket_price` column to 2dp
-- Convert `ticket_price_date` from integer to date type (with ‘yyyy-mm-dd’)
+- Convert `ticket_price_date` from integer to date type (with `yyyy-mm-dd`)
 
 ***
 
