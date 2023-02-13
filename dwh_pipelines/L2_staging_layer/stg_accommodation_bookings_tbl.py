@@ -123,11 +123,13 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         CURRENT_TIMESTAMP               =   datetime.now()
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'raw_db_server'
-        fdw_user                        =   'fdw_user'
+        fdw_user                        =   username
+        # fdw_user                        =   'fdw_user'
         previous_db_name                =   'raw_db'
         previous_schema_name            =   'main'
         active_schema_name              =   'dev'
-        active_db_name                  =   database
+        active_db_name                  =    database
+        src_table_name                  =   'raw_accommodation_bookings_tbl'
         table_name                      =   'stg_accommodation_bookings_tbl'
         data_warehouse_layer            =   'STG'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
@@ -158,54 +160,100 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
     
 
         # ================================================== EXTRACTION: POSTGRES TO PANDAS DATA FRAME ==================================================
-        
+
+
+        try:
+             # Set up SQL statements for schema creation and validation check  
+            create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {active_schema_name};
+            '''
+
+            check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{active_schema_name}';
+            '''
+
+            cursor.execute(create_schema)
+            root_logger.info("")
+            root_logger.info(f"Successfully created {active_schema_name} schema. ")
+            root_logger.info("")
+
+            cursor.execute(check_if_schema_exists)
+
+            postgres_connection.commit()
+
+        except Exception as e:
+            print(e)
+
+
+
         try:
             # Drop extension postgres_fdw if it exists 
             drop_postgres_fdw_extension = f'''  DROP EXTENSION {fdw_extension} CASCADE
                                                 ;   
             '''
             cursor.execute(drop_postgres_fdw_extension)
+            postgres_connection.commit()
+
+
             root_logger.info("")
             root_logger.info(f"Successfully DROPPED the '{fdw_extension}' extension. Now advancing to re-importing the extension...")
             root_logger.info("")
 
+            
+        except Exception as e:
+            print(e)
 
+        try:
             # Install the postgres_fdw module 
-            import_postgres_fdw = f'''    CREATE EXTENSION '{fdw_extension}'
+            import_postgres_fdw = f'''    CREATE EXTENSION {fdw_extension}
                                                 ;   
             '''
             
             cursor.execute(import_postgres_fdw)
+            postgres_connection.commit()
+
+
             root_logger.info("")
             root_logger.info(f"Successfully IMPORTED the '{fdw_extension}' extension. Now advancing to creating the foreign server...")
             root_logger.info("")
+        except Exception as e:
+            print(e)
 
 
+        try:
             # Create the foreign server 
             create_foreign_server = f'''    CREATE SERVER {foreign_server}
-                                                FOREIGN DATA WRAPPER '{fdw_extension}'
-                                                OPTIONS (host '{host}', dbname '{previous_db_name}')
+                                                FOREIGN DATA WRAPPER {fdw_extension}
+                                                OPTIONS (host '{host}', dbname '{previous_db_name}', port '{port}')
                                                 ;
             '''
             cursor.execute(create_foreign_server)
-            root_logger.info("")
-            root_logger.info(f"Successfully CREATED the {foreign_server} foreign server. Now advancing to user mapping stage...")
-            root_logger.info("")
+            postgres_connection.commit()
+            # root_logger.debug(create_foreign_server)
 
 
+            root_logger.info("")
+            root_logger.info(f"Successfully CREATED the '{foreign_server}' foreign server. Now advancing to user mapping stage...")
+            root_logger.info("")
+        except Exception as e:
+            print(e)
+
+
+        try:
             # Create the user mapping between the fdw_user and local user 
             map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
                                                         SERVER {foreign_server}
-                                                        OPTIONS (user '{fdw_user}', password '{password}');
+                                                        OPTIONS (user '{fdw_user}', password '{password}')
+                                                        ;
             '''
 
             cursor.execute(map_fdw_user_to_local_user)
-            root_logger.info("")
-            root_logger.info(f"Successfully mapped the {fdw_user} user to the {username} user. ")
-            root_logger.info("")
+            postgres_connection.commit()
+            # root_logger.debug(map_fdw_user_to_local_user)
 
 
-            
+            root_logger.info("")
+            root_logger.info(f"Successfully mapped the '{fdw_user}' user to the '{username}' user. ")
+            root_logger.info("")
+
             root_logger.info("")
             root_logger.info(f"You should now be able to create and interact with the virtual tables for the {previous_db_name} database. ")
             root_logger.info("")
@@ -213,13 +261,52 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             print(e)
 
 
+        # try:
+        #     drop_foreign_table = f'''   DROP FOREIGN TABLE {active_schema_name}.{src_table_name};
+        #     '''
+        #     cursor.execute(drop_foreign_table)
+        #     postgres_connection.commit()
+
+            
+        #     root_logger.info("")
+        #     root_logger.info(f"Successfully DROPPED the '{active_schema_name}.{src_table_name}' foreign table. Now advancing to re-creating the virual table...")
+        #     root_logger.info("")
+
+        # except Exception as e:
+        #     print(e)
+
+
+        try:
+            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
+                                                LIMIT TO ({src_table_name})
+                                                FROM SERVER {foreign_server}
+                                                INTO {active_schema_name}
+                                                ;
+            '''
+
+            cursor.execute(import_foreign_schema)
+            postgres_connection.commit()
+            # root_logger.debug(import_foreign_schema)
+
+            
+            root_logger.info("")
+            root_logger.info(f"Successfully imported the '{src_table_name}' table into '{active_db_name}' database . ")
+            root_logger.info("")
+
+
+        except Exception as e:
+            print(e)
+            root_logger.error("")
+            root_logger.error(f"Unable to import the '{src_table_name}' table into '{active_db_name}' database . ")
+            root_logger.error("")
 
 
 
 
         # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
-        fetch_raw_accommodation_bookings_tbl = f'''     SELECT * FROM {previous_db_name}.{previous_schema_name}.raw_accommodation_bookings_tbl;  
+        fetch_raw_accommodation_bookings_tbl = f'''     SELECT * FROM {active_schema_name}.{src_table_name};  
         '''
+    
 
 
         # Execute SQL command to interact with Postgres database
@@ -246,13 +333,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         # # ================================================== LOAD RAW DATA TO STAGING TABLE =======================================
         
 
-        # # Set up SQL statements for schema creation and validation check  
-        # create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {active_db_name}.{active_schema_name};
-        # '''
-
-        # check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{active_schema_name}';
-        # '''
-
+       
 
         # # Set up SQL statements for table deletion and validation check  
         # delete_stg_accommodation_bookings_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
@@ -985,7 +1066,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
         # # Commit the changes made in Postgres 
         # root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         # root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 
