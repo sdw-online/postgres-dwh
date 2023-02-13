@@ -605,33 +605,33 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # # Add data lineage to table 
-        # ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        # cursor.execute(add_data_lineage_to_stg_accommodation_bookings_tbl)
-        # ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
+        # Add data lineage to table 
+        ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
+        cursor.execute(add_data_lineage_to_stg_accommodation_bookings_tbl)
+        ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
-        # ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME  =  time.time()
-        # cursor.execute(check_if_data_lineage_fields_are_added_to_tbl)
-        # ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME    =  time.time()
+        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME  =  time.time()
+        cursor.execute(check_if_data_lineage_fields_are_added_to_tbl)
+        ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME    =  time.time()
 
 
-        # sql_results = cursor.fetchall()
+        sql_results = cursor.fetchall()
         
-        # if len(sql_results) == 6:
-        #     root_logger.debug(f"")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.info(f"DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in {active_schema_name}.{table_name}.  ")
-        #     root_logger.info(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
-        #     root_logger.info(f"=============================================================================================================================================================================")
-        #     root_logger.debug(f"")
-        # else:
-        #     root_logger.debug(f"")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {active_schema_name}.{table_name}.... ")
-        #     root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
-        #     root_logger.error(f"==========================================================================================================================================================================")
-        #     root_logger.debug(f"")
+        if len(sql_results) == 6:
+            root_logger.debug(f"")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.info(f"DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in {active_schema_name}.{table_name}.  ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
+            root_logger.info(f"=============================================================================================================================================================================")
+            root_logger.debug(f"")
+        else:
+            root_logger.debug(f"")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {active_schema_name}.{table_name}.... ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
+            root_logger.error(f"==========================================================================================================================================================================")
+            root_logger.debug(f"")
 
 
 
