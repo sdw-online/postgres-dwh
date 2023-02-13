@@ -131,13 +131,14 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         active_db_name                  =    database
         src_table_name                  =   'raw_accommodation_bookings_tbl'
         table_name                      =   'stg_accommodation_bookings_tbl'
-        data_warehouse_layer            =   'STG'
+        data_warehouse_layer            =   'STAGING'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
         column_index                    =   0 
         total_null_values_in_table      =   0 
         successful_rows_upload_count    =   0 
         failed_rows_upload_count        =   0 
+        
 
 
         # Create a cursor object to execute the PG-SQL commands 
@@ -416,6 +417,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         temp_df = temp_df.rename(columns={'num_children': 'no_of_children'})
 
         print(temp_df)
+        print(temp_df.columns)
         
         # Write results to temp file for data validation checks 
         with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
@@ -445,13 +447,13 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
                                                                                     confirmation_code       VARCHAR(10) NOT NULL,
                                                                                     customer_id             CHAR(36) NOT NULL,
                                                                                     flight_booking_id       CHAR(36) NOT NULL,
-                                                                                    location                VARCHAR(20) NOT NULL,
+                                                                                    location                VARCHAR(255) NOT NULL,
                                                                                     no_of_adults            INTEGER NOT NULL,
                                                                                     no_of_children          INTEGER NOT NULL,
-                                                                                    payment_method          VARCHAR(20) NOT NULL,
-                                                                                    room_type               VARCHAR(20) NOT NULL,
+                                                                                    payment_method          VARCHAR(255) NOT NULL,
+                                                                                    room_type               VARCHAR(255) NOT NULL,
                                                                                     sales_agent_id          CHAR(36) NOT NULL,
-                                                                                    status                  VARCHAR(20) NOT NULL,
+                                                                                    status                  VARCHAR(255) NOT NULL,
                                                                                     total_price             DECIMAL(10,2) NOT NULL
                                                                         );
         '''
@@ -492,21 +494,21 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_accommodation_bookings_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                id,
-                                                                                booking_date,
-                                                                                check_in_date,
-                                                                                check_out_date,
+                                                                                id, 
+                                                                                booking_date, 
+                                                                                check_in_date, 
+                                                                                check_out_date, 
                                                                                 checked_in,
-                                                                                confirmation_code,
-                                                                                customer_id,
-                                                                                flight_booking_id,
+                                                                                confirmation_code, 
+                                                                                customer_id, 
+                                                                                flight_booking_id, 
                                                                                 location,
-                                                                                num_adults,
-                                                                                num_children,
-                                                                                payment_method,
+                                                                                no_of_adults, 
+                                                                                no_of_children, 
+                                                                                payment_method, 
                                                                                 room_type,
-                                                                                sales_agent_id,
-                                                                                status,
+                                                                                sales_agent_id, 
+                                                                                status, 
                                                                                 total_price,
                                                                                 created_at,
                                                                                 updated_at,
@@ -635,70 +637,70 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # # Add insert rows to table 
-        # ROW_INSERTION_PROCESSING_START_TIME     =   time.time()
-        # cursor.execute(check_total_row_count_before_insert_statement)
-        # sql_result = cursor.fetchone()[0]
-        # root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
-        # root_logger.debug(f"")
+        # Add insert rows to table 
+        ROW_INSERTION_PROCESSING_START_TIME     =   time.time()
+        cursor.execute(check_total_row_count_before_insert_statement)
+        sql_result = cursor.fetchone()[0]
+        root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
+        root_logger.debug(f"")
 
 
-        # for accommodation_bookings in accommodation_bookings_data:
-        #     values = (
-        #         accommodation_bookings['id'],              
-        #         accommodation_bookings['booking_date'],     
-        #         accommodation_bookings['check_in_date'],    
-        #         accommodation_bookings['check_out_date'],   
-        #         accommodation_bookings['checked_in'],       
-        #         accommodation_bookings['confirmation_code'],
-        #         accommodation_bookings['customer_id'],      
-        #         accommodation_bookings['flight_booking_id'],
-        #         accommodation_bookings['location'],         
-        #         accommodation_bookings['num_adults'],       
-        #         accommodation_bookings['num_children'],    
-        #         accommodation_bookings['payment_method'],   
-        #         accommodation_bookings['room_type'],        
-        #         accommodation_bookings['sales_agent_id'],   
-        #         accommodation_bookings['status'],          
-        #         accommodation_bookings['total_price'],
-        #         CURRENT_TIMESTAMP,
-        #         CURRENT_TIMESTAMP,
-        #         random.choice(source_system),
-        #         src_file,
-        #         CURRENT_TIMESTAMP,
-        #         'RAW'
-        #         )
+        for index, row in temp_df.iterrows():
+            values = (
+                row['id'], 
+                row['booking_date'], 
+                row['check_in_date'], 
+                row['check_out_date'], 
+                row['checked_in'],
+                row['confirmation_code'], 
+                row['customer_id'], 
+                row['flight_booking_id'], 
+                row['location'],
+                row['no_of_adults'], 
+                row['no_of_children'], 
+                row['payment_method'], 
+                row['room_type'],
+                row['sales_agent_id'], 
+                row['status'], 
+                row['total_price'],   
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP,
+                random.choice(source_system),
+                src_table_name,
+                CURRENT_TIMESTAMP,
+                data_warehouse_layer
+                    )
 
-        #     cursor.execute(insert_accommodation_bookings_data, values)
+            cursor.execute(insert_accommodation_bookings_data, values)
 
 
-        #     # Validate if each row inserted into the table exists 
-        #     if cursor.rowcount == 1:
-        #         row_counter += 1
-        #         successful_rows_upload_count += 1
-        #         root_logger.debug(f'---------------------------------')
-        #         root_logger.info(f'INSERT SUCCESS: Uploaded accommodation_bookings record no {row_counter} ')
-        #         root_logger.debug(f'---------------------------------')
-        #     else:
-        #         row_counter += 1
-        #         failed_rows_upload_count +=1
-        #         root_logger.error(f'---------------------------------')
-        #         root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
-        #         root_logger.error(f'---------------------------------')
+            # Validate if each row inserted into the table exists 
+            if cursor.rowcount == 1:
+                row_counter += 1
+                successful_rows_upload_count += 1
+                root_logger.debug(f'---------------------------------')
+                root_logger.info(f'INSERT SUCCESS: Uploaded accommodation_bookings record no {row_counter} ')
+                root_logger.debug(f'---------------------------------')
+            else:
+                row_counter += 1
+                failed_rows_upload_count +=1
+                root_logger.error(f'---------------------------------')
+                root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
+                root_logger.error(f'---------------------------------')
 
 
         
-        # ROW_INSERTION_PROCESSING_END_TIME   =   time.time()
+        ROW_INSERTION_PROCESSING_END_TIME   =   time.time()
 
 
-        # ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME   =   time.time()
-        # cursor.execute(check_total_row_count_after_insert_statement)
-        # ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME     =   time.time()
+        ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME   =   time.time()
+        cursor.execute(check_total_row_count_after_insert_statement)
+        ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME     =   time.time()
 
 
-        # total_rows_in_table = cursor.fetchone()[0]
-        # root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
-        # root_logger.debug(f"")
+        total_rows_in_table = cursor.fetchone()[0]
+        root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
+        root_logger.debug(f"")
 
 
 
