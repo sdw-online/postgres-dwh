@@ -438,19 +438,19 @@ def test_status_col_values():
 
 def test_id_char_length_constraint():
     expected_id_char_length = 36
-    sql_column = "id"
+    sql_results = cursor.fetchall()
+    
 
-    sql_query_1 = f"""     SELECT column_name FROM information_schema.columns WHERE table_name='{table_name}' 
+    sql_query = f"""     SELECT column_name FROM information_schema.columns WHERE table_name='{table_name} AND column_name LIKE "%_id%" ' 
     """
-    cursor.execute(sql_query_1)
-
+    cursor.execute(sql_query)
+    
     sql_results = cursor.fetchall()
 
-     # Assert the number of characters for the id column is equal to 36
-    for id_column in sql_results:
 
-        sql_query_2 = f"    SELECT char_length({id_column[0]}) FROM {schema_name}.{table_name} "
-        cursor.execute(sql_query_2)
-        actual_id_length = cursor.fetchone()[0]
+     # Assert the number of characters for the id column is equal to 36
+    for sql_result in sql_results:
+        id_column = sql_result[0]
+        actual_id_length = len(id_column)
         assert actual_id_length == expected_id_char_length, f"Invalid ID column found: All ID columns must be {expected_id_char_length} characters long. The ID column containing invalid IDs is '{id_column}' column"
 
