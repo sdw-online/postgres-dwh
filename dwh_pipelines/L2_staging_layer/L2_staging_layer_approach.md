@@ -43,7 +43,7 @@ Here is the strategy for cleaning each of the staging tables in preparation for 
 
 ## 3. stg_customer_info_tbl
 - Convert `age` field to integer
-- Convert date fields (`created_date`, `dob`) from integer to date type (with `yyyy-mm-dd`)
+- Convert date fields (`created_date`, `dob`, `last_updated_date`) from integer to date type (with `yyyy-mm-dd`)
 - Concatenate `first_name` and `last_name` fields to create `full_name` column
 - Explode nested dictionary in `customer_contact_preference_desc` into separate columns
 - Replace original `customer_contact_preference_id` field with the nested one

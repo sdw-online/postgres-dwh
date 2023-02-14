@@ -408,32 +408,32 @@ def load_data_to_stg_customer_info_table(postgres_connection):
         # # ================================================== TRANSFORM DATA FRAME  =======================================
         
         # Convert age field to integer
-        temp_df['age'] = temp_df['age'].astype(int)
+        temp_df['age']              =       temp_df['age'].astype(int)
 
 
-        # Convert date fields (created_date, dob) from integer to date type (with yyyy-mm-dd)
+        # Convert date fields (created_date, dob, last_updated_date) from integer to date type (with yyyy-mm-dd)
 
-        temp_df['created_date']     =       temp_df['created_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        temp_df['dob']              =       temp_df['dob'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        temp_df['created_date']          =       temp_df['created_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        temp_df['last_updated_date']     =       temp_df['last_updated_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        
+                 
+        temp_df['dob'] = pd.to_datetime(temp_df['dob'], unit='ms')
+        temp_df['dob'] = temp_df['dob'].dt.strftime('%Y-%m-%d')
+
         
 
         # Concatenate first_name and last_name fields to create full_name column
 
-        temp_df['full_name']    = temp_df['first_name'] + ' ' + temp_df['last_name']
-        
-        # # Round total_price column to 2dp
-        # temp_df['total_price'] = temp_df['total_price'].astype(float)
-        # temp_df['total_price'] = temp_df['total_price'].round(2)
+        temp_df['full_name']        =       temp_df['first_name'] + ' ' + temp_df['last_name']
 
 
-        # # Rename 'num_adults' to 'no_of_adults'
-        # temp_df = temp_df.rename(columns={'num_adults': 'no_of_adults'})
-
-        # # Rename 'num_children' to 'no_of_children'
-        # temp_df = temp_df.rename(columns={'num_children': 'no_of_children'})
+        # Drop the `customer_contact_preference_id` column to replace it with the incoming one
+        temp_df.drop("customer_contact_preference_id", axis=1, inplace=True)
 
 
-
+        # Extracting the values of "description" and "id" from the "customer_contact_preference_desc" column
+        temp_df[['customer_contact_preference_desc', 'customer_contact_preference_id']] = temp_df['customer_contact_preference_desc'].apply(lambda x: pd.Series(json.loads(x)))
+       
 
 
 
@@ -460,22 +460,26 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_customer_info_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    id                      CHAR(36) PRIMARY KEY NOT NULL,
-                                                                                    booking_date            DATE NOT NULL,
-                                                                                    check_in_date           DATE NOT NULL,
-                                                                                    check_out_date          DATE NOT NULL,
-                                                                                    checked_in              VARCHAR(3) NOT NULL,
-                                                                                    confirmation_code       VARCHAR(10) NOT NULL,
-                                                                                    customer_id             CHAR(36) NOT NULL,
-                                                                                    flight_booking_id       CHAR(36) NOT NULL,
-                                                                                    location                VARCHAR(255) NOT NULL,
-                                                                                    no_of_adults            INTEGER NOT NULL,
-                                                                                    no_of_children          INTEGER NOT NULL,
-                                                                                    payment_method          VARCHAR(255) NOT NULL,
-                                                                                    room_type               VARCHAR(255) NOT NULL,
-                                                                                    sales_agent_id          CHAR(36) NOT NULL,
-                                                                                    status                  VARCHAR(255) NOT NULL,
-                                                                                    total_price             DECIMAL(10,2) NOT NULL
+                                                                    customer_id                         UUID PRIMARY KEY NOT NULL,
+                                                                    first_name                          VARCHAR(50) NOT NULL,
+                                                                    last_name                           VARCHAR(50) NOT NULL,
+                                                                    full_name                           VARCHAR(100) NOT NULL,
+                                                                    email                               VARCHAR(100) NOT NULL UNIQUE,
+                                                                    age                                 INT NOT NULL,
+                                                                    dob                                 DATE NOT NULL,
+                                                                    phone_number                        VARCHAR(20) NOT NULL,
+                                                                    nationality                         VARCHAR(100) NOT NULL,
+                                                                    place_of_birth                      VARCHAR(100) NOT NULL,
+                                                                    address                             TEXT NOT NULL,
+                                                                    city                                VARCHAR(100) NOT NULL,
+                                                                    state                               VARCHAR(100) NOT NULL,
+                                                                    zip                                 VARCHAR(10) NOT NULL,
+                                                                    credit_card                         VARCHAR(16) NOT NULL UNIQUE,
+                                                                    credit_card_provider                VARCHAR(100) NOT NULL,
+                                                                    customer_contact_preference_id      UUID NOT NULL,
+                                                                    customer_contact_preference_desc    VARCHAR(100) NOT NULL,
+                                                                    created_date                        DATE NOT NULL,
+                                                                    last_updated_date                   DATE NOT NULL
                                                                         );
         '''
 
@@ -515,22 +519,26 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_customer_info_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                id, 
-                                                                                booking_date, 
-                                                                                check_in_date, 
-                                                                                check_out_date, 
-                                                                                checked_in,
-                                                                                confirmation_code, 
                                                                                 customer_id, 
-                                                                                flight_booking_id, 
-                                                                                location,
-                                                                                no_of_adults, 
-                                                                                no_of_children, 
-                                                                                payment_method, 
-                                                                                room_type,
-                                                                                sales_agent_id, 
-                                                                                status, 
-                                                                                total_price,
+                                                                                address, 
+                                                                                age, 
+                                                                                city, 
+                                                                                created_date, 
+                                                                                credit_card,
+                                                                                credit_card_provider, 
+                                                                                customer_contact_preference_desc, 
+                                                                                dob,
+                                                                                email, 
+                                                                                first_name, 
+                                                                                last_name, 
+                                                                                last_updated_date, 
+                                                                                nationality,
+                                                                                phone_number, 
+                                                                                place_of_birth, 
+                                                                                state, 
+                                                                                zip, 
+                                                                                full_name,
+                                                                                customer_contact_preference_id,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -539,7 +547,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s
                                                                             );
         '''
 
@@ -663,22 +671,26 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['id'], 
-                row['booking_date'], 
-                row['check_in_date'], 
-                row['check_out_date'], 
-                row['checked_in'],
-                row['confirmation_code'], 
                 row['customer_id'], 
-                row['flight_booking_id'], 
-                row['location'],
-                row['no_of_adults'], 
-                row['no_of_children'], 
-                row['payment_method'], 
-                row['room_type'],
-                row['sales_agent_id'], 
-                row['status'], 
-                row['total_price'],   
+                row['address'], 
+                row['age'], 
+                row['city'], 
+                row['created_date'], 
+                row['credit_card'],
+                row['credit_card_provider'], 
+                row['customer_contact_preference_desc'], 
+                row['dob'],
+                row['email'], 
+                row['first_name'], 
+                row['last_name'], 
+                row['last_updated_date'], 
+                row['nationality'],
+                row['phone_number'], 
+                row['place_of_birth'], 
+                row['state'], 
+                row['zip'], 
+                row['full_name'],
+                row['customer_contact_preference_id'],   
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
