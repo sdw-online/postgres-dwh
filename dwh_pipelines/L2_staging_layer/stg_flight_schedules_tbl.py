@@ -1,16 +1,16 @@
-
 import os 
 import json
 import time 
 import random
 import psycopg2
+import pandas as pd
 import configparser
 from pathlib import Path
 import logging, coloredlogs
 from datetime import datetime
 
-
 # ================================================ LOGGER ================================================
+
 
 # Set up root root_logger 
 root_logger     =   logging.getLogger(__name__)
@@ -35,7 +35,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/L1_raw_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L2_staging_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -44,7 +44,7 @@ console_handler     =   logging.StreamHandler()
 console_handler.setFormatter(console_handler_log_formatter)
 
 
-# Add the file and console handlers 
+# Add the file handler 
 root_logger.addHandler(file_handler)
 
 
@@ -55,14 +55,11 @@ if __name__=="__main__":
 
 
 
-
 # ================================================ CONFIG ================================================
 
 # Add a flag/switch indicating whether Airflow is in use or not 
 USING_AIRFLOW   =   False
 
-# Create source file variable 
-src_file    =   'flight_ticket_sales.json'
 
 
 # Create a config file for storing environment variables
@@ -71,11 +68,11 @@ if USING_AIRFLOW:
 
     # Use the airflow config file from the airflow container 
     config.read('/usr/local/airflow/dags/etl_to_postgres/airflow_config.ini')
-    flight_ticket_sales_path = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] + src_file
+    DATASETS_LOCATION_PATH = config['postgres_airflow_config']['DATASET_SOURCE_PATH'] 
 
     host                    =   config['postgres_airflow_config']['HOST']
     port                    =   config['postgres_airflow_config']['PORT']
-    database                =   config['postgres_airflow_config']['RAW_DB']
+    database                =   config['postgres_airflow_config']['STAGING_DB']
     username                =   config['postgres_airflow_config']['USERNAME']
     password                =   config['postgres_airflow_config']['PASSWORD']
     
@@ -88,11 +85,11 @@ else:
     # Use the local config file from the local machine 
     path    =   os.path.abspath('dwh_pipelines/local_config.ini')
     config.read(path)
-    flight_ticket_sales_path     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH'] + src_file
+    DATASETS_LOCATION_PATH     =   config['travel_data_filepath']['DATASETS_LOCATION_PATH']
 
     host                    =   config['travel_data_filepath']['HOST']
     port                    =   config['travel_data_filepath']['PORT']
-    database                =   config['travel_data_filepath']['RAW_DB']
+    database                =   config['travel_data_filepath']['STAGING_DB']
     username                =   config['travel_data_filepath']['USERNAME']
     password                =   config['travel_data_filepath']['PASSWORD']
 
@@ -104,22 +101,8 @@ else:
 # Begin the data extraction process
 root_logger.info("")
 root_logger.info("---------------------------------------------")
-root_logger.info("Beginning the source data extraction process...")
-COMPUTE_START_TIME  =   time.time()
+root_logger.info("Beginning the staging process...")
 
-
-with open(flight_ticket_sales_path, 'r') as flight_ticket_sales_file:    
-    
-    try:
-        flight_ticket_sales_data = json.load(flight_ticket_sales_file)
-        flight_ticket_sales_data = flight_ticket_sales_data[0:100]
-        root_logger.info(f"Successfully located '{src_file}'")
-        root_logger.info(f"File type: '{type(flight_ticket_sales_data)}'")
-
-    except:
-        root_logger.error("Unable to locate source file...terminating process...")
-        raise Exception("No source file located")
-    
 
 postgres_connection = psycopg2.connect(
                 host        =   host,
@@ -130,21 +113,31 @@ postgres_connection = psycopg2.connect(
         )
 
 
-def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
+
+
+def load_data_to_stg_flight_schedules_table(postgres_connection):
     try:
         
         # Set up constants
         CURRENT_TIMESTAMP               =   datetime.now()
-        db_layer_name                   =   database
-        schema_name                     =   'main'
-        table_name                      =   'raw_flight_ticket_sales_tbl'
-        data_warehouse_layer            =   'RAW'
+        fdw_extension                   =   'postgres_fdw'
+        foreign_server                  =   'raw_db_server'
+        fdw_user                        =   username
+        # fdw_user                        =   'fdw_user'
+        previous_db_name                =   'raw_db'
+        previous_schema_name            =   'main'
+        active_schema_name              =   'dev'
+        active_db_name                  =    database
+        src_table_name                  =   'raw_flight_schedules_tbl'
+        table_name                      =   'stg_flight_schedules_tbl'
+        data_warehouse_layer            =   'STAGING'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
         column_index                    =   0 
         total_null_values_in_table      =   0 
         successful_rows_upload_count    =   0 
         failed_rows_upload_count        =   0 
+        
 
 
         # Create a cursor object to execute the PG-SQL commands 
@@ -156,7 +149,7 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         if postgres_connection.closed == 0:
             root_logger.debug(f"")
             root_logger.info("=================================================================================")
-            root_logger.info(f"CONNECTION SUCCESS: Managed to connect successfully to the {db_layer_name} database!!")
+            root_logger.info(f"CONNECTION SUCCESS: Managed to connect successfully to the {active_db_name} database!!")
             root_logger.info(f"Connection details: {postgres_connection.dsn} ")
             root_logger.info("=================================================================================")
             root_logger.debug("")
@@ -164,50 +157,319 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         elif postgres_connection.closed != 0:
             raise ConnectionError("CONNECTION ERROR: Unable to connect to the demo_company database...") 
         
+    
+
+        # ================================================== ENABLING CROSS-DATABASE QUERYING VIA FDW ==================================================
+
+        # Set up SQL statements for schema creation and validation check 
+        try:
+             
+            create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {active_schema_name};
+            '''
+
+            check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{active_schema_name}';
+            '''
+
+
+            # Create schema in Postgres
+            CREATING_SCHEMA_PROCESSING_START_TIME   =   time.time()
+            cursor.execute(create_schema)
+            root_logger.info("")
+            root_logger.info(f"Successfully created {active_schema_name} schema. ")
+            root_logger.info("")
+            CREATING_SCHEMA_PROCESSING_END_TIME     =   time.time()
+
+
+            CREATING_SCHEMA_VAL_CHECK_START_TIME    =   time.time()
+            cursor.execute(check_if_schema_exists)
+            CREATING_SCHEMA_VAL_CHECK_END_TIME      =   time.time()
+
+            
+
+            sql_result = cursor.fetchone()[0]
+            if sql_result:
+                root_logger.debug(f"")
+                root_logger.info(f"=================================================================================================")
+                root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {active_schema_name} schema in {active_db_name} ")
+                root_logger.info(f"Schema name in Postgres: {sql_result} ")
+                root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
+                root_logger.info(f"=================================================================================================")
+                root_logger.debug(f"")
+
+            else:
+                root_logger.debug(f"")
+                root_logger.error(f"=================================================================================================")
+                root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {active_db_name}...")
+                root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
+                root_logger.error(f"=================================================================================================")
+                root_logger.debug(f"")
+
+            postgres_connection.commit()
+
+        except Exception as e:
+            print(e)
 
 
 
+        # Drop extension postgres_fdw if it exists 
+        try:
+            drop_postgres_fdw_extension = f'''  DROP EXTENSION {fdw_extension} CASCADE
+                                                ;   
+            '''
+            cursor.execute(drop_postgres_fdw_extension)
+            postgres_connection.commit()
 
-        # ======================================= LOAD SRC TO RAW =======================================
+
+            root_logger.info("")
+            root_logger.info(f"Successfully DROPPED the '{fdw_extension}' extension. Now advancing to re-importing the extension...")
+            root_logger.info("")
+
+            
+        except Exception as e:
+            print(e)
+
         
 
-        # Set up SQL statements for schema creation and validation check  
-        create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {schema_name};
-        '''
+        # Create the postgres_fdw extension  
+        try:
+            import_postgres_fdw = f'''    CREATE EXTENSION {fdw_extension}
+                                                ;   
+            '''
+            
+            cursor.execute(import_postgres_fdw)
+            postgres_connection.commit()
 
-        check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{schema_name}';
-        '''
 
+            root_logger.info("")
+            root_logger.info(f"Successfully IMPORTED the '{fdw_extension}' extension. Now advancing to creating the foreign server...")
+            root_logger.info("")
+        except Exception as e:
+            print(e)
+
+
+
+        # Create the foreign server
+        try: 
+            create_foreign_server = f'''    CREATE SERVER {foreign_server}
+                                                FOREIGN DATA WRAPPER {fdw_extension}
+                                                OPTIONS (host '{host}', dbname '{previous_db_name}', port '{port}')
+                                                ;
+            '''
+            cursor.execute(create_foreign_server)
+            postgres_connection.commit()
+
+
+            root_logger.info("")
+            root_logger.info(f"Successfully CREATED the '{foreign_server}' foreign server. Now advancing to user mapping stage...")
+            root_logger.info("")
+        except Exception as e:
+            print(e)
+
+
+        
+        # Create the user mapping between the fdw_user and local user 
+        try:
+            map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
+                                                        SERVER {foreign_server}
+                                                        OPTIONS (user '{fdw_user}', password '{password}')
+                                                        ;
+            '''
+
+            cursor.execute(map_fdw_user_to_local_user)
+            postgres_connection.commit()
+
+
+            root_logger.info("")
+            root_logger.info(f"Successfully mapped the '{fdw_user}' fdw user to the '{username}' local user. ")
+            root_logger.info("")
+
+            root_logger.info("")
+            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
+            root_logger.info("")
+            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{previous_db_name}' database. ")
+            root_logger.info("")
+            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
+            root_logger.info("")
+        except Exception as e:
+            print(e)
+
+
+
+        # Import the foreign schema from the previous layer's source table 
+        try:
+            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
+                                                LIMIT TO ({src_table_name})
+                                                FROM SERVER {foreign_server}
+                                                INTO {active_schema_name}
+                                                ;
+            '''
+
+            cursor.execute(import_foreign_schema)
+            postgres_connection.commit()
+
+            
+            root_logger.info("")
+            root_logger.info(f"Successfully imported the '{src_table_name}' table into '{active_db_name}' database . ")
+            root_logger.info("")
+
+ 
+        except Exception as e:
+            print(e)
+            root_logger.error("")
+            root_logger.error(f"Unable to import the '{src_table_name}' table into '{active_db_name}' database . ")
+            root_logger.error("")
+
+
+
+
+        # ================================================== EXTRACT DATA FROM SOURCE POSTGRES TABLE ==================================================
+            
+        # Extract non-data lineage columns from raw table 
+        try:
+            data_lineage_columns = ['created_at',    
+                                    'updated_at',    
+                                    'source_system', 
+                                    'source_file',   
+                                    'load_timestamp',
+                                    'dwh_layer']
+            
+            desired_sql_columns = []
+            
+
+            get_list_of_column_names    =   f'''            SELECT      column_name 
+                                                            FROM        information_schema.columns 
+                                                            WHERE       table_name = '{src_table_name}'
+                                                            ORDER BY    ordinal_position 
+            '''
+
+            cursor.execute(get_list_of_column_names)
+            postgres_connection.commit()
+
+            list_of_column_names = cursor.fetchall()
+            column_names = [sql_result[0] for sql_result in list_of_column_names]
+            
+
+            total_desired_sql_columns_added = 0
+            for column_name in column_names:
+                if column_name not in data_lineage_columns:
+                    total_desired_sql_columns_added += 1
+                    desired_sql_columns.append(column_name)
+                    root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
+            root_logger.info('')
+            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {len(list_of_column_names)} columns not included were data lineage columns to be added later via ALTER command. ''')
+            root_logger.info('')
+            root_logger.info('')
+            # root_logger.info(f'{desired_sql_columns}')
+            
+        except Exception as e:
+            print(e)
+
+
+
+        # Pull flight_schedules_tbl data from staging tables in Postgres database 
+        try:
+            fetch_raw_flight_schedules_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            '''
+            root_logger.debug(fetch_raw_flight_schedules_tbl)
+            root_logger.info("")
+            root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
+            root_logger.info("")
+
+
+            # Execute SQL command to interact with Postgres database
+            cursor.execute(fetch_raw_flight_schedules_tbl)
+
+            # Extract header names from cursor's description
+            postgres_table_headers = [header[0] for header in cursor.description]
+
+
+            # Execute script 
+            postgres_table_results = cursor.fetchall()
+            
+
+            # Use Postgres results to create data frame for flight_schedules_tbl
+            flight_schedules_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+
+
+            # Create temporary data frame     
+            temp_df = flight_schedules_tbl_df
+
+        except Exception as e:
+            print(e)
+
+
+
+
+        
+
+        
+
+
+        # # ================================================== TRANSFORM DATA FRAME  =======================================
+        
+
+        # Convert flight_date field from integer to date type (with yyyy-mm-dd)
+        
+        temp_df['flight_date']      =       pd.to_datetime(temp_df['flight_date'], unit='ms')
+
+
+        # Create arrival_date column based on flight_date and departure_time fields 
+
+        temp_df['departure_time']   =       pd.to_datetime(temp_df['departure_time'], format='%H:%M:%S').dt.time
+        temp_df['arrival_time']     =       pd.to_datetime(temp_df['arrival_time'], format='%H:%M:%S').dt.time
+
+        temp_df['departure_time']   =       pd.to_timedelta(temp_df['departure_time'].astype(str))
+        temp_df['arrival_time']     =       pd.to_timedelta(temp_df['arrival_time'].astype(str))
+        temp_df['duration']         =       abs(temp_df['arrival_time'] - temp_df['departure_time'])
+
+    
+        temp_df['duration']         =       temp_df['duration'].dt.total_seconds() / 60 / 60
+        temp_df['arrival_date']     =       temp_df['flight_date'] +  pd.to_timedelta(temp_df['duration'])
+
+        
+        temp_df['flight_date']      =       pd.to_datetime(temp_df['flight_date'], unit='ms').dt.strftime('%Y-%m-%d')
+        temp_df['arrival_date']     =       pd.to_datetime(temp_df['arrival_date'], unit='ms').dt.strftime('%Y-%m-%d')
+
+
+
+
+
+
+        print(temp_df)
+        print(temp_df.columns)
+        
+        # Write results to temp file for data validation checks 
+        with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
+            temp_results_file_df_to_json = temp_df.to_json(orient="records")
+            temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
+
+        
+
+
+        # ================================================== LOAD RAW DATA TO STAGING TABLE =======================================
+        
 
         # Set up SQL statements for table deletion and validation check  
-        delete_raw_flight_ticket_sales_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {schema_name}.{table_name} CASCADE;
+        delete_stg_flight_schedules_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_raw_flight_ticket_sales_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_flight_schedules_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_raw_flight_ticket_sales_tbl = f'''                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                                                                                flight_booking_id           UUID PRIMARY KEY UNIQUE,
-                                                                                agent_first_name            VARCHAR(255),
-                                                                                agent_id                    UUID,
-                                                                                agent_last_name             VARCHAR(255),
-                                                                                customer_first_name         VARCHAR(255),
-                                                                                customer_id                 UUID,
-                                                                                customer_last_name          VARCHAR(255),
-                                                                                discount                    NUMERIC(18, 6),
-                                                                                promotion_id                UUID,
-                                                                                promotion_name              VARCHAR(255),
-                                                                                ticket_sales                NUMERIC(18, 6),
-                                                                                ticket_sales_date           BIGINT
-                                                                        
+        create_stg_flight_schedules_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
+                                                                                    flight_id                       CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    arrival_city                    VARCHAR NOT NULL,
+                                                                                    arrival_date                    DATE NOT NULL,
+                                                                                    arrival_time                    TIME NOT NULL,
+                                                                                    departure_city                  VARCHAR NOT NULL,
+                                                                                    departure_time                  TIME NOT NULL,
+                                                                                    duration                        NUMERIC(10, 2),
+                                                                                    flight_date                     DATE NOT NULL
                                                                         );
-
-
-
         '''
 
-        check_if_raw_flight_ticket_sales_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_flight_schedules_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -215,7 +477,7 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_raw_flight_ticket_sales_tbl  =   f'''        ALTER TABLE {schema_name}.{table_name}
+        add_data_lineage_to_stg_flight_schedules_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -238,37 +500,32 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
                                                                               
         '''
         
-        check_total_row_count_before_insert_statement   =   f'''   SELECT COUNT(*) FROM {schema_name}.{table_name}
+        check_total_row_count_before_insert_statement   =   f'''   SELECT COUNT(*) FROM {active_schema_name}.{table_name}
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_flight_ticket_sales_data  =   f'''                       INSERT INTO {schema_name}.{table_name} (
-                                                                                agent_first_name,
-                                                                                agent_id,
-                                                                                agent_last_name,
-                                                                                customer_first_name,
-                                                                                customer_id,
-                                                                                customer_last_name,
-                                                                                discount,
-                                                                                flight_booking_id,
-                                                                                promotion_id,
-                                                                                promotion_name,
-                                                                                ticket_sales,
-                                                                                ticket_sales_date,
+        insert_flight_schedules_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
+                                                                                flight_id,
+                                                                                arrival_city,
+                                                                                arrival_date,
+                                                                                arrival_time,
+                                                                                departure_city,
+                                                                                departure_time,
+                                                                                duration,
+                                                                                flight_date,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
                                                                                 source_file,
                                                                                 load_timestamp,
                                                                                 dwh_layer
-
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                                                                            );
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                );
         '''
 
-        check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {schema_name}.{table_name}
+        check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
         '''
 
 
@@ -276,11 +533,11 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
                                                                 WHERE           table_name      =   '{table_name}'
-                                                                AND             table_schema    =   '{schema_name}'
+                                                                AND             table_schema    =   '{active_schema_name}'
         '''
 
         count_total_no_of_unique_records_in_table   =   f'''        SELECT COUNT(*) FROM 
-                                                                            (SELECT DISTINCT * FROM {schema_name}.{table_name}) as unique_records   
+                                                                            (SELECT DISTINCT * FROM {active_schema_name}.{table_name}) as unique_records   
         '''
         get_list_of_column_names    =   f'''                SELECT column_name FROM information_schema.columns 
                                                             WHERE   table_name = '{table_name}'
@@ -290,48 +547,14 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         
 
 
-
-
-        # Create schema in Postgres
-        CREATING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(create_schema)
-        CREATING_SCHEMA_PROCESSING_END_TIME     =   time.time()
-
-
-        CREATING_SCHEMA_VAL_CHECK_START_TIME    =   time.time()
-        cursor.execute(check_if_schema_exists)
-        CREATING_SCHEMA_VAL_CHECK_END_TIME      =   time.time()
-
-
-
-        sql_result = cursor.fetchone()[0]
-        if sql_result:
-            root_logger.debug(f"")
-            root_logger.info(f"=================================================================================================")
-            root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {schema_name} schema in {db_layer_name} ")
-            root_logger.info(f"Schema name in Postgres: {sql_result} ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
-            root_logger.info(f"=================================================================================================")
-            root_logger.debug(f"")
-
-        else:
-            root_logger.debug(f"")
-            root_logger.error(f"=================================================================================================")
-            root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {db_layer_name}...")
-            root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
-            root_logger.error(f"=================================================================================================")
-            root_logger.debug(f"")
-
-        
-
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_raw_flight_ticket_sales_tbl_if_exists)
+        cursor.execute(delete_stg_flight_schedules_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_raw_flight_ticket_sales_tbl_is_deleted)
+        cursor.execute(check_if_stg_flight_schedules_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -339,15 +562,15 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
-            root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {db_layer_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_is_deleted} ")
+            root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_schedules_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_schedules_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -355,12 +578,12 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_raw_flight_ticket_sales_tbl)
+        cursor.execute(create_stg_flight_schedules_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_raw_flight_ticket_sales_tbl_exists)
+        cursor.execute(check_if_stg_flight_schedules_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -368,15 +591,15 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         if sql_result:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
-            root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {db_layer_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_exists} ")
+            root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_schedules_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_raw_flight_ticket_sales_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_schedules_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -384,7 +607,7 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_raw_flight_ticket_sales_tbl)
+        cursor.execute(add_data_lineage_to_stg_flight_schedules_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -398,14 +621,14 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         if len(sql_results) == 6:
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
-            root_logger.info(f"DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in {schema_name}.{table_name}.  ")
+            root_logger.info(f"DATA LINEAGE FIELDS CREATION SUCCESS: Managed to create data lineage columns in {active_schema_name}.{table_name}.  ")
             root_logger.info(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
-            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {schema_name}.{table_name}.... ")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {active_schema_name}.{table_name}.... ")
             root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
@@ -418,39 +641,27 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         sql_result = cursor.fetchone()[0]
         root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
         root_logger.debug(f"")
-        
-        used_ids = []
 
-        for flight_ticket_sales in flight_ticket_sales_data:
-            flight_booking_id = flight_ticket_sales['flight_booking_id']
 
-            if flight_booking_id in used_ids:
-                continue
-            else:
-                used_ids.append(flight_booking_id)
-
-                values = (
-                    flight_ticket_sales['agent_first_name'],
-                    flight_ticket_sales['agent_id'],
-                    flight_ticket_sales['agent_last_name'],
-                    flight_ticket_sales['customer_first_name'],
-                    flight_ticket_sales['customer_id'],
-                    flight_ticket_sales['customer_last_name'],
-                    flight_ticket_sales['discount'],
-                    flight_ticket_sales['flight_booking_id'],
-                    flight_ticket_sales['promotion_id'],
-                    flight_ticket_sales['promotion_name'],
-                    flight_ticket_sales['ticket_sales'],
-                    flight_ticket_sales['ticket_sales_date'],
-                    CURRENT_TIMESTAMP,
-                    CURRENT_TIMESTAMP,
-                    random.choice(source_system),
-                    src_file,
-                    CURRENT_TIMESTAMP,
-                    'RAW'
+        for index, row in temp_df.iterrows():
+            values = (
+                row['flight_id'],
+                row['arrival_city'],
+                row['arrival_date'],
+                row['arrival_time'],
+                row['departure_city'],
+                row['departure_time'],
+                row['duration'],
+                row['flight_date'],  
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP,
+                random.choice(source_system),
+                src_table_name,
+                CURRENT_TIMESTAMP,
+                data_warehouse_layer
                     )
 
-                cursor.execute(insert_flight_ticket_sales_data, values)
+            cursor.execute(insert_flight_schedules_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -458,13 +669,13 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded flight_ticket_sales record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded flight_schedules record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert flight_ticket_sales record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert flight_schedules record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -507,19 +718,7 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['ticket_sales_id', 
-                                        'agent_first_name', 
-                                        'agent_id', 
-                                        'agent_last_name',
-                                        'customer_first_name', 
-                                        'customer_id', 
-                                        'customer_last_name', 
-                                        'discount',
-                                        'flight_booking_id', 
-                                        'promotion_id', 
-                                        'promotion_name', 
-                                        'ticket_sales',
-                                        'ticket_sales_date'
+        sensitive_columns_selected = [None
                             ]
         
         
@@ -656,7 +855,7 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         root_logger.info(f'')
         root_logger.info(f'')
         root_logger.info(f'Table name:                                  {table_name} ')
-        root_logger.info(f'Schema name:                                 {schema_name} ')
+        root_logger.info(f'Schema name:                                 {active_schema_name} ')
         root_logger.info(f'Database name:                               {database} ')
         root_logger.info(f'Data warehouse layer:                        {data_warehouse_layer} ')
         root_logger.info(f'')
@@ -702,7 +901,7 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
         for column_name in column_names:
             cursor.execute(f'''
                     SELECT COUNT(*)
-                    FROM {schema_name}.{table_name}
+                    FROM {active_schema_name}.{table_name}
                     WHERE {column_name} is NULL
             ''')
             sql_result = cursor.fetchone()[0]
@@ -943,5 +1142,5 @@ def load_flight_ticket_sales_data_to_raw_table(postgres_connection):
 
 
 
-load_flight_ticket_sales_data_to_raw_table(postgres_connection)
+load_data_to_stg_flight_schedules_table(postgres_connection)
 
