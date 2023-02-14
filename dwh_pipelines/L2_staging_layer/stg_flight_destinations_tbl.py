@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_stg_customer_info_table(postgres_connection):
+def load_data_to_stg_flight_destinations_table(postgres_connection):
     try:
         
         # Set up constants
@@ -128,8 +128,8 @@ def load_data_to_stg_customer_info_table(postgres_connection):
         previous_schema_name            =   'main'
         active_schema_name              =   'dev'
         active_db_name                  =    database
-        src_table_name                  =   'raw_customer_info_tbl'
-        table_name                      =   'stg_customer_info_tbl'
+        src_table_name                  =   'raw_flight_destinations_tbl'
+        table_name                      =   'stg_flight_destinations_tbl'
         data_warehouse_layer            =   'STAGING'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -366,18 +366,18 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
 
 
-        # Pull customer_info_tbl data from staging tables in Postgres database 
+        # Pull flight_destinations_tbl data from staging tables in Postgres database 
         try:
-            fetch_raw_customer_info_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            fetch_raw_flight_destinations_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
-            root_logger.debug(fetch_raw_customer_info_tbl)
+            root_logger.debug(fetch_raw_flight_destinations_tbl)
             root_logger.info("")
             root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
 
             # Execute SQL command to interact with Postgres database
-            cursor.execute(fetch_raw_customer_info_tbl)
+            cursor.execute(fetch_raw_flight_destinations_tbl)
 
             # Extract header names from cursor's description
             postgres_table_headers = [header[0] for header in cursor.description]
@@ -387,12 +387,12 @@ def load_data_to_stg_customer_info_table(postgres_connection):
             postgres_table_results = cursor.fetchall()
             
 
-            # Use Postgres results to create data frame for customer_info_tbl
-            customer_info_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+            # Use Postgres results to create data frame for flight_destinations_tbl
+            flight_destinations_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
 
 
             # Create temporary data frame     
-            temp_df = customer_info_tbl_df
+            temp_df = flight_destinations_tbl_df
 
         except Exception as e:
             print(e)
@@ -407,43 +407,10 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # # ================================================== TRANSFORM DATA FRAME  =======================================
         
-        # Convert age field to integer
-        temp_df['age']              =       temp_df['age'].astype(int)
-
-
-        # Convert date fields (created_date, dob, last_updated_date) from integer to date type (with yyyy-mm-dd)
-
-        temp_df['created_date']          =       temp_df['created_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        temp_df['last_updated_date']     =       temp_df['last_updated_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        """
+        THERE ARE NO TRANSFORMATIONS REQUIRED FOR THIS TABLE
         
-                 
-        temp_df['dob'] = pd.to_datetime(temp_df['dob'], unit='ms')
-        temp_df['dob'] = temp_df['dob'].dt.strftime('%Y-%m-%d')
-
-        
-
-        # Concatenate first_name and last_name fields to create full_name column
-
-        temp_df['full_name']        =       temp_df['first_name'] + ' ' + temp_df['last_name']
-
-
-        # Drop the `customer_contact_preference_id` column to replace it with the incoming one
-        temp_df.drop("customer_contact_preference_id", axis=1, inplace=True)
-
-
-        # Extracting the values of "description" and "id" from the "customer_contact_preference_desc" column
-        temp_df[['customer_contact_preference_desc', 'customer_contact_preference_id']] = temp_df['customer_contact_preference_desc'].apply(lambda x: pd.Series(json.loads(x)))
-       
-
-
-
-        print(temp_df)
-        print(temp_df.columns)
-        
-        # Write results to temp file for data validation checks 
-        with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
-            temp_results_file_df_to_json = temp_df.to_json(orient="records")
-            temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
+        """
 
         
 
@@ -452,38 +419,21 @@ def load_data_to_stg_customer_info_table(postgres_connection):
         
 
         # Set up SQL statements for table deletion and validation check  
-        delete_stg_customer_info_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_stg_flight_destinations_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_stg_customer_info_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_flight_destinations_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_stg_customer_info_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                    customer_id                         VARCHAR PRIMARY KEY NOT NULL,
-                                                                    first_name                          VARCHAR NOT NULL,
-                                                                    last_name                           VARCHAR NOT NULL,
-                                                                    full_name                           VARCHAR NOT NULL,
-                                                                    email                               VARCHAR NOT NULL UNIQUE,
-                                                                    age                                 INTEGER NOT NULL,
-                                                                    dob                                 DATE NOT NULL,
-                                                                    phone_number                        VARCHAR NOT NULL,
-                                                                    nationality                         VARCHAR NOT NULL,
-                                                                    place_of_birth                      VARCHAR NOT NULL,
-                                                                    address                             VARCHAR NOT NULL,
-                                                                    city                                VARCHAR NOT NULL,
-                                                                    state                               VARCHAR NOT NULL,
-                                                                    zip                                 VARCHAR NOT NULL,
-                                                                    credit_card                         VARCHAR NOT NULL UNIQUE,
-                                                                    credit_card_provider                VARCHAR NOT NULL,
-                                                                    customer_contact_preference_id      VARCHAR NOT NULL,
-                                                                    customer_contact_preference_desc    VARCHAR NOT NULL,
-                                                                    created_date                        DATE NOT NULL,
-                                                                    last_updated_date                   DATE NOT NULL
+        create_stg_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
+                                                                                    flight_id           UUID PRIMARY KEY,
+                                                                                    arrival_city        VARCHAR NOT NULL,
+                                                                                    departure_city      VARCHAR NOT NULL
                                                                         );
         '''
 
-        check_if_stg_customer_info_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_flight_destinations_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -491,7 +441,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_stg_customer_info_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_stg_flight_destinations_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -518,27 +468,10 @@ def load_data_to_stg_customer_info_table(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_customer_info_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                customer_id,                        
-                                                                                first_name,                         
-                                                                                last_name,
-                                                                                full_name,
-                                                                                email,    
-                                                                                age,      
-                                                                                dob,      
-                                                                                phone_number,                       
-                                                                                nationality,                  
-                                                                                place_of_birth,                     
-                                                                                address,  
-                                                                                city,     
-                                                                                state,    
-                                                                                zip,      
-                                                                                credit_card,
-                                                                                credit_card_provider,
-                                                                                customer_contact_preference_id,
-                                                                                customer_contact_preference_desc,  
-                                                                                created_date,
-                                                                                last_updated_date,
+        insert_flight_destinations_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
+                                                                                flight_id,
+                                                                                arrival_city,
+                                                                                departure_city,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -547,7 +480,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -575,12 +508,12 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_stg_customer_info_tbl_if_exists)
+        cursor.execute(delete_stg_flight_destinations_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_stg_customer_info_tbl_is_deleted)
+        cursor.execute(check_if_stg_flight_destinations_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -589,14 +522,14 @@ def load_data_to_stg_customer_info_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -604,12 +537,12 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_stg_customer_info_tbl)
+        cursor.execute(create_stg_flight_destinations_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_stg_customer_info_tbl_exists)
+        cursor.execute(check_if_stg_flight_destinations_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -618,14 +551,14 @@ def load_data_to_stg_customer_info_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -633,7 +566,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_stg_customer_info_tbl)
+        cursor.execute(add_data_lineage_to_stg_flight_destinations_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -671,26 +604,9 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['customer_id'],                        
-                row['first_name'],                         
-                row['last_name'],
-                row['full_name'],
-                row['email'],    
-                row['age'],      
-                row['dob'],      
-                row['phone_number'],
-                row['nationality'],                    
-                row['place_of_birth'],
-                row['address'],  
-                row['city'],     
-                row['state'],    
-                row['zip'],      
-                row['credit_card'],
-                row['credit_card_provider'],
-                row['customer_contact_preference_id'],
-                row['customer_contact_preference_desc'],  
-                row['created_date'],
-                row['last_updated_date'],
+                row['flight_id'],
+                row['arrival_city'],
+                row['departure_city'],  
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -699,7 +615,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                 data_warehouse_layer
                     )
 
-            cursor.execute(insert_customer_info_data, values)
+            cursor.execute(insert_flight_destinations_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -707,13 +623,13 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded customer_info record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded flight_destinations record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert customer_info record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert flight_destinations record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -756,25 +672,10 @@ def load_data_to_stg_customer_info_table(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['customer_id',   
-                                        'address',   
-                                        'age',   
-                                        'city',   
-                                        'created_date',   
-                                        'credit_card',   
-                                        'credit_card_provider',   
-                                        'customer_contact_preference_desc',
-                                        'customer_contact_preference_id',  
-                                        'dob',   
-                                        'email',   
-                                        'first_name',   
-                                        'last_name',   
-                                        'last_updated_date',   
-                                        'nationality',   
-                                        'phone_number',   
-                                        'place_of_birth',   
-                                        'state',   
-                                        'zip'   
+        sensitive_columns_selected = ['customer_id',
+                            'num_adults',
+                            'num_children',
+                            'sales_agent_id'
                             ]
         
         
@@ -1198,5 +1099,5 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
 
 
-load_data_to_stg_customer_info_table(postgres_connection)
+load_data_to_stg_flight_destinations_table(postgres_connection)
 
