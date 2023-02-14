@@ -672,10 +672,7 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['customer_id',
-                            'num_adults',
-                            'num_children',
-                            'sales_agent_id'
+        sensitive_columns_selected = [None
                             ]
         
         

@@ -440,15 +440,14 @@ def load_data_to_stg_flight_bookings_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_flight_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    id SERIAL PRIMARY KEY,
-                                                                                    booking_date TIMESTAMP NOT NULL,
-                                                                                    checked_in VARCHAR(3) NOT NULL,
-                                                                                    confirmation_code VARCHAR(20) NOT NULL,
-                                                                                    customer_id UUID NOT NULL,
-                                                                                    flight_booking_id UUID NOT NULL,
-                                                                                    flight_id UUID NOT NULL,
-                                                                                    payment_method VARCHAR(20) NOT NULL,
-                                                                                    ticket_price NUMERIC(10,2) NOT NULL
+                                                                                flight_booking_id       UUID PRIMARY KEY,
+                                                                                booking_date            TIMESTAMP NOT NULL,
+                                                                                checked_in              VARCHAR(3) NOT NULL,
+                                                                                confirmation_code       VARCHAR(20) NOT NULL,
+                                                                                customer_id             UUID NOT NULL,
+                                                                                flight_id               UUID NOT NULL,
+                                                                                payment_method          VARCHAR(20) NOT NULL,
+                                                                                ticket_price            NUMERIC(10,2) NOT NULL
                                                                         );
         '''
 
@@ -488,9 +487,14 @@ def load_data_to_stg_flight_bookings_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_flight_bookings_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                flight_id,
-                                                                                arrival_city,
-                                                                                departure_city,
+                                                                                booking_date, 
+                                                                                checked_in, 
+                                                                                confirmation_code, 
+                                                                                customer_id, 
+                                                                                flight_booking_id, 
+                                                                                flight_id, 
+                                                                                payment_method, 
+                                                                                ticket_price,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -499,7 +503,7 @@ def load_data_to_stg_flight_bookings_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -623,9 +627,14 @@ def load_data_to_stg_flight_bookings_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['flight_id'],
-                row['arrival_city'],
-                row['departure_city'],  
+                row['booking_date'], 
+                row['checked_in'], 
+                row['confirmation_code'], 
+                row['customer_id'], 
+                row['flight_booking_id'], 
+                row['flight_id'], 
+                row['payment_method'], 
+                row['ticket_price'], 
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -691,10 +700,14 @@ def load_data_to_stg_flight_bookings_table(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['customer_id',
-                            'num_adults',
-                            'num_children',
-                            'sales_agent_id'
+        sensitive_columns_selected = ['confirmation_code',
+                                    'booking_date',
+                                    'checked_in',
+                                    'customer_id',
+                                    'flight_booking_id',
+                                    'flight_id',
+                                    'payment_method',
+                                    'ticket_price'
                             ]
         
         
