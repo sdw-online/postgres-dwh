@@ -162,9 +162,9 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
         # ================================================== ENABLING CROSS-DATABASE QUERYING VIA FDW ==================================================
 
-
+        # Set up SQL statements for schema creation and validation check 
         try:
-             # Set up SQL statements for schema creation and validation check  
+             
             create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {active_schema_name};
             '''
 
@@ -212,8 +212,8 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
+        # Drop extension postgres_fdw if it exists 
         try:
-            # Drop extension postgres_fdw if it exists 
             drop_postgres_fdw_extension = f'''  DROP EXTENSION {fdw_extension} CASCADE
                                                 ;   
             '''
@@ -229,8 +229,10 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         except Exception as e:
             print(e)
 
+        
+
+        # Create the postgres_fdw extension  
         try:
-            # Install the postgres_fdw module 
             import_postgres_fdw = f'''    CREATE EXTENSION {fdw_extension}
                                                 ;   
             '''
@@ -246,8 +248,9 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             print(e)
 
 
-        try:
-            # Create the foreign server 
+
+        # Create the foreign server
+        try: 
             create_foreign_server = f'''    CREATE SERVER {foreign_server}
                                                 FOREIGN DATA WRAPPER {fdw_extension}
                                                 OPTIONS (host '{host}', dbname '{previous_db_name}', port '{port}')
@@ -264,8 +267,9 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             print(e)
 
 
+        
+        # Create the user mapping between the fdw_user and local user 
         try:
-            # Create the user mapping between the fdw_user and local user 
             map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
                                                         SERVER {foreign_server}
                                                         OPTIONS (user '{fdw_user}', password '{password}')
@@ -292,6 +296,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
+        # Import the foreign schema from the previous layer's source table 
         try:
             import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
                                                 LIMIT TO ({src_table_name})
@@ -318,9 +323,9 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # ================================================== EXTRACTION STEP ==================================================
+        # ================================================== EXTRACT DATA FROM SOURCE POSTGRES TABLE ==================================================
             
-        # Extract non-data lineage column from raw table 
+        # Extract non-data lineage columns from raw table 
         try:
             data_lineage_columns = ['created_at',    
                                     'updated_at',    
@@ -362,8 +367,8 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
+        # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
         try:
-            # Pull accommodation_bookings_tbl data from staging tables in Postgres database 
             fetch_raw_accommodation_bookings_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
             root_logger.debug(fetch_raw_accommodation_bookings_tbl)
@@ -371,32 +376,37 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
+
+            # Execute SQL command to interact with Postgres database
+            cursor.execute(fetch_raw_accommodation_bookings_tbl)
+
+            # Extract header names from cursor's description
+            postgres_table_headers = [header[0] for header in cursor.description]
+
+
+            # Execute script 
+            postgres_table_results = cursor.fetchall()
+            
+
+            # Use Postgres results to create data frame for accommodation_bookings_tbl
+            accommodation_bookings_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+
+
+            # Create temporary data frame     
+            temp_df = accommodation_bookings_tbl_df
+
         except Exception as e:
             print(e)
 
 
-        # Execute SQL command to interact with Postgres database
-        cursor.execute(fetch_raw_accommodation_bookings_tbl)
 
 
-        # Extract header names from cursor's description
-        postgres_table_headers = [header[0] for header in cursor.description]
-
-
-        # Execute script 
-        postgres_table_results = cursor.fetchall()
         
-
-        # Use Postgres results to create data frame for accommodation_bookings_tbl
-        accommodation_bookings_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
-
-        print(accommodation_bookings_tbl_df)
-        temp_df = accommodation_bookings_tbl_df
 
         
 
 
-        # # ================================================== TRANSFORMATION STEP =======================================
+        # # ================================================== TRANSFORM DATA FRAME  =======================================
         
         # Convert date fields (booking_date, check_in_date, check_out_date) from integer to date type (with yyyy-mm-dd)
 
@@ -425,10 +435,10 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
             temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
 
         
+
+
         # ================================================== LOAD RAW DATA TO STAGING TABLE =======================================
         
-
-       
 
         # Set up SQL statements for table deletion and validation check  
         delete_stg_accommodation_bookings_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
@@ -542,11 +552,6 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
         '''
 
         
-
-
-
-
-
 
 
         # Delete table if it exists in Postgres
@@ -704,100 +709,100 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
+        # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 
-        # note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
-        # note_2 = """      Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information. """
-        # note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
+        note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
+        note_2 = """      Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information. """
+        note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
         
-        # root_logger.warning(f'')
-        # root_logger.warning(f'')
-        # root_logger.warning('================================================')
-        # root_logger.warning('           SENSITIVE COLUMN IDENTIFICATION              ')
-        # root_logger.warning('================================================')
-        # root_logger.warning(f'')
-        # root_logger.error(f'{note_1}')
-        # root_logger.error(f'')
-        # root_logger.error(f'{note_2}')
-        # root_logger.error(f'')
-        # root_logger.error(f'{note_3}')
-        # root_logger.warning(f'')
-        # root_logger.warning(f'')
-        # root_logger.warning(f'Now beginning the sensitive column identification stage ...')
-        # root_logger.warning(f'')
-        
-
-        # # Add a flag for confirming if sensitive data fields have been highlighted  
-        # sensitive_columns_selected = ['customer_id',
-        #                     'num_adults',
-        #                     'num_children',
-        #                     'sales_agent_id'
-        #                     ]
-        
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning('================================================')
+        root_logger.warning('           SENSITIVE COLUMN IDENTIFICATION              ')
+        root_logger.warning('================================================')
+        root_logger.warning(f'')
+        root_logger.error(f'{note_1}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_2}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_3}')
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning(f'Now beginning the sensitive column identification stage ...')
+        root_logger.warning(f'')
         
 
-        # if len(sensitive_columns_selected) == 0:
-        #     SENSITIVE_COLUMNS_IDENTIFIED = False
-        #     root_logger.error(f"ERROR: No sensitive columns have been selected for '{table_name}' table ")
-        #     root_logger.warning(f'')
+        # Add a flag for confirming if sensitive data fields have been highlighted  
+        sensitive_columns_selected = ['customer_id',
+                            'num_adults',
+                            'num_children',
+                            'sales_agent_id'
+                            ]
         
-        # elif sensitive_columns_selected[0] is None:
-        #     SENSITIVE_COLUMNS_IDENTIFIED = True
-        #     root_logger.error(f"There are no sensitive columns for the '{table_name}' table ")
-        #     root_logger.warning(f'')
+        
 
-        # else:
-        #     SENSITIVE_COLUMNS_IDENTIFIED = True
-        #     root_logger.warning(f'Here are the columns considered sensitive in this table ...')
-        #     root_logger.warning(f'')
+        if len(sensitive_columns_selected) == 0:
+            SENSITIVE_COLUMNS_IDENTIFIED = False
+            root_logger.error(f"ERROR: No sensitive columns have been selected for '{table_name}' table ")
+            root_logger.warning(f'')
+        
+        elif sensitive_columns_selected[0] is None:
+            SENSITIVE_COLUMNS_IDENTIFIED = True
+            root_logger.error(f"There are no sensitive columns for the '{table_name}' table ")
+            root_logger.warning(f'')
+
+        else:
+            SENSITIVE_COLUMNS_IDENTIFIED = True
+            root_logger.warning(f'Here are the columns considered sensitive in this table ...')
+            root_logger.warning(f'')
 
         
-        # if SENSITIVE_COLUMNS_IDENTIFIED is False:
-        #     sql_statement_for_listing_columns_in_table = f"""        
-        #     SELECT column_name FROM information_schema.columns 
-        #     WHERE   table_name = '{table_name}'
-        #     ORDER BY ordinal_position 
-        #     """
-        #     cursor.execute(get_list_of_column_names)
-        #     list_of_column_names = cursor.fetchall()
-        #     column_names = [sql_result[0] for sql_result in list_of_column_names]
+        if SENSITIVE_COLUMNS_IDENTIFIED is False:
+            sql_statement_for_listing_columns_in_table = f"""        
+            SELECT column_name FROM information_schema.columns 
+            WHERE   table_name = '{table_name}'
+            ORDER BY ordinal_position 
+            """
+            cursor.execute(get_list_of_column_names)
+            list_of_column_names = cursor.fetchall()
+            column_names = [sql_result[0] for sql_result in list_of_column_names]
             
-        #     root_logger.warning(f"You are required to select the sensitive columns in this table. If there are none, enter 'None' in the 'sensitive_columns_selected' object.")
-        #     root_logger.warning(f'')
-        #     root_logger.warning(f"Here are the columns to choose from:")
-        #     root_logger.warning(f'')
-        #     total_sensitive_columns = 0
-        #     for sensitive_column_name in column_names:
-        #         total_sensitive_columns += 1
-        #         root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
+            root_logger.warning(f"You are required to select the sensitive columns in this table. If there are none, enter 'None' in the 'sensitive_columns_selected' object.")
+            root_logger.warning(f'')
+            root_logger.warning(f"Here are the columns to choose from:")
+            root_logger.warning(f'')
+            total_sensitive_columns = 0
+            for sensitive_column_name in column_names:
+                total_sensitive_columns += 1
+                root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
 
 
 
-        #     root_logger.warning(f'')
-        #     root_logger.warning(f'You can use this SQL query to list the columns in this table:')
-        #     root_logger.warning(f'              {sql_statement_for_listing_columns_in_table}                ')
+            root_logger.warning(f'')
+            root_logger.warning(f'You can use this SQL query to list the columns in this table:')
+            root_logger.warning(f'              {sql_statement_for_listing_columns_in_table}                ')
         
-        # else:
-        #     total_sensitive_columns = 0
-        #     for sensitive_column_name in sensitive_columns_selected:
-        #         total_sensitive_columns += 1
-        #         root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
-        #     if sensitive_columns_selected[0] is not None:
-        #         root_logger.warning(f'')
-        #         root_logger.warning(f'')
-        #         root_logger.warning(f'Decide on the appropriate treatment for these tables. A few options to consider include:')
-        #         root_logger.warning(f'''1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'. ''')
-        #         root_logger.warning(f'''2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).        ''')
-        #         root_logger.warning(f'''3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities        ''')
+        else:
+            total_sensitive_columns = 0
+            for sensitive_column_name in sensitive_columns_selected:
+                total_sensitive_columns += 1
+                root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
+            if sensitive_columns_selected[0] is not None:
+                root_logger.warning(f'')
+                root_logger.warning(f'')
+                root_logger.warning(f'Decide on the appropriate treatment for these tables. A few options to consider include:')
+                root_logger.warning(f'''1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'. ''')
+                root_logger.warning(f'''2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).        ''')
+                root_logger.warning(f'''3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities        ''')
             
-        #     root_logger.warning(f'')
-        #     root_logger.warning(f'Now terminating the sensitive column identification stage ...')
-        #     root_logger.warning(f'Sensitive column identification stage ended. ')
-        #     root_logger.warning(f'')
+            root_logger.warning(f'')
+            root_logger.warning(f'Now terminating the sensitive column identification stage ...')
+            root_logger.warning(f'Sensitive column identification stage ended. ')
+            root_logger.warning(f'')
 
 
-        # root_logger.warning(f'')
-        # root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning(f'')
 
 
 
