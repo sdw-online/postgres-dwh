@@ -405,25 +405,11 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
         
 
 
-        # # ================================================== TRANSFORM DATA FRAME  =======================================
+        # ================================================== TRANSFORM DATA FRAME  =======================================
         
-        # Convert date fields (booking_date, check_in_date, check_out_date) from integer to date type (with yyyy-mm-dd)
+        # Convert feedback_date field from integer to date type (with yyyy-mm-dd)
 
-        # temp_df['booking_date'] = temp_df['booking_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        # temp_df['check_in_date'] = temp_df['check_in_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        # temp_df['check_out_date'] = temp_df['check_out_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        
-        
-        # # Round total_price column to 2dp
-        # temp_df['total_price'] = temp_df['total_price'].astype(float)
-        # temp_df['total_price'] = temp_df['total_price'].round(2)
-
-
-        # # Rename 'num_adults' to 'no_of_adults'
-        # temp_df = temp_df.rename(columns={'num_adults': 'no_of_adults'})
-
-        # # Rename 'num_children' to 'no_of_children'
-        # temp_df = temp_df.rename(columns={'num_children': 'no_of_children'})
+        temp_df['feedback_date'] = temp_df['feedback_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
 
         print(temp_df)
         print(temp_df.columns)
@@ -448,22 +434,14 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_customer_feedbacks_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    id                      CHAR(36) PRIMARY KEY NOT NULL,
-                                                                                    booking_date            DATE NOT NULL,
-                                                                                    check_in_date           DATE NOT NULL,
-                                                                                    check_out_date          DATE NOT NULL,
-                                                                                    checked_in              VARCHAR(3) NOT NULL,
-                                                                                    confirmation_code       VARCHAR(10) NOT NULL,
-                                                                                    customer_id             CHAR(36) NOT NULL,
-                                                                                    flight_booking_id       CHAR(36) NOT NULL,
-                                                                                    location                VARCHAR(255) NOT NULL,
-                                                                                    no_of_adults            INTEGER NOT NULL,
-                                                                                    no_of_children          INTEGER NOT NULL,
-                                                                                    payment_method          VARCHAR(255) NOT NULL,
-                                                                                    room_type               VARCHAR(255) NOT NULL,
-                                                                                    sales_agent_id          CHAR(36) NOT NULL,
-                                                                                    status                  VARCHAR(255) NOT NULL,
-                                                                                    total_price             DECIMAL(10,2) NOT NULL
+                                                                            feedback_id             UUID PRIMARY KEY NOT NULL,
+                                                                            customer_id             UUID NOT NULL,
+                                                                            flight_booking_id       UUID NOT NULL,
+                                                                            feedback_date           DATE NOT NULL,
+                                                                            feedback_text           TEXT NOT NULL,
+                                                                            UNIQUE (feedback_id),
+                                                                            FOREIGN KEY (customer_id) REFERENCES customers (customer_id),
+                                                                            FOREIGN KEY (flight_booking_id) REFERENCES flight_bookings (flight_booking_id)
                                                                         );
         '''
 
