@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_stg_customer_feedbacks_table(postgres_connection):
+def load_data_to_stg_customer_info_table(postgres_connection):
     try:
         
         # Set up constants
@@ -128,8 +128,8 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
         previous_schema_name            =   'main'
         active_schema_name              =   'dev'
         active_db_name                  =    database
-        src_table_name                  =   'raw_customer_feedbacks_tbl'
-        table_name                      =   'stg_customer_feedbacks_tbl'
+        src_table_name                  =   'raw_customer_info_tbl'
+        table_name                      =   'stg_customer_info_tbl'
         data_warehouse_layer            =   'STAGING'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -366,18 +366,18 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
 
 
-        # Pull customer_feedbacks_tbl data from staging tables in Postgres database 
+        # Pull customer_info_tbl data from staging tables in Postgres database 
         try:
-            fetch_raw_customer_feedbacks_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            fetch_raw_customer_info_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
-            root_logger.debug(fetch_raw_customer_feedbacks_tbl)
+            root_logger.debug(fetch_raw_customer_info_tbl)
             root_logger.info("")
             root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
 
             # Execute SQL command to interact with Postgres database
-            cursor.execute(fetch_raw_customer_feedbacks_tbl)
+            cursor.execute(fetch_raw_customer_info_tbl)
 
             # Extract header names from cursor's description
             postgres_table_headers = [header[0] for header in cursor.description]
@@ -387,12 +387,12 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
             postgres_table_results = cursor.fetchall()
             
 
-            # Use Postgres results to create data frame for customer_feedbacks_tbl
-            customer_feedbacks_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+            # Use Postgres results to create data frame for customer_info_tbl
+            customer_info_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
 
 
             # Create temporary data frame     
-            temp_df = customer_feedbacks_tbl_df
+            temp_df = customer_info_tbl_df
 
         except Exception as e:
             print(e)
@@ -405,11 +405,37 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
         
 
 
-        # ================================================== TRANSFORM DATA FRAME  =======================================
+        # # ================================================== TRANSFORM DATA FRAME  =======================================
         
-        # Convert feedback_date field from integer to date type (with yyyy-mm-dd)
+        # Convert age field to integer
+        temp_df['age'] = temp_df['age'].astype(int)
 
-        temp_df['feedback_date'] = temp_df['feedback_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+
+        # Convert date fields (created_date, dob) from integer to date type (with yyyy-mm-dd)
+
+        temp_df['created_date']     =       temp_df['created_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        temp_df['dob']              =       temp_df['dob'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
+        
+
+        # Concatenate first_name and last_name fields to create full_name column
+
+        temp_df['full_name']    = temp_df['first_name'] + ' ' + temp_df['last_name']
+        
+        # # Round total_price column to 2dp
+        # temp_df['total_price'] = temp_df['total_price'].astype(float)
+        # temp_df['total_price'] = temp_df['total_price'].round(2)
+
+
+        # # Rename 'num_adults' to 'no_of_adults'
+        # temp_df = temp_df.rename(columns={'num_adults': 'no_of_adults'})
+
+        # # Rename 'num_children' to 'no_of_children'
+        # temp_df = temp_df.rename(columns={'num_children': 'no_of_children'})
+
+
+
+
+
 
         print(temp_df)
         print(temp_df.columns)
@@ -426,23 +452,34 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
         
 
         # Set up SQL statements for table deletion and validation check  
-        delete_stg_customer_feedbacks_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_stg_customer_info_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_stg_customer_feedbacks_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_customer_info_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_stg_customer_feedbacks_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                            feedback_id             UUID PRIMARY KEY NOT NULL,
-                                                                            customer_id             UUID NOT NULL,
-                                                                            flight_booking_id       UUID NOT NULL,
-                                                                            feedback_date           DATE NOT NULL,
-                                                                            feedback_text           TEXT NOT NULL
+        create_stg_customer_info_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
+                                                                                    id                      CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    booking_date            DATE NOT NULL,
+                                                                                    check_in_date           DATE NOT NULL,
+                                                                                    check_out_date          DATE NOT NULL,
+                                                                                    checked_in              VARCHAR(3) NOT NULL,
+                                                                                    confirmation_code       VARCHAR(10) NOT NULL,
+                                                                                    customer_id             CHAR(36) NOT NULL,
+                                                                                    flight_booking_id       CHAR(36) NOT NULL,
+                                                                                    location                VARCHAR(255) NOT NULL,
+                                                                                    no_of_adults            INTEGER NOT NULL,
+                                                                                    no_of_children          INTEGER NOT NULL,
+                                                                                    payment_method          VARCHAR(255) NOT NULL,
+                                                                                    room_type               VARCHAR(255) NOT NULL,
+                                                                                    sales_agent_id          CHAR(36) NOT NULL,
+                                                                                    status                  VARCHAR(255) NOT NULL,
+                                                                                    total_price             DECIMAL(10,2) NOT NULL
                                                                         );
         '''
 
-        check_if_stg_customer_feedbacks_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_customer_info_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -450,7 +487,7 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_stg_customer_feedbacks_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_stg_customer_info_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -477,12 +514,23 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_customer_feedbacks_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                feedback_id,
-                                                                                customer_id,
-                                                                                flight_booking_id,
-                                                                                feedback_date,
-                                                                                feedback_text,
+        insert_customer_info_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
+                                                                                id, 
+                                                                                booking_date, 
+                                                                                check_in_date, 
+                                                                                check_out_date, 
+                                                                                checked_in,
+                                                                                confirmation_code, 
+                                                                                customer_id, 
+                                                                                flight_booking_id, 
+                                                                                location,
+                                                                                no_of_adults, 
+                                                                                no_of_children, 
+                                                                                payment_method, 
+                                                                                room_type,
+                                                                                sales_agent_id, 
+                                                                                status, 
+                                                                                total_price,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -491,7 +539,7 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -519,12 +567,12 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_stg_customer_feedbacks_tbl_if_exists)
+        cursor.execute(delete_stg_customer_info_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_stg_customer_feedbacks_tbl_is_deleted)
+        cursor.execute(check_if_stg_customer_info_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -533,14 +581,14 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_stg_customer_feedbacks_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_stg_customer_feedbacks_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -548,12 +596,12 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_stg_customer_feedbacks_tbl)
+        cursor.execute(create_stg_customer_info_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_stg_customer_feedbacks_tbl_exists)
+        cursor.execute(check_if_stg_customer_info_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -562,14 +610,14 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_stg_customer_feedbacks_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_stg_customer_feedbacks_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_customer_info_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -577,7 +625,7 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_stg_customer_feedbacks_tbl)
+        cursor.execute(add_data_lineage_to_stg_customer_info_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -615,11 +663,22 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['feedback_id'],
-                row['customer_id'],
-                row['flight_booking_id'],
-                row['feedback_date'],
-                row['feedback_text'],  
+                row['id'], 
+                row['booking_date'], 
+                row['check_in_date'], 
+                row['check_out_date'], 
+                row['checked_in'],
+                row['confirmation_code'], 
+                row['customer_id'], 
+                row['flight_booking_id'], 
+                row['location'],
+                row['no_of_adults'], 
+                row['no_of_children'], 
+                row['payment_method'], 
+                row['room_type'],
+                row['sales_agent_id'], 
+                row['status'], 
+                row['total_price'],   
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -628,7 +687,7 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
                 data_warehouse_layer
                     )
 
-            cursor.execute(insert_customer_feedbacks_data, values)
+            cursor.execute(insert_customer_info_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -636,13 +695,13 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded customer_feedbacks record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded customer_info record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert customer_feedbacks record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert customer_info record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -685,10 +744,10 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['customer_id'    ,
-                                        'flight_booking_id',
-                                        'feedback_date'    ,
-                                        'feedback_text'    ,
+        sensitive_columns_selected = ['customer_id',
+                            'num_adults',
+                            'num_children',
+                            'sales_agent_id'
                             ]
         
         
@@ -1112,5 +1171,5 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
 
 
-load_data_to_stg_customer_feedbacks_table(postgres_connection)
+load_data_to_stg_customer_info_table(postgres_connection)
 
