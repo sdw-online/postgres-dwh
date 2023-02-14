@@ -448,20 +448,20 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    id                      CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    id                      UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                                     booking_date            DATE NOT NULL,
                                                                                     check_in_date           DATE NOT NULL,
                                                                                     check_out_date          DATE NOT NULL,
                                                                                     checked_in              VARCHAR(3) NOT NULL,
                                                                                     confirmation_code       VARCHAR(10) NOT NULL,
                                                                                     customer_id             CHAR(36) NOT NULL,
-                                                                                    flight_booking_id       CHAR(36) NOT NULL,
-                                                                                    location                VARCHAR(255) NOT NULL,
+                                                                                    flight_booking_id       UUID NOT NULL,
+                                                                                    location                VARCHAR NOT NULL,
                                                                                     no_of_adults            INTEGER NOT NULL,
                                                                                     no_of_children          INTEGER NOT NULL,
-                                                                                    payment_method          VARCHAR(255) NOT NULL,
-                                                                                    room_type               VARCHAR(255) NOT NULL,
-                                                                                    sales_agent_id          CHAR(36) NOT NULL,
+                                                                                    payment_method          VARCHAR NOT NULL,
+                                                                                    room_type               VARCHAR NOT NULL,
+                                                                                    sales_agent_id          UUID NOT NULL,
                                                                                     status                  VARCHAR(255) NOT NULL,
                                                                                     total_price             DECIMAL(10,2) NOT NULL
                                                                         );

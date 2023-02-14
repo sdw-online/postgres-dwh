@@ -435,9 +435,9 @@ def load_data_to_stg_flight_promotion_deals_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_flight_promotion_deals_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    promotion_id                        CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    promotion_id                        UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                                     promotion_name                      VARCHAR NOT NULL,
-                                                                                    flight_booking_id                   VARCHAR(36) NOT NULL,
+                                                                                    flight_booking_id                   UUID NOT NULL,
                                                                                     applied_discount                    DECIMAL(10, 2)
                                                                         );
         '''

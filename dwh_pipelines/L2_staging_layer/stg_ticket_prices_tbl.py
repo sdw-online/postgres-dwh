@@ -441,7 +441,7 @@ def load_data_to_stg_ticket_prices_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_ticket_prices_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    flight_id                   UUID PRIMARY KEY NOT NULL,
+                                                                                    flight_id                   UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                                     ticket_price                DECIMAL(10,2) NOT NULL,
                                                                                     ticket_price_date           DATE NOT NULL
                                                                         );

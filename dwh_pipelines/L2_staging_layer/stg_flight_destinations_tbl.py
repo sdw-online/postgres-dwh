@@ -435,7 +435,7 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    flight_id           UUID PRIMARY KEY,
+                                                                                    flight_id           UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                                     arrival_city        VARCHAR NOT NULL,
                                                                                     departure_city      VARCHAR NOT NULL
                                                                         );

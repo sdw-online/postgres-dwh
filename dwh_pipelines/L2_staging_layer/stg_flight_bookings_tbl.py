@@ -440,8 +440,8 @@ def load_data_to_stg_flight_bookings_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_flight_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                flight_booking_id       UUID PRIMARY KEY,
-                                                                                booking_date            TIMESTAMP NOT NULL,
+                                                                                flight_booking_id       UUID PRIMARY KEY NOT NULL UNIQUE,
+                                                                                booking_date            DATE NOT NULL,
                                                                                 checked_in              VARCHAR(3) NOT NULL,
                                                                                 confirmation_code       VARCHAR(20) NOT NULL,
                                                                                 customer_id             UUID NOT NULL,

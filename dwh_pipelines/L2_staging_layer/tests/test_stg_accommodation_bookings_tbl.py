@@ -73,8 +73,6 @@ except psycopg2.Error:
 
 # Define the database, schema and table names
 
-# Set up constants
-
 table_name                      =   'stg_accommodation_bookings_tbl'
 schema_name                     =   'dev'
 database_name                   =    database
@@ -115,4 +113,119 @@ def test_schema_existence():
     assert schema_name in schemas, f"The '{schema_name}' schema should be found in the '{database_name}' database. "
 
 
+
+
+
+
+# ====================================== TEST 3: COLUMNS EXISTENCE CHECK ======================================
+
+"""  Verify the columns of this table exists in the Postgres staging database   """
+
+
+
+def test_columns_existence():
+
+    cursor.execute(f"""     SELECT column_name FROM information_schema.columns WHERE table_name='{table_name}'
+        
+    """)
+
+    sql_results = cursor.fetchall()
+    actual_columns = [column[0] for column in sql_results]
+
+    expected_columns = ['id', 
+                        'booking_date', 
+                        'check_in_date', 
+                        'check_out_date', 
+                        'checked_in',
+                        'confirmation_code', 
+                        'customer_id', 
+                        'flight_booking_id', 
+                        'location',
+                        'no_of_adults', 
+                        'no_of_children', 
+                        'payment_method', 
+                        'room_type',
+                        'sales_agent_id', 
+                        'status', 
+                        'total_price',
+                        'created_at',
+                        'updated_at',
+                        'source_system',
+                        'source_file',
+                        'load_timestamp',
+                        'dwh_layer'
+                        ]
     
+    for expected_column in expected_columns:
+        assert expected_column in actual_columns, f"The '{expected_column}' column should be in the '{table_name}' table. "
+
+
+
+
+
+# ====================================== TEST 4: TABLE EXISTENCE CHECK ======================================
+
+
+""" Check if the active table is in the Postgres staging database  """
+
+
+def test_table_existence():
+    cursor.execute(f"""     SELECT * FROM information_schema.tables WHERE table_name = '{table_name}' AND table_schema = '{schema_name}'  ;  """)
+    sql_result  = cursor.fetchone()
+
+    assert sql_result is not None, f"The '{table_name}' does not exist in the '{database}.{schema_name}' schema. "
+
+
+
+
+
+# ====================================== TEST 5: DATA TYPES CHECK ======================================
+
+
+""" Test if each column is mapped to the expected data type in Postgres  """
+
+
+def test_column_data_types():
+
+    # Create a dictionary that specifies the expected data types for each column  
+    expected_data_types = {
+        "id":                   "uuid",
+        "booking_date":         "date",
+        "check_in_date":        "date",
+        "check_out_date":       "date",
+        "checked_in":           "varchar",
+        "confirmation_code":    "varchar",
+        "customer_id":          "char",
+        "flight_booking_id":    "uuid",
+        "location":             "varchar",
+        "no_of_adults":         "integer",
+        "no_of_children":       "integer",
+        "payment_method":       "varchar",
+        "room_type":            "varchar",
+        "sales_agent_id":       "uuid",
+        "status":               "varchar",
+        "total_price":          "numeric"
+
+    }   
+
+    # Exclude the data-lineage columns from result
+    data_lineage_columns = ['created_at',    
+                                    'updated_at',    
+                                    'source_system', 
+                                    'source_file',   
+                                    'load_timestamp',
+                                    'dwh_layer']
+
+    # Use SQL to extract the column names and their data types
+    cursor.execute(f"""         SELECT column_name, data_type from information_schema.columns WHERE table_name = '{table_name}'
+    
+    """)
+
+    sql_results = cursor.fetchall()
+
+    for column_name, actual_data_type in sql_results:
+        assert (actual_data_type.lower() == expected_data_types[column_name]) and column_name not in data_lineage_columns, f"The expected data type for column '{column_name}' was '{expected_data_types[column_name]}', but the actual data type was '{actual_data_type}'. "
+    
+
+
+

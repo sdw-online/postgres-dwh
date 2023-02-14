@@ -445,7 +445,7 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_flight_ticket_sales_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    ticket_sales_id                 UUID PRIMARY KEY, 
+                                                                                    flight_booking_id               UUID PRIMARY KEY NOT NULL UNIQUE,  
                                                                                     agent_first_name                VARCHAR NOT NULL, 
                                                                                     agent_id                        VARCHAR NOT NULL, 
                                                                                     agent_last_name                 VARCHAR NOT NULL,
@@ -453,7 +453,6 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
                                                                                     customer_id                     UUID NOT NULL, 
                                                                                     customer_last_name              VARCHAR NOT NULL, 
                                                                                     discount                        NUMERIC(10, 2),
-                                                                                    flight_booking_id               UUID NOT NULL, 
                                                                                     promotion_id                    UUID NOT NULL, 
                                                                                     promotion_name                  VARCHAR NOT NULL, 
                                                                                     ticket_sales                    VARCHAR NOT NULL,
@@ -497,7 +496,6 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_flight_ticket_sales_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                ticket_sales_id, 
                                                                                 agent_first_name, 
                                                                                 agent_id, 
                                                                                 agent_last_name,
@@ -518,7 +516,7 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -642,7 +640,6 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['ticket_sales_id'], 
                 row['agent_first_name'], 
                 row['agent_id'], 
                 row['agent_last_name'],
@@ -720,7 +717,7 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['ticket_sales_id', 
+        sensitive_columns_selected = ['flight_booking_id', 
                                         'agent_first_name', 
                                         'agent_id', 
                                         'agent_last_name',
@@ -728,7 +725,6 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
                                         'customer_id', 
                                         'customer_last_name', 
                                         'discount',
-                                        'flight_booking_id', 
                                         'promotion_id', 
                                         'promotion_name', 
                                         'ticket_sales',

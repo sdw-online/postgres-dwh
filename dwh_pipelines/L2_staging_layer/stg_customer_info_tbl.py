@@ -460,10 +460,10 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_customer_info_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                    customer_id                         VARCHAR PRIMARY KEY NOT NULL,
+                                                                    customer_id                         UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                     first_name                          VARCHAR NOT NULL,
                                                                     last_name                           VARCHAR NOT NULL,
-                                                                    full_name                           VARCHAR NOT NULL,
+                                                                    full_name                           VARCHAR NOT NULL UNIQUE,
                                                                     email                               VARCHAR NOT NULL UNIQUE,
                                                                     age                                 INTEGER NOT NULL,
                                                                     dob                                 DATE NOT NULL,
@@ -476,7 +476,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                                                                     zip                                 VARCHAR NOT NULL,
                                                                     credit_card                         VARCHAR NOT NULL UNIQUE,
                                                                     credit_card_provider                VARCHAR NOT NULL,
-                                                                    customer_contact_preference_id      VARCHAR NOT NULL,
+                                                                    customer_contact_preference_id      UUID NOT NULL,
                                                                     customer_contact_preference_desc    VARCHAR NOT NULL,
                                                                     created_date                        DATE NOT NULL,
                                                                     last_updated_date                   DATE NOT NULL

@@ -458,7 +458,7 @@ def load_data_to_stg_flight_schedules_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_flight_schedules_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    flight_id                       CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    flight_id                       UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                                     arrival_city                    VARCHAR NOT NULL,
                                                                                     arrival_date                    DATE NOT NULL,
                                                                                     arrival_time                    TIME NOT NULL,
