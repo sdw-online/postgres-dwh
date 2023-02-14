@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_stg_flight_destinations_table(postgres_connection):
+def load_data_to_stg_flight_promotion_deals_table(postgres_connection):
     try:
         
         # Set up constants
@@ -128,8 +128,8 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
         previous_schema_name            =   'main'
         active_schema_name              =   'dev'
         active_db_name                  =    database
-        src_table_name                  =   'raw_flight_destinations_tbl'
-        table_name                      =   'stg_flight_destinations_tbl'
+        src_table_name                  =   'raw_flight_promotion_deals_tbl'
+        table_name                      =   'stg_flight_promotion_deals_tbl'
         data_warehouse_layer            =   'STAGING'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -366,18 +366,18 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
 
 
-        # Pull flight_destinations_tbl data from staging tables in Postgres database 
+        # Pull flight_promotion_deals_tbl data from staging tables in Postgres database 
         try:
-            fetch_raw_flight_destinations_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            fetch_raw_flight_promotion_deals_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
-            root_logger.debug(fetch_raw_flight_destinations_tbl)
+            root_logger.debug(fetch_raw_flight_promotion_deals_tbl)
             root_logger.info("")
             root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
 
             # Execute SQL command to interact with Postgres database
-            cursor.execute(fetch_raw_flight_destinations_tbl)
+            cursor.execute(fetch_raw_flight_promotion_deals_tbl)
 
             # Extract header names from cursor's description
             postgres_table_headers = [header[0] for header in cursor.description]
@@ -387,12 +387,12 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
             postgres_table_results = cursor.fetchall()
             
 
-            # Use Postgres results to create data frame for flight_destinations_tbl
-            flight_destinations_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+            # Use Postgres results to create data frame for flight_promotion_deals_tbl
+            flight_promotion_deals_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
 
 
             # Create temporary data frame     
-            temp_df = flight_destinations_tbl_df
+            temp_df = flight_promotion_deals_tbl_df
 
         except Exception as e:
             print(e)
@@ -427,21 +427,22 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
         
 
         # Set up SQL statements for table deletion and validation check  
-        delete_stg_flight_destinations_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_stg_flight_promotion_deals_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_stg_flight_destinations_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_flight_promotion_deals_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_stg_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    flight_id           UUID PRIMARY KEY,
-                                                                                    arrival_city        VARCHAR NOT NULL,
-                                                                                    departure_city      VARCHAR NOT NULL
+        create_stg_flight_promotion_deals_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
+                                                                                    promotion_id                        CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    promotion_name                      VARCHAR NOT NULL,
+                                                                                    flight_booking_id                   VARCHAR(36) NOT NULL,
+                                                                                    applied_discount                    DECIMAL(10, 2)
                                                                         );
         '''
 
-        check_if_stg_flight_destinations_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_stg_flight_promotion_deals_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -449,7 +450,7 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_stg_flight_destinations_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_stg_flight_promotion_deals_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -476,10 +477,11 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_flight_destinations_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                flight_id,
-                                                                                arrival_city,
-                                                                                departure_city,
+        insert_flight_promotion_deals_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
+                                                                                promotion_id,
+                                                                                promotion_name,
+                                                                                flight_booking_id,
+                                                                                applied_discount,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -488,8 +490,8 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s
-                                                                            );
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                );
         '''
 
         check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
@@ -516,12 +518,12 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_stg_flight_destinations_tbl_if_exists)
+        cursor.execute(delete_stg_flight_promotion_deals_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_stg_flight_destinations_tbl_is_deleted)
+        cursor.execute(check_if_stg_flight_promotion_deals_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -530,14 +532,14 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_promotion_deals_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_promotion_deals_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -545,12 +547,12 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_stg_flight_destinations_tbl)
+        cursor.execute(create_stg_flight_promotion_deals_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_stg_flight_destinations_tbl_exists)
+        cursor.execute(check_if_stg_flight_promotion_deals_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -559,14 +561,14 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_stg_flight_promotion_deals_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_destinations_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_stg_flight_promotion_deals_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -574,7 +576,7 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_stg_flight_destinations_tbl)
+        cursor.execute(add_data_lineage_to_stg_flight_promotion_deals_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -612,9 +614,10 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['flight_id'],
-                row['arrival_city'],
-                row['departure_city'],  
+                row['promotion_id'],
+                row['promotion_name'],
+                row['flight_booking_id'],
+                row['applied_discount'],   
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -623,7 +626,7 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
                 data_warehouse_layer
                     )
 
-            cursor.execute(insert_flight_destinations_data, values)
+            cursor.execute(insert_flight_promotion_deals_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -631,13 +634,13 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded flight_destinations record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded flight_promotion_deals record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert flight_destinations record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert flight_promotion_deals record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -1104,5 +1107,5 @@ def load_data_to_stg_flight_destinations_table(postgres_connection):
 
 
 
-load_data_to_stg_flight_destinations_table(postgres_connection)
+load_data_to_stg_flight_promotion_deals_table(postgres_connection)
 
