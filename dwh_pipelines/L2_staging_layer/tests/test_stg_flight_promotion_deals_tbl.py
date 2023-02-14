@@ -73,7 +73,7 @@ except psycopg2.Error:
 
 # Define the database, schema and table names
 
-table_name                      =   'stg_customer_info_tbl'
+table_name                      =   'stg_flight_promotion_deals_tbl'
 schema_name                     =   'dev'
 database_name                   =    database
 
@@ -130,26 +130,10 @@ def test_columns_existence():
     sql_results = cursor.fetchall()
     actual_columns = [column[0] for column in sql_results]
 
-    expected_columns = ['customer_id',                        
-                        'first_name',                         
-                        'last_name',
-                        'full_name',
-                        'email',    
-                        'age',      
-                        'dob',      
-                        'phone_number',                       
-                        'nationality',                  
-                        'place_of_birth',                     
-                        'address',  
-                        'city',     
-                        'state',    
-                        'zip',      
-                        'credit_card',
-                        'credit_card_provider',
-                        'customer_contact_preference_id',
-                        'customer_contact_preference_desc',  
-                        'created_date',
-                        'last_updated_date',
+    expected_columns = ['promotion_id',
+                        'promotion_name',
+                        'flight_booking_id',
+                        'applied_discount',
                         'created_at',
                         'updated_at',
                         'source_system',
@@ -192,32 +176,16 @@ def test_column_data_types():
 
     # Create a dictionary that specifies the expected data types for each column  
     expected_data_types = {
-        'customer_id'                       :           'uuid',                        
-        'first_name'                        :           'character varying',                         
-        'last_name'                         :           'character varying',
-        'full_name'                         :           'character varying',
-        'email'                             :           'character varying',    
-        'age'                               :           'integer',      
-        'dob'                               :           'date',      
-        'phone_number'                      :           'character varying',                       
-        'nationality'                       :           'character varying',                  
-        'place_of_birth'                    :           'character varying',                     
-        'address'                           :           'character varying',  
-        'city'                              :           'character varying',     
-        'state'                             :           'character varying',    
-        'zip'                               :           'character varying',      
-        'credit_card'                       :           'character varying',
-        'credit_card_provider'              :           'character varying',
-        'customer_contact_preference_id'    :           'uuid',
-        'customer_contact_preference_desc'  :           'character varying',  
-        'created_date'                      :           'date',
-        'last_updated_date'                 :           'date',
-        "created_at"                        :           "timestamp with time zone",
-        "updated_at"                        :           "timestamp with time zone",
-        "source_system"                     :           "character varying",
-        "source_file"                       :           "character varying",
-        "load_timestamp"                    :           "timestamp without time zone",
-        "dwh_layer"                         :           "character varying"
+        'promotion_id'                  :       "uuid",
+        'promotion_name'                :       "character varying",
+        'flight_booking_id'             :       "uuid",
+        'applied_discount'              :       "numeric",
+        "created_at"                    :       "timestamp with time zone",
+        "updated_at"                    :       "timestamp with time zone",
+        "source_system"                 :       "character varying",
+        "source_file"                   :       "character varying",
+        "load_timestamp"                :       "timestamp without time zone",
+        "dwh_layer"                     :       "character varying"
 
     }   
 
@@ -284,35 +252,7 @@ def test_null_values_in_table():
 
 
 
-# ====================================== TEST 8: DATE FORMATTING CHECK ======================================
-
-
-""" Check the date columns contain values in the 'yyyy-mm-dd' format """
-
-def test_date_formatting_constraint():
-    expected_date_format = r"^\d{4}-\d{2}-\d{2}$"
-    data_type = 'date'
-
-    sql_query_1 = f'''  SELECT column_name FROM information_schema.columns WHERE table_name = '{table_name}' AND data_type = '{data_type}'    '''
-    cursor.execute(sql_query_1)
-
-    sql_results_1 = cursor.fetchall()
-    date_columns = [sql_result[0] for sql_result in sql_results_1]
-
-    for date_column in date_columns:
-        sql_query_2 = f"""     SELECT      {date_column} 
-                                FROM        {schema_name}.{table_name}        
-        """
-        cursor.execute(sql_query_2)
-        sql_results_2 = cursor.fetchall()
-        for sql_result in sql_results_2:
-            date_value = sql_result[0].strftime("%Y-%m-%d")
-            assert re.match(expected_date_format, date_value) is not None, f"Invalid date detected - date values should be in 'yyyy-mm-dd' format."
-
-
-
-
-# ====================================== TEST 9: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
+# ====================================== TEST 8: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
 
 """ Test all the ID columns in the table contain 36 characters in length  """
 
@@ -336,52 +276,14 @@ def test_id_char_length_constraint():
 
 
 
-# ====================================== TEST 10: DATE RANGE CHECKS ======================================
 
-
-""" Test the date value in each date column are within the expected date ranges """
-
-def test_date_range_constraints():
-    earliest_date       =       datetime(2012, 1, 1).date()
-    latest_date         =       datetime(2022, 12, 31).date()
-
-    sql_query_1 = f"""                 SELECT      column_name, 
-                                                    data_type 
-
-                                        FROM        information_schema.columns 
-                                        WHERE       table_name = '{table_name}'  
-                                        ;
-    """
-    cursor.execute(sql_query_1)
-
-    sql_results = cursor.fetchall()
-
-    for sql_result in sql_results:
-        column_name = sql_result[0]
-        actual_data_type = sql_result[1]
-        if actual_data_type == 'date':
-            sql_query_2 = f"""         SELECT {column_name} FROM {schema_name}.{table_name};
-            """
-            cursor.execute(sql_query_2)
-
-            dates = cursor.fetchall()
-
-            # Assert the selected date value in this column is between the earliest and latest date specified   
-            for date in dates:
-                date_value = date[0]
-
-                assert earliest_date <= date_value <= latest_date, f" Date columns should only contain dates between {earliest_date} and {latest_date}. "
-
-
-
-
-# ====================================== TEST 11: DUPLICATES CHECK ======================================
+# ====================================== TEST 9: DUPLICATES CHECK ======================================
 
 
 """ Test the number of duplicate records appearing in the Postgres table  """
 
 def test_duplicate_records_count():
-    column_name = "customer_id"
+    column_name = "promotion_id"
     sql_query   = f"""                 SELECT          {column_name}, 
                                                         COUNT (*)
                                         FROM            {schema_name}.{table_name}
