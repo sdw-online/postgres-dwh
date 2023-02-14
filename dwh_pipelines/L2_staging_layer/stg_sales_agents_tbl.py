@@ -434,12 +434,12 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_sales_agents_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    id                          VARCHAR(36) PRIMARY KEY UNIQUE,
+                                                                                    id                          UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                                     commission                  VARCHAR NOT NULL,
                                                                                     email                       VARCHAR NOT NULL,
                                                                                     first_name                  VARCHAR NOT NULL,
                                                                                     last_name                   VARCHAR NOT NULL,
-                                                                                    full_name                   VARCHAR NOT NULL,
+                                                                                    full_name                   VARCHAR NOT NULL UNIQUE,
                                                                                     location                    VARCHAR NOT NULL,
                                                                                     nationality                 VARCHAR NOT NULL,
                                                                                     phone                       VARCHAR NOT NULL,

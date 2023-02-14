@@ -434,7 +434,7 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_customer_feedbacks_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                            feedback_id             UUID PRIMARY KEY NOT NULL,
+                                                                            feedback_id             UUID PRIMARY KEY NOT NULL UNIQUE,
                                                                             customer_id             UUID NOT NULL,
                                                                             flight_booking_id       UUID NOT NULL,
                                                                             feedback_date           DATE NOT NULL,
