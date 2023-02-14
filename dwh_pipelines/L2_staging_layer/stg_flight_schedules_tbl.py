@@ -409,57 +409,31 @@ def load_data_to_stg_flight_schedules_table(postgres_connection):
         
 
         # Convert flight_date field from integer to date type (with yyyy-mm-dd)
-        # temp_df['flight_date'] = temp_df['flight_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        temp_df['flight_date'] = pd.to_datetime(temp_df['flight_date'], unit='ms')
+        
+        temp_df['flight_date']      =       pd.to_datetime(temp_df['flight_date'], unit='ms')
 
 
-        # temp_df['flight_date'] = pd.to_datetime(temp_df['flight_date'], unit='ms')
-        # temp_df['flight_date'] = temp_df['flight_date'].dt.strftime('%Y-%m-%d')
-        # temp_df['flight_date'] = pd.to_datetime(temp_df['flight_date'], unit='ms')
+        # Create arrival_date column based on flight_date and departure_time fields 
 
+        temp_df['departure_time']   =       pd.to_datetime(temp_df['departure_time'], format='%H:%M:%S').dt.time
+        temp_df['arrival_time']     =       pd.to_datetime(temp_df['arrival_time'], format='%H:%M:%S').dt.time
 
-        # Calculate flight duration
-        # temp_df['duration'] = temp_df['arrival_time'] - temp_df['departure_time']
+        temp_df['departure_time']   =       pd.to_timedelta(temp_df['departure_time'].astype(str))
+        temp_df['arrival_time']     =       pd.to_timedelta(temp_df['arrival_time'].astype(str))
+        temp_df['duration']         =       abs(temp_df['arrival_time'] - temp_df['departure_time'])
 
-
-        temp_df['departure_time'] = pd.to_datetime(temp_df['departure_time'], format='%H:%M:%S').dt.time
-        temp_df['arrival_time'] = pd.to_datetime(temp_df['arrival_time'], format='%H:%M:%S').dt.time
-
-        temp_df['departure_time'] = pd.to_timedelta(temp_df['departure_time'].astype(str))
-        temp_df['arrival_time'] = pd.to_timedelta(temp_df['arrival_time'].astype(str))
-
-        temp_df['duration'] = abs(temp_df['arrival_time'] - temp_df['departure_time'])
+    
+        temp_df['duration']         =       temp_df['duration'].dt.total_seconds() / 60 / 60
+        temp_df['arrival_date']     =       temp_df['flight_date'] +  pd.to_timedelta(temp_df['duration'])
 
         
-        temp_df['duration'] = temp_df['duration'].dt.total_seconds() / 60 / 60
-        temp_df['arrival_date'] = temp_df['flight_date'] +  pd.to_timedelta(temp_df['duration'])
-
-        
-        temp_df['flight_date'] = pd.to_datetime(temp_df['flight_date'], unit='ms').dt.strftime('%Y-%m-%d')
-        temp_df['arrival_date'] = pd.to_datetime(temp_df['arrival_date'], unit='ms').dt.strftime('%Y-%m-%d')
-
-        # temp_df['flight_date'] = temp_df['flight_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        # temp_df['arrival_date'] = temp_df['arrival_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-
-
-        # # calculate the arrival date based on departure time and flight date
-        # temp_df['duration'] = pd.to_timedelta(temp_df['duration'])
-
-        # root_logger.debug(temp_df)
-        # temp_df['arrival_date'] = temp_df['flight_date'] + temp_df['duration']
-
-        
-        
-        
-        # # Convert the departure_time and arrival_time columns to datetime format
-        # temp_df["arrival_time"] = pd.to_datetime(temp_df["arrival_time"], format="%H:%M:%S").dt.strftime("%H:%M")
-        # temp_df["departure_time"] = pd.to_datetime(temp_df["departure_time"], format="%H:%M:%S").dt.strftime("%H:%M")
+        temp_df['flight_date']      =       pd.to_datetime(temp_df['flight_date'], unit='ms').dt.strftime('%Y-%m-%d')
+        temp_df['arrival_date']     =       pd.to_datetime(temp_df['arrival_date'], unit='ms').dt.strftime('%Y-%m-%d')
 
 
 
-        # temp_df['arrival_date']     = temp_df['arrival_date'].dt.strftime('%Y-%m-%d')
-        # temp_df['departure_time']   = temp_df['departure_time'].dt.strftime('%H:%M')
-        # temp_df['arrival_time']     = temp_df['arrival_time'].dt.strftime('%H:%M')
+
+
 
         print(temp_df)
         print(temp_df.columns)
@@ -484,22 +458,14 @@ def load_data_to_stg_flight_schedules_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_stg_flight_schedules_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    id                      CHAR(36) PRIMARY KEY NOT NULL,
-                                                                                    booking_date            DATE NOT NULL,
-                                                                                    check_in_date           DATE NOT NULL,
-                                                                                    check_out_date          DATE NOT NULL,
-                                                                                    checked_in              VARCHAR(3) NOT NULL,
-                                                                                    confirmation_code       VARCHAR(10) NOT NULL,
-                                                                                    customer_id             CHAR(36) NOT NULL,
-                                                                                    flight_booking_id       CHAR(36) NOT NULL,
-                                                                                    location                VARCHAR(255) NOT NULL,
-                                                                                    no_of_adults            INTEGER NOT NULL,
-                                                                                    no_of_children          INTEGER NOT NULL,
-                                                                                    payment_method          VARCHAR(255) NOT NULL,
-                                                                                    room_type               VARCHAR(255) NOT NULL,
-                                                                                    sales_agent_id          CHAR(36) NOT NULL,
-                                                                                    status                  VARCHAR(255) NOT NULL,
-                                                                                    total_price             DECIMAL(10,2) NOT NULL
+                                                                                    flight_id                       CHAR(36) PRIMARY KEY NOT NULL,
+                                                                                    arrival_city                    VARCHAR NOT NULL,
+                                                                                    arrival_date                    DATE NOT NULL,
+                                                                                    arrival_time                    TIME NOT NULL,
+                                                                                    departure_city                  VARCHAR NOT NULL,
+                                                                                    departure_time                  TIME NOT NULL,
+                                                                                    duration                        NUMERIC(10, 2),
+                                                                                    flight_date                     DATE NOT NULL
                                                                         );
         '''
 
@@ -539,22 +505,14 @@ def load_data_to_stg_flight_schedules_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_flight_schedules_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                id, 
-                                                                                booking_date, 
-                                                                                check_in_date, 
-                                                                                check_out_date, 
-                                                                                checked_in,
-                                                                                confirmation_code, 
-                                                                                customer_id, 
-                                                                                flight_booking_id, 
-                                                                                location,
-                                                                                no_of_adults, 
-                                                                                no_of_children, 
-                                                                                payment_method, 
-                                                                                room_type,
-                                                                                sales_agent_id, 
-                                                                                status, 
-                                                                                total_price,
+                                                                                flight_id,
+                                                                                arrival_city,
+                                                                                arrival_date,
+                                                                                arrival_time,
+                                                                                departure_city,
+                                                                                departure_time,
+                                                                                duration,
+                                                                                flight_date,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -563,8 +521,8 @@ def load_data_to_stg_flight_schedules_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                                                                            );
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                );
         '''
 
         check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
@@ -687,22 +645,14 @@ def load_data_to_stg_flight_schedules_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['id'], 
-                row['booking_date'], 
-                row['check_in_date'], 
-                row['check_out_date'], 
-                row['checked_in'],
-                row['confirmation_code'], 
-                row['customer_id'], 
-                row['flight_booking_id'], 
-                row['location'],
-                row['no_of_adults'], 
-                row['no_of_children'], 
-                row['payment_method'], 
-                row['room_type'],
-                row['sales_agent_id'], 
-                row['status'], 
-                row['total_price'],   
+                row['flight_id'],
+                row['arrival_city'],
+                row['arrival_date'],
+                row['arrival_time'],
+                row['departure_city'],
+                row['departure_time'],
+                row['duration'],
+                row['flight_date'],  
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -768,10 +718,7 @@ def load_data_to_stg_flight_schedules_table(postgres_connection):
         
 
         # Add a flag for confirming if sensitive data fields have been highlighted  
-        sensitive_columns_selected = ['customer_id',
-                            'num_adults',
-                            'num_children',
-                            'sales_agent_id'
+        sensitive_columns_selected = [None
                             ]
         
         
