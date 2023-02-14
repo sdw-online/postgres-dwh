@@ -381,7 +381,7 @@ def load_data_to_stg_ticket_prices_table():
 
 # Set up sub-flow for generating travel data 
 @flow(name="Generate travel data", flow_run_name="generate_travel_data_flow")
-def generate_source_data_flow():
+def run_data_generation_flow():
     return generate_synthetic_travel_data()
 
 
@@ -556,6 +556,6 @@ def run_stg_layer_flow():
 
 # Specify flow execution order in DAG-less manner  
 if __name__=="__main__":
-    generate_source_data_flow()
+    run_data_generation_flow()
     run_raw_layer_flow()
     run_stg_layer_flow()
