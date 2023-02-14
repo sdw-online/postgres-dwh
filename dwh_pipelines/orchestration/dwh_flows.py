@@ -474,7 +474,7 @@ def run_raw_layer_flow():
 
 # Set up sub-flow for executing tasks in staging layer 
 @flow(name="Execute tasks in staging layer", flow_run_name="raw_to_stg_layer_flow")
-def run_stg_layer_flow():
+def run_staging_layer_flow():
 
     load_data_to_stg_accommodation_bookings_table()
     root_logger.info("SUCCESS! Completed loading raw data into 'stg_accommodation_bookings_table'! ")
@@ -558,4 +558,4 @@ def run_stg_layer_flow():
 if __name__=="__main__":
     run_data_generation_flow()
     run_raw_layer_flow()
-    run_stg_layer_flow()
+    run_staging_layer_flow()
