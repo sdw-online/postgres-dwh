@@ -271,8 +271,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
 | 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Ticket price | Price column should be a positive value i.e. greater than 0 |
-| 12    | Duplicates | There should be no duplicate records in the table |
+| 11    | Duplicates | There should be no duplicate records in the table |
 
 
 
