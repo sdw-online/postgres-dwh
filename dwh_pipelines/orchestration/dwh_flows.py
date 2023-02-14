@@ -45,6 +45,10 @@ root_logger.addHandler(file_handler)
 
 
 
+# ============================================== TASKS ==============================================
+# ====================================================================================================
+
+
 
 
 # ============================================== 0. DATA GENERATION ==============================================
@@ -210,12 +214,183 @@ def load_data_to_raw_ticket_prices_tbl():
 
 
 
+
+
+
+
+# # ============================================== 2. STAGING LAYER ============================================== 
+
+# Set up tasks for staging layer
+
+@task
+def load_data_to_stg_accommodation_bookings_table():
+    from dwh_pipelines.L2_staging_layer.stg_accommodation_bookings_tbl      import  load_data_to_stg_accommodation_bookings_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_accommodation_bookings_tbl'
+    imported_function = 'load_accommodation_bookings_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_stg_customer_feedbacks_table():
+    from dwh_pipelines.L2_staging_layer.stg_customer_feedbacks_tbl      import  load_data_to_stg_customer_feedbacks_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_customer_feedbacks_tbl'
+    imported_function = 'load_customer_feedbacks_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_stg_customer_info_table():
+    from dwh_pipelines.L2_staging_layer.stg_customer_info_tbl      import  load_data_to_stg_customer_info_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_customer_info_tbl'
+    imported_function = 'load_customer_info_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_stg_flight_bookings_table():
+    from dwh_pipelines.L2_staging_layer.stg_flight_bookings_tbl      import  load_data_to_stg_flight_bookings_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_bookings_tbl'
+    imported_function = 'load_flight_bookings_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_stg_flight_destinations_table():
+    from dwh_pipelines.L2_staging_layer.stg_flight_destinations_tbl      import  load_data_to_stg_flight_destinations_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_destinations_tbl'
+    imported_function = 'load_flight_destinations_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_stg_flight_promotion_deals_table():
+    from dwh_pipelines.L2_staging_layer.stg_flight_promotion_deals_tbl      import  load_data_to_stg_flight_promotion_deals_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_promotion_deals_tbl'
+    imported_function = 'load_flight_promotion_deals_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_stg_flight_schedules_table():
+    from dwh_pipelines.L2_staging_layer.stg_flight_schedules_tbl      import  load_data_to_stg_flight_schedules_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_schedules_tbl'
+    imported_function = 'load_flight_schedules_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_stg_flight_ticket_sales_table():
+    from dwh_pipelines.L2_staging_layer.stg_flight_ticket_sales_tbl      import  load_data_to_stg_flight_ticket_sales_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_ticket_sales_tbl'
+    imported_function = 'load_flight_ticket_sales_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_stg_sales_agents_table():
+    from dwh_pipelines.L2_staging_layer.stg_sales_agents_tbl      import  load_data_to_stg_sales_agents_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_sales_agents_tbl'
+    imported_function = 'load_sales_agents_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_stg_ticket_prices_table():
+    from dwh_pipelines.L2_staging_layer.stg_ticket_prices_tbl      import  load_data_to_stg_ticket_prices_table
+    module_name = 'dwh_pipelines.L2_stg_layer.stg_ticket_prices_tbl'
+    imported_function = 'load_ticket_prices_data_to_stg_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+
+
+
+# ============================================== FLOWS ==============================================
+# ====================================================================================================
+
+
+
+# ============================================== 0. DATA GENERATION ==============================================
+
+
 # Set up sub-flow for generating travel data 
 @flow(name="Generate travel data", flow_run_name="generate_travel_data_flow")
 def generate_source_data_flow():
     return generate_synthetic_travel_data()
 
 
+
+
+
+
+
+# # ============================================== 1. RAW LAYER ============================================== 
 
 
 # Set up sub-flow for executing tasks in raw layer 
@@ -292,7 +467,93 @@ def run_raw_layer_flow():
 
 
 
+
+# # ============================================== 2. STAGING LAYER ============================================== 
+
+
+
+# Set up sub-flow for executing tasks in staging layer 
+@flow(name="Execute tasks in staging layer", flow_run_name="raw_to_stg_layer_flow")
+def run_stg_layer_flow():
+
+    load_data_to_stg_accommodation_bookings_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_accommodation_bookings_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_accommodation_bookings_table'! ")
+
+
+
+    load_data_to_stg_customer_feedbacks_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_customer_feedbacks_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_customer_feedbacks_table'! ")
+
+
+
+    load_data_to_stg_customer_info_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_customer_info_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_customer_info_table'! ")
+
+
+
+    load_data_to_stg_flight_bookings_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_bookings_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_bookings_table'! ")
+
+
+
+    load_data_to_stg_flight_destinations_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_destinations_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_destinations_table'! ")
+
+
+
+    load_data_to_stg_flight_promotion_deals_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_promotion_deals_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_promotion_deals_table'! ")
+
+
+
+    load_data_to_stg_flight_schedules_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_schedules_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_schedules_table'! ")
+
+
+
+    load_data_to_stg_flight_ticket_sales_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_ticket_sales_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_ticket_sales_table'! ")
+
+
+
+    load_data_to_stg_sales_agents_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_sales_agents_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_sales_agents_table'! ")
+
+
+
+    load_data_to_stg_ticket_prices_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_ticket_prices_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_ticket_prices_table'! ")
+
+
+    root_logger.info("Now terminating session for staging layer tasks...")
+    root_logger.info("")
+    root_logger.info("Staging tables processing session ended.")
+    get_run_logger().info("Now terminating session for staging layer tasks...")
+    get_run_logger().info("")
+    get_run_logger().info("Staging tables processing session ended.")
+
+
+
+
+
+
+
+
+
+
+
 # Specify flow execution order in DAG-less manner  
 if __name__=="__main__":
     generate_source_data_flow()
     run_raw_layer_flow()
+    run_stg_layer_flow()
