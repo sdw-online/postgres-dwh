@@ -438,10 +438,7 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
                                                                             customer_id             UUID NOT NULL,
                                                                             flight_booking_id       UUID NOT NULL,
                                                                             feedback_date           DATE NOT NULL,
-                                                                            feedback_text           TEXT NOT NULL,
-                                                                            UNIQUE (feedback_id),
-                                                                            FOREIGN KEY (customer_id) REFERENCES customers (customer_id),
-                                                                            FOREIGN KEY (flight_booking_id) REFERENCES flight_bookings (flight_booking_id)
+                                                                            feedback_text           TEXT NOT NULL
                                                                         );
         '''
 
@@ -481,22 +478,11 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_customer_feedbacks_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                id, 
-                                                                                booking_date, 
-                                                                                check_in_date, 
-                                                                                check_out_date, 
-                                                                                checked_in,
-                                                                                confirmation_code, 
-                                                                                customer_id, 
-                                                                                flight_booking_id, 
-                                                                                location,
-                                                                                no_of_adults, 
-                                                                                no_of_children, 
-                                                                                payment_method, 
-                                                                                room_type,
-                                                                                sales_agent_id, 
-                                                                                status, 
-                                                                                total_price,
+                                                                                feedback_id,
+                                                                                customer_id,
+                                                                                flight_booking_id,
+                                                                                feedback_date,
+                                                                                feedback_text,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -505,7 +491,7 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -629,22 +615,11 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['id'], 
-                row['booking_date'], 
-                row['check_in_date'], 
-                row['check_out_date'], 
-                row['checked_in'],
-                row['confirmation_code'], 
-                row['customer_id'], 
-                row['flight_booking_id'], 
-                row['location'],
-                row['no_of_adults'], 
-                row['no_of_children'], 
-                row['payment_method'], 
-                row['room_type'],
-                row['sales_agent_id'], 
-                row['status'], 
-                row['total_price'],   
+                row['feedback_id'],
+                row['customer_id'],
+                row['flight_booking_id'],
+                row['feedback_date'],
+                row['feedback_text'],  
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
