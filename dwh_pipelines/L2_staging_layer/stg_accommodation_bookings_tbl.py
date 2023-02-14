@@ -454,7 +454,7 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
                                                                                     check_out_date          DATE NOT NULL,
                                                                                     checked_in              VARCHAR(3) NOT NULL,
                                                                                     confirmation_code       VARCHAR(10) NOT NULL,
-                                                                                    customer_id             CHAR(36) NOT NULL,
+                                                                                    customer_id             UUID NOT NULL,
                                                                                     flight_booking_id       UUID NOT NULL,
                                                                                     location                VARCHAR NOT NULL,
                                                                                     no_of_adults            INTEGER NOT NULL,

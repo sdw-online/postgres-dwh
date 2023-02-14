@@ -193,28 +193,28 @@ def test_column_data_types():
         "booking_date":         "date",
         "check_in_date":        "date",
         "check_out_date":       "date",
-        "checked_in":           "varchar",
-        "confirmation_code":    "varchar",
-        "customer_id":          "char",
+        "checked_in":           "character varying",
+        "confirmation_code":    "character varying",
+        "customer_id":          "uuid",
         "flight_booking_id":    "uuid",
-        "location":             "varchar",
+        "location":             "character varying",
         "no_of_adults":         "integer",
         "no_of_children":       "integer",
-        "payment_method":       "varchar",
-        "room_type":            "varchar",
+        "payment_method":       "character varying",
+        "room_type":            "character varying",
         "sales_agent_id":       "uuid",
-        "status":               "varchar",
-        "total_price":          "numeric"
+        "status":               "character varying",
+        "total_price":          "numeric",
+        "created_at":           "timestamp with time zone",
+        "updated_at":           "timestamp with time zone",
+        "source_system":        "character varying",
+        "source_file":          "character varying",
+        "load_timestamp":       "timestamp without time zone",
+        "dwh_layer":            "character varying"
 
     }   
 
-    # Exclude the data-lineage columns from result
-    data_lineage_columns = ['created_at',    
-                                    'updated_at',    
-                                    'source_system', 
-                                    'source_file',   
-                                    'load_timestamp',
-                                    'dwh_layer']
+
 
     # Use SQL to extract the column names and their data types
     cursor.execute(f"""         SELECT column_name, data_type from information_schema.columns WHERE table_name = '{table_name}'
@@ -224,8 +224,56 @@ def test_column_data_types():
     sql_results = cursor.fetchall()
 
     for column_name, actual_data_type in sql_results:
-        assert (actual_data_type.lower() == expected_data_types[column_name]) and column_name not in data_lineage_columns, f"The expected data type for column '{column_name}' was '{expected_data_types[column_name]}', but the actual data type was '{actual_data_type}'. "
+        assert actual_data_type.lower() == expected_data_types[column_name], f"The expected data type for column '{column_name}' was '{expected_data_types[column_name]}', but the actual data type was '{actual_data_type}'. "
     
 
 
 
+
+# ====================================== TEST 6: EMPTY VALUES CHECK ======================================
+
+
+""" Check if there are any empty values present in your table """
+
+def test_empty_values_in_table():
+    cursor.execute(f"""     SELECT * FROM   {schema_name}.{table_name}
+    """)
+    sql_results = cursor.fetchall()
+
+    row_no = 0 
+    for record in sql_results:
+        row_no +=1
+        for cell_value in record:
+            assert cell_value is not None, f" There is an empty value in the '{schema_name}.{table_name}' table on row '{row_no}' . "
+
+
+
+
+
+
+# ====================================== TEST 7: NULL VALUES CHECK ======================================
+
+""" Check if there are any NULL values present in your table """
+
+def test_null_values_in_table():
+
+    # Get list of columns from table 
+    cursor.execute(f""" SELECT column_name from information_schema.columns WHERE table_name = '{table_name}' ;
+    """)
+    columns = cursor.fetchall()
+
+
+    for column in columns:
+        sql_query = f'SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE {column[0]} is NULL'
+        cursor.execute(sql_query)
+        sql_result = cursor.fetchone()
+
+        assert sql_result[0] == 0, f"The {column} column has NULL values. "
+
+
+
+
+
+
+
+# ====================================== TEST 8: ROW COUNT CHECK ======================================
