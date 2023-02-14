@@ -704,100 +704,100 @@ def load_data_to_stg_accommodation_bookings_table(postgres_connection):
 
 
 
-        # # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
+        # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 
-        # note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
-        # note_2 = """      Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information. """
-        # note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
+        note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
+        note_2 = """      Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information. """
+        note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
         
-        # root_logger.warning(f'')
-        # root_logger.warning(f'')
-        # root_logger.warning('================================================')
-        # root_logger.warning('           SENSITIVE COLUMN IDENTIFICATION              ')
-        # root_logger.warning('================================================')
-        # root_logger.warning(f'')
-        # root_logger.error(f'{note_1}')
-        # root_logger.error(f'')
-        # root_logger.error(f'{note_2}')
-        # root_logger.error(f'')
-        # root_logger.error(f'{note_3}')
-        # root_logger.warning(f'')
-        # root_logger.warning(f'')
-        # root_logger.warning(f'Now beginning the sensitive column identification stage ...')
-        # root_logger.warning(f'')
-        
-
-        # # Add a flag for confirming if sensitive data fields have been highlighted  
-        # sensitive_columns_selected = ['customer_id',
-        #                     'num_adults',
-        #                     'num_children',
-        #                     'sales_agent_id'
-        #                     ]
-        
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning('================================================')
+        root_logger.warning('           SENSITIVE COLUMN IDENTIFICATION              ')
+        root_logger.warning('================================================')
+        root_logger.warning(f'')
+        root_logger.error(f'{note_1}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_2}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_3}')
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning(f'Now beginning the sensitive column identification stage ...')
+        root_logger.warning(f'')
         
 
-        # if len(sensitive_columns_selected) == 0:
-        #     SENSITIVE_COLUMNS_IDENTIFIED = False
-        #     root_logger.error(f"ERROR: No sensitive columns have been selected for '{table_name}' table ")
-        #     root_logger.warning(f'')
+        # Add a flag for confirming if sensitive data fields have been highlighted  
+        sensitive_columns_selected = ['customer_id',
+                            'num_adults',
+                            'num_children',
+                            'sales_agent_id'
+                            ]
         
-        # elif sensitive_columns_selected[0] is None:
-        #     SENSITIVE_COLUMNS_IDENTIFIED = True
-        #     root_logger.error(f"There are no sensitive columns for the '{table_name}' table ")
-        #     root_logger.warning(f'')
+        
 
-        # else:
-        #     SENSITIVE_COLUMNS_IDENTIFIED = True
-        #     root_logger.warning(f'Here are the columns considered sensitive in this table ...')
-        #     root_logger.warning(f'')
+        if len(sensitive_columns_selected) == 0:
+            SENSITIVE_COLUMNS_IDENTIFIED = False
+            root_logger.error(f"ERROR: No sensitive columns have been selected for '{table_name}' table ")
+            root_logger.warning(f'')
+        
+        elif sensitive_columns_selected[0] is None:
+            SENSITIVE_COLUMNS_IDENTIFIED = True
+            root_logger.error(f"There are no sensitive columns for the '{table_name}' table ")
+            root_logger.warning(f'')
+
+        else:
+            SENSITIVE_COLUMNS_IDENTIFIED = True
+            root_logger.warning(f'Here are the columns considered sensitive in this table ...')
+            root_logger.warning(f'')
 
         
-        # if SENSITIVE_COLUMNS_IDENTIFIED is False:
-        #     sql_statement_for_listing_columns_in_table = f"""        
-        #     SELECT column_name FROM information_schema.columns 
-        #     WHERE   table_name = '{table_name}'
-        #     ORDER BY ordinal_position 
-        #     """
-        #     cursor.execute(get_list_of_column_names)
-        #     list_of_column_names = cursor.fetchall()
-        #     column_names = [sql_result[0] for sql_result in list_of_column_names]
+        if SENSITIVE_COLUMNS_IDENTIFIED is False:
+            sql_statement_for_listing_columns_in_table = f"""        
+            SELECT column_name FROM information_schema.columns 
+            WHERE   table_name = '{table_name}'
+            ORDER BY ordinal_position 
+            """
+            cursor.execute(get_list_of_column_names)
+            list_of_column_names = cursor.fetchall()
+            column_names = [sql_result[0] for sql_result in list_of_column_names]
             
-        #     root_logger.warning(f"You are required to select the sensitive columns in this table. If there are none, enter 'None' in the 'sensitive_columns_selected' object.")
-        #     root_logger.warning(f'')
-        #     root_logger.warning(f"Here are the columns to choose from:")
-        #     root_logger.warning(f'')
-        #     total_sensitive_columns = 0
-        #     for sensitive_column_name in column_names:
-        #         total_sensitive_columns += 1
-        #         root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
+            root_logger.warning(f"You are required to select the sensitive columns in this table. If there are none, enter 'None' in the 'sensitive_columns_selected' object.")
+            root_logger.warning(f'')
+            root_logger.warning(f"Here are the columns to choose from:")
+            root_logger.warning(f'')
+            total_sensitive_columns = 0
+            for sensitive_column_name in column_names:
+                total_sensitive_columns += 1
+                root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
 
 
 
-        #     root_logger.warning(f'')
-        #     root_logger.warning(f'You can use this SQL query to list the columns in this table:')
-        #     root_logger.warning(f'              {sql_statement_for_listing_columns_in_table}                ')
+            root_logger.warning(f'')
+            root_logger.warning(f'You can use this SQL query to list the columns in this table:')
+            root_logger.warning(f'              {sql_statement_for_listing_columns_in_table}                ')
         
-        # else:
-        #     total_sensitive_columns = 0
-        #     for sensitive_column_name in sensitive_columns_selected:
-        #         total_sensitive_columns += 1
-        #         root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
-        #     if sensitive_columns_selected[0] is not None:
-        #         root_logger.warning(f'')
-        #         root_logger.warning(f'')
-        #         root_logger.warning(f'Decide on the appropriate treatment for these tables. A few options to consider include:')
-        #         root_logger.warning(f'''1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'. ''')
-        #         root_logger.warning(f'''2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).        ''')
-        #         root_logger.warning(f'''3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities        ''')
+        else:
+            total_sensitive_columns = 0
+            for sensitive_column_name in sensitive_columns_selected:
+                total_sensitive_columns += 1
+                root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
+            if sensitive_columns_selected[0] is not None:
+                root_logger.warning(f'')
+                root_logger.warning(f'')
+                root_logger.warning(f'Decide on the appropriate treatment for these tables. A few options to consider include:')
+                root_logger.warning(f'''1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'. ''')
+                root_logger.warning(f'''2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).        ''')
+                root_logger.warning(f'''3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities        ''')
             
-        #     root_logger.warning(f'')
-        #     root_logger.warning(f'Now terminating the sensitive column identification stage ...')
-        #     root_logger.warning(f'Sensitive column identification stage ended. ')
-        #     root_logger.warning(f'')
+            root_logger.warning(f'')
+            root_logger.warning(f'Now terminating the sensitive column identification stage ...')
+            root_logger.warning(f'Sensitive column identification stage ended. ')
+            root_logger.warning(f'')
 
 
-        # root_logger.warning(f'')
-        # root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning(f'')
 
 
 
