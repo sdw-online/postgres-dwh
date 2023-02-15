@@ -74,7 +74,7 @@ except psycopg2.Error:
 
 # Define the database, schema and table names
 
-table_name                      =   'stg_accommodation_bookings_tbl'
+table_name                      =   'stg_ticket_prices_tbl'
 schema_name                     =   'dev'
 database_name                   =    database
 
@@ -131,22 +131,9 @@ def test_columns_existence():
     sql_results = cursor.fetchall()
     actual_columns = [column[0] for column in sql_results]
 
-    expected_columns = ['id', 
-                        'booking_date', 
-                        'check_in_date', 
-                        'check_out_date', 
-                        'checked_in',
-                        'confirmation_code', 
-                        'customer_id', 
-                        'flight_booking_id', 
-                        'location',
-                        'no_of_adults', 
-                        'no_of_children', 
-                        'payment_method', 
-                        'room_type',
-                        'sales_agent_id', 
-                        'status', 
-                        'total_price',
+    expected_columns = ['flight_id',       
+                        'ticket_price',
+                        'ticket_price_date',
                         'created_at',
                         'updated_at',
                         'source_system',
@@ -189,28 +176,15 @@ def test_column_data_types():
 
     # Create a dictionary that specifies the expected data types for each column  
     expected_data_types = {
-        "id":                   "uuid",
-        "booking_date":         "date",
-        "check_in_date":        "date",
-        "check_out_date":       "date",
-        "checked_in":           "character varying",
-        "confirmation_code":    "character varying",
-        "customer_id":          "uuid",
-        "flight_booking_id":    "uuid",
-        "location":             "character varying",
-        "no_of_adults":         "integer",
-        "no_of_children":       "integer",
-        "payment_method":       "character varying",
-        "room_type":            "character varying",
-        "sales_agent_id":       "uuid",
-        "status":               "character varying",
-        "total_price":          "numeric",
-        "created_at":           "timestamp with time zone",
-        "updated_at":           "timestamp with time zone",
-        "source_system":        "character varying",
-        "source_file":          "character varying",
-        "load_timestamp":       "timestamp without time zone",
-        "dwh_layer":            "character varying"
+        'flight_id'                         :           "uuid",       
+        'ticket_price'                      :           "numeric",
+        'ticket_price_date'                 :           "date",
+        "created_at"                        :           "timestamp with time zone",
+        "updated_at"                        :           "timestamp with time zone",
+        "source_system"                     :           "character varying",
+        "source_file"                       :           "character varying",
+        "load_timestamp"                    :           "timestamp without time zone",
+        "dwh_layer"                         :           "character varying"
 
     }   
 
@@ -305,97 +279,7 @@ def test_date_formatting_constraint():
 
 
 
-# ====================================== TEST 9: DATE DOMAIN CHECKS ======================================
-
-""" Check if the values in `check_in_date` field are before the values in the `check_out_date` field """
-
-
-def test_check_in_date_before_check_out_date():
-    sql_query = f"""    SELECT check_in_date, check_out_date FROM {schema_name}.{table_name}
-    """
-
-    cursor.execute(sql_query)
-
-    sql_results = cursor.fetchall()
-
-    record_counter = 0
-    for record in sql_results:
-        record_counter += 1
-        check_in_date, check_out_date = record
-
-        assert check_in_date < check_out_date, f" Row {record_counter} contains a 'check out' date that is before the 'check in' date"
-
-
-
-
-# ====================================== TEST 10: CONFIRMATION CODE FORMAT CHECK ======================================
-
-""" Test the sequence of characters in each confirmation code matches the regular expression specified """
-
-
-def test_confirmation_code_formatting_constraint():
-    expected_conf_code_pattern = r"^[A-Z0-9]{8,10}$"
-    sql_column = "confirmation_code"
-
-    sql_query = f"""         SELECT {sql_column} FROM {schema_name}.{table_name} ;
-    """
-    cursor.execute(sql_query)
-    
-    sql_results = cursor.fetchall()
-
-    # Assert the character sequence for confirmation codes match the pattern specified 
-    for sql_result in sql_results:
-        confirmation_code = sql_result[0]
-        assert re.match(expected_conf_code_pattern, confirmation_code), f"Invalid confirmation code in the {sql_column} column for {schema_name}.{table_name}. "
-
-
-
-
-
-# ====================================== TEST 11: PAYMENT METHOD DOMAIN CONSTRAINT CHECK  ======================================
-
-""" Check if the payment_method column only contains the "Debit card", "Credit card", "Paypal" and "Bank transfer" values """
-
-def test_payment_method_col_values():
-    valid_payment_methods = ["Debit card", "Credit card", "PayPal", "Bank transfer"]
-    sql_column = "payment_method"
-
-    sql_query = f"""         SELECT {sql_column}  FROM {schema_name}.{table_name} ;
-    """
-    cursor.execute(sql_query)
-    
-    sql_results = cursor.fetchall()
-
-    # Assert the values in the column payment_method column contain the values specified
-    for sql_result in sql_results: 
-        payment_method = sql_result[0]
-        assert payment_method in valid_payment_methods, f" Invalid payment method detected - payment methods must only be one of the following options: {valid_payment_methods}. "
-
-
-# ====================================== TEST 12: STATUS DOMAIN CONSTRAINT CHECK  ======================================
-
-""" Check if the status column only contains the "Pending", "Confirmed" and "Cancelled" values """
-
-def test_status_col_values():
-    valid_statuses = ["Pending", "Confirmed", "Cancelled"]
-    sql_column = "status"
-
-    sql_query = f"""         SELECT {sql_column} FROM {schema_name}.{table_name} ;
-    """
-    cursor.execute(sql_query)
-    
-    sql_results = cursor.fetchall()
-
-    # Assert the values in the column status column contain the values specified
-    for sql_result in sql_results:
-        
-        status = sql_result[0]
-        assert status in valid_statuses, f"Invalid status detected - statuses must only be one of the following options: {valid_statuses}. "
-        
-
-
-
-# ====================================== TEST 13: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
+# ====================================== TEST 9: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
 
 """ Test all the ID columns in the table contain 36 characters in length  """
 
@@ -420,13 +304,35 @@ def test_id_char_length_constraint():
 
 
 
-# ====================================== TEST 14: DUPLICATES CHECK ======================================
+# ====================================== TEST 10: TICKET PRICE POSITIVE VALUES CHECK  ======================================
+
+""" Check if the ticket_price column only contains positive values """
+
+def test_positive_ticket_price_col():
+    sql_column = "ticket_price"
+
+    sql_query = f"""         SELECT      {sql_column} 
+                                FROM        {schema_name}.{table_name}
+                                ;
+    """
+    cursor.execute(sql_query)
+    
+    sql_results = cursor.fetchall()
+
+    # Assert the values in the ticket_price column are all positive values
+    for sql_result in sql_results:
+        ticket_price = sql_result[0]
+        assert ticket_price > 0, f"Invalid total price detected - total price must be a positive value "
+
+
+
+# ====================================== TEST 11: DUPLICATES CHECK ======================================
 
 
 """ Test the number of duplicate records appearing in the Postgres table  """
 
 def test_duplicate_records_count():
-    column_name = "id"
+    column_name = "flight_id"
     sql_query   = f"""                 SELECT          {column_name}, 
                                                         COUNT (*)
                                         FROM            {schema_name}.{table_name}
@@ -438,14 +344,15 @@ def test_duplicate_records_count():
 
     duplicates = cursor.fetchall()
     total_no_of_duplicates = len(duplicates)
-
+    
     # Assert the number of uniqueness constraints for the table specified is at least 1
     assert total_no_of_duplicates == 0, f"Duplicate entries detected - {table_name} should contain no duplicate entries."
 
 
 
+
 def run_tests():
-    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py')
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_ticket_prices_tbl.py')
     test_result = pytest.main([test_filepath])
     return test_result
 

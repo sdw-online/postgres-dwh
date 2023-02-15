@@ -447,7 +447,7 @@ def load_data_to_stg_flight_ticket_sales_table(postgres_connection):
         create_stg_flight_ticket_sales_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
                                                                                     flight_booking_id               UUID PRIMARY KEY NOT NULL UNIQUE,  
                                                                                     agent_first_name                VARCHAR NOT NULL, 
-                                                                                    agent_id                        VARCHAR NOT NULL, 
+                                                                                    agent_id                        UUID NOT NULL, 
                                                                                     agent_last_name                 VARCHAR NOT NULL,
                                                                                     customer_first_name             VARCHAR NOT NULL, 
                                                                                     customer_id                     UUID NOT NULL, 

@@ -3,6 +3,9 @@ from prefect.deployments import Deployment
 from prefect.orion.schemas.schedules import IntervalSchedule
 import logging, coloredlogs
 from pathlib import Path
+import subprocess
+import os 
+
 
 # ================================================ LOGGER ================================================
 
@@ -371,6 +374,256 @@ def load_data_to_stg_ticket_prices_table():
 
 
 
+# Set up tasks for running DQ tests in staging layer
+
+
+@task
+def run_dq_test_for_stg_accommodation_bookings_tbl():
+    test_name = "test_stg_accommodation_bookings_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+@task
+def run_dq_test_for_stg_customer_feedbacks_tbl():
+    test_name = "test_stg_customer_feedbacks_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_customer_feedbacks_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+@task
+def run_dq_test_for_stg_customer_info_tbl():
+    test_name = "test_stg_customer_info_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_customer_info_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+def run_dq_test_for_stg_flight_bookings_tbl():
+    test_name = "test_stg_flight_bookings_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_bookings_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+def run_dq_test_for_stg_flight_destinations_tbl():
+    test_name = "test_stg_flight_destinations_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_destinations_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+def run_dq_test_for_stg_flight_promotion_deals_tbl():
+    test_name = "test_stg_flight_promotion_deals_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_promotion_deals_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+def run_dq_test_for_stg_flight_schedules_tbl():
+    test_name = "test_stg_flight_schedules_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_schedules_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+def run_dq_test_for_stg_flight_ticket_sales_tbl():
+    test_name = "test_stg_flight_ticket_sales_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_ticket_sales_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+def run_dq_test_for_stg_sales_agents_tbl():
+    test_name = "test_stg_sales_agents_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_sales_agents_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+def run_dq_test_for_stg_ticket_prices_tbl():
+    test_name = "test_stg_ticket_prices_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_ticket_prices_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+
+
+
+
+
+
 # ============================================== FLOWS ==============================================
 # ====================================================================================================
 
@@ -545,6 +798,70 @@ def run_staging_layer_flow():
 
 
 
+# Set up sub-flow for executing tasks in staging layer 
+@flow(name="Run DQ test for staging tables", flow_run_name="dq_tests_for_stg_layer_flow")
+def run_dq_tests_for_staging_layer_flow():
+
+    # Set up flow for running DQ tests in staging layer
+    run_dq_test_for_stg_accommodation_bookings_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_accommodation_bookings_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_accommodation_bookings_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_customer_feedbacks_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_feedbacks_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_feedbacks_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_customer_info_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+
+
+    run_dq_test_for_stg_flight_bookings_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_flight_destinations_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_flight_destinations_tb' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_flight_destinations_tb' table! ")
+
+
+
+    run_dq_test_for_stg_flight_promotion_deals_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_flight_schedules_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'flight_promotion_deals_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'flight_promotion_deals_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_flight_ticket_sales_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'flight_ticket_sales_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'flight_ticket_sales_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_sales_agents_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_sales_agents_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_sales_agents_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_ticket_prices_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_ticket_prices_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_ticket_prices_tbl' table! ")
+
+
+
 
 
 
@@ -556,6 +873,16 @@ def run_staging_layer_flow():
 
 # Specify flow execution order in DAG-less manner  
 if __name__=="__main__":
+    
+
+    # L0 - Generate data
     run_data_generation_flow()
+
+
+    # L1 - Extract source data into raw tables 
     run_raw_layer_flow()
+    
+
+    # L2 - Extract raw data into staging tables
     run_staging_layer_flow()
+    run_dq_tests_for_staging_layer_flow()
