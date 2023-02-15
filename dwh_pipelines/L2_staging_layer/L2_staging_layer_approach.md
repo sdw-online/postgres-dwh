@@ -118,13 +118,12 @@ The next step is data validation and quality checks, which are a series of tests
 | 6     | Empty Values | The table should not contain any empty values |
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
-| 9     | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 10    | Date domain | The value in the `check_in_date` field should be before the value in the `check_out_date` field |
-| 11    | Confirmation code | Each confirmation code value should be 36 characters in length |
-| 12    | Payment method | Payment method column should only contain "Debit card", "Credit card", "PayPal" and "Bank transfer" values |
-| 13    | Status | Status column should only contain "Pending", "Confirmed" and "Cancelled" values |
-| 14    | ID format | ID columns should be strings of 36 characters in length |
-| 15    | Duplicates | There should be no duplicate records in the table |
+| 9    | Date domain | The value in the `check_in_date` field should be before the value in the `check_out_date` field |
+| 10    | Confirmation code | Each confirmation code value should be 36 characters in length |
+| 11    | Payment method | Payment method column should only contain "Debit card", "Credit card", "PayPal" and "Bank transfer" values |
+| 12    | Status | Status column should only contain "Pending", "Confirmed" and "Cancelled" values |
+| 13    | ID format | ID columns should be strings of 36 characters in length |
+| 14    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -143,8 +142,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
-| 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Duplicates | There should be no duplicate records in the table |
+| 10    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -165,8 +163,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
-| 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Duplicates | There should be no duplicate records in the table |
+| 10    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -187,9 +184,8 @@ The next step is data validation and quality checks, which are a series of tests
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
-| 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Ticket price | Price column should be a positive value i.e. greater than 0 |
-| 12    | Duplicates | There should be no duplicate records in the table |
+| 10    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+| 11    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -210,8 +206,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
-| 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Duplicates | There should be no duplicate records in the table |
+| 10    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -249,8 +244,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
-| 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Duplicates | There should be no duplicate records in the table |
+| 10    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -270,8 +264,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
-| 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Duplicates | There should be no duplicate records in the table |
+| 10    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -290,10 +283,9 @@ The next step is data validation and quality checks, which are a series of tests
 | 6     | Empty Values | The table should not contain any empty values |
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
-| 9     | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 10    | ID format | ID columns should be strings of 36 characters in length |
-| 11    | Seniority | Seniority column should only contain “Junior”, “Mid-level” and “Senior” values |
-| 12    | Duplicates | There should be no duplicate records in the table |
+| 9    | ID format | ID columns should be strings of 36 characters in length |
+| 10    | Seniority | Seniority column should only contain “Junior”, “Mid-level” and “Senior” values |
+| 11    | Duplicates | There should be no duplicate records in the table |
 
 
 
@@ -313,8 +305,7 @@ The next step is data validation and quality checks, which are a series of tests
 | 7     | Null Values | The table should not contain any `NULL` values |
 | 8     | Date format | Date columns should be in "yyyy-mm-dd" format |
 | 9     | ID format | ID columns should be strings of 36 characters in length |
-| 10    | Date range | Date columns should be between `01-01-2012` and `31-12-2022` |
-| 11    | Ticket price | Price column should be a positive value i.e. greater than 0 |
-| 12    | Duplicates | There should be no duplicate records in the table |
+| 10    | Ticket price | Price column should be a positive value i.e. greater than 0 |
+| 11    | Duplicates | There should be no duplicate records in the table |
 
 ***

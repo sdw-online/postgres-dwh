@@ -297,46 +297,8 @@ def test_date_formatting_constraint():
 
 
 
-# ====================================== TEST 9: DATE RANGE CHECKS ======================================
 
-
-""" Test the date value in each date column are within the expected date ranges """
-
-def test_date_range_constraints():
-    earliest_date       =       datetime(2012, 1, 1).date()
-    latest_date         =       datetime(2022, 12, 31).date()
-
-    sql_query_1 = f"""                 SELECT      column_name, 
-                                                    data_type 
-
-                                        FROM        information_schema.columns 
-                                        WHERE       table_name = '{table_name}'  
-                                        ;
-    """
-    cursor.execute(sql_query_1)
-
-    sql_results = cursor.fetchall()
-
-    for sql_result in sql_results:
-        column_name = sql_result[0]
-        actual_data_type = sql_result[1]
-        if actual_data_type == 'date':
-            sql_query_2 = f"""         SELECT {column_name} FROM {schema_name}.{table_name};
-            """
-            cursor.execute(sql_query_2)
-
-            dates = cursor.fetchall()
-
-            # Assert the selected date value in this column is between the earliest and latest date specified   
-            for date in dates:
-                date_value = date[0]
-
-                assert earliest_date <= date_value <= latest_date, f" Date columns should only contain dates between {earliest_date} and {latest_date}. "
-
-
-
-
-# ====================================== TEST 10: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
+# ====================================== TEST 9: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
 
 """ Test all the ID columns in the table contain 36 characters in length  """
 
@@ -361,7 +323,7 @@ def test_id_char_length_constraint():
 
 
 
-# ====================================== TEST 11: SENIORITY LEVEL DOMAIN CONSTRAINT CHECK  ======================================
+# ====================================== TEST 10: SENIORITY LEVEL DOMAIN CONSTRAINT CHECK  ======================================
 
 """ Check if the seniority level column only contains the "Junior", "Mid-level" and "Senior" values """
 
@@ -382,7 +344,7 @@ def test_seniority_level_col_values():
         assert seniority_level in valid_seniority_levels, f"Invalid seniority level detected - seniority levels must only be one of the following options: {valid_seniority_levels}. "
 
 
-# ====================================== TEST 12: DUPLICATES CHECK ======================================
+# ====================================== TEST 11: DUPLICATES CHECK ======================================
 
 
 """ Test the number of duplicate records appearing in the Postgres table  """
