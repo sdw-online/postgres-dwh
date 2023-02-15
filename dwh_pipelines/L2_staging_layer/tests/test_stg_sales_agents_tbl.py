@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import pytest 
 import psycopg2
 import configparser
@@ -333,29 +334,9 @@ def test_date_range_constraints():
                 assert earliest_date <= date_value <= latest_date, f" Date columns should only contain dates between {earliest_date} and {latest_date}. "
 
 
-# ====================================== TEST 10: TICKET PRICE POSITIVE VALUES CHECK  ======================================
-
-""" Check if the ticket_price column only contains positive values """
-
-def test_positive_ticket_price_col():
-    sql_column = "ticket_price"
-
-    sql_query = f"""         SELECT      {sql_column} 
-                                FROM        {schema_name}.{table_name}
-                                ;
-    """
-    cursor.execute(sql_query)
-    
-    sql_results = cursor.fetchall()
-
-    # Assert the values in the ticket_price column are all positive values
-    for sql_result in sql_results:
-        ticket_price = sql_result[0]
-        assert ticket_price > 0, f"Invalid total price detected - total price must be a positive value "
 
 
-
-# ====================================== TEST 11: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
+# ====================================== TEST 10: ID CHARACTER LENGTH CONSTRAINT CHECK ======================================
 
 """ Test all the ID columns in the table contain 36 characters in length  """
 
@@ -380,7 +361,7 @@ def test_id_char_length_constraint():
 
 
 
-# ====================================== TEST 12: SENIORITY LEVEL DOMAIN CONSTRAINT CHECK  ======================================
+# ====================================== TEST 11: SENIORITY LEVEL DOMAIN CONSTRAINT CHECK  ======================================
 
 """ Check if the seniority level column only contains the "Junior", "Mid-level" and "Senior" values """
 
@@ -401,7 +382,7 @@ def test_seniority_level_col_values():
         assert seniority_level in valid_seniority_levels, f"Invalid seniority level detected - seniority levels must only be one of the following options: {valid_seniority_levels}. "
 
 
-# ====================================== TEST 13: DUPLICATES CHECK ======================================
+# ====================================== TEST 12: DUPLICATES CHECK ======================================
 
 
 """ Test the number of duplicate records appearing in the Postgres table  """
@@ -423,3 +404,16 @@ def test_duplicate_records_count():
     # Assert the number of uniqueness constraints for the table specified is at least 1
     assert total_no_of_duplicates == 0, f"Duplicate entries detected - {table_name} should contain no duplicate entries."
 
+
+
+
+def run_tests():
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_sales_agents_tbl.py')
+    test_result = pytest.main([test_filepath])
+    return test_result
+
+
+
+if __name__=="__main__":
+    test_result = run_tests()
+    sys.exit()

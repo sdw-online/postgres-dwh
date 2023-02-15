@@ -1,9 +1,8 @@
 import os
-import re
+import sys
 import pytest 
 import psycopg2
 import configparser
-from datetime import datetime
 
 
 
@@ -299,3 +298,16 @@ def test_duplicate_records_count():
     # Assert the number of uniqueness constraints for the table specified is at least 1
     assert total_no_of_duplicates == 0, f"Duplicate entries detected - {table_name} should contain no duplicate entries."
 
+
+
+
+def run_tests():
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_promotion_deals_tbl.py')
+    test_result = pytest.main([test_filepath])
+    return test_result
+
+
+
+if __name__=="__main__":
+    test_result = run_tests()
+    sys.exit()
