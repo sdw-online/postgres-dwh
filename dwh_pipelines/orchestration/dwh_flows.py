@@ -389,6 +389,104 @@ def run_dq_test_for_stg_accommodation_bookings_tbl():
         root_logger.info("SUCCESS - All tests have passed!")
 
 
+@task
+def run_dq_test_for_stg_customer_feedbacks_tbl():
+    test_name = "test_stg_customer_feedbacks_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_customer_feedbacks_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+@task
+def run_dq_test_for_stg_customer_info_tbl():
+    test_name = "test_stg_customer_info_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_customer_info_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+def run_dq_test_for_stg_flight_bookings_tbl():
+    test_name = "test_stg_flight_bookings_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_bookings_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+def run_dq_test_for_stg_flight_destinations_tbl():
+    test_name = "test_stg_flight_destinations_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_destinations_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+def run_dq_test_for_stg_flight_promotion_deals_tbl():
+    test_name = "test_stg_flight_promotion_deals_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_promotion_deals_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+def run_dq_test_for_stg_flight_schedules_tbl():
+    test_name = "test_stg_flight_schedules_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_schedules_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+def run_dq_test_for_stg_flight_ticket_sales_tbl():
+    test_name = "test_stg_flight_ticket_sales_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_ticket_sales_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+def run_dq_test_for_stg_sales_agents_tbl():
+    test_name = "test_stg_sales_agents_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_sales_agents_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+def run_dq_test_for_stg_ticket_prices_tbl():
+    test_name = "test_stg_ticket_prices_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_ticket_prices_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
 
 
 
@@ -570,8 +668,22 @@ def run_staging_layer_flow():
     get_run_logger().info("Staging tables processing session ended.")
 
 
+
+
+# Set up sub-flow for executing tasks in staging layer 
+@flow(name="Run DQ test for staging tables", flow_run_name="dq_tests_for_stg_layer_flow")
+def run_dq_tests_for_staging_layer_flow():
     # Set up flow for running DQ tests in staging layer
     run_dq_test_for_stg_accommodation_bookings_tbl()
+    run_dq_test_for_stg_customer_feedbacks_tbl()
+    run_dq_test_for_stg_customer_info_tbl()
+    run_dq_test_for_stg_flight_bookings_tbl()
+    run_dq_test_for_stg_flight_destinations_tbl()
+    run_dq_test_for_stg_flight_promotion_deals_tbl()
+    run_dq_test_for_stg_flight_schedules_tbl()
+    run_dq_test_for_stg_flight_ticket_sales_tbl()
+    run_dq_test_for_stg_sales_agents_tbl()
+    run_dq_test_for_stg_ticket_prices_tbl()
 
 
 
@@ -583,6 +695,16 @@ def run_staging_layer_flow():
 
 # Specify flow execution order in DAG-less manner  
 if __name__=="__main__":
+    
+
+    # L0 - Generate data
     run_data_generation_flow()
+
+
+    # L1 - Extract source data into raw tables 
     run_raw_layer_flow()
+    
+
+    # L2 - Extract raw data into staging tables
     run_staging_layer_flow()
+    run_dq_tests_for_staging_layer_flow()
