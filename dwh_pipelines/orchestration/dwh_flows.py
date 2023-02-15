@@ -3,6 +3,9 @@ from prefect.deployments import Deployment
 from prefect.orion.schemas.schedules import IntervalSchedule
 import logging, coloredlogs
 from pathlib import Path
+import subprocess
+import os 
+
 
 # ================================================ LOGGER ================================================
 
@@ -371,6 +374,30 @@ def load_data_to_stg_ticket_prices_table():
 
 
 
+# Set up tasks for running DQ tests in staging layer
+
+
+@task
+def run_dq_test_for_stg_accommodation_bookings_tbl():
+    test_name = "test_stg_accommodation_bookings_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("SUCCESS - All tests have passed!")
+
+
+
+
+
+
+
+
+
+
+
 # ============================================== FLOWS ==============================================
 # ====================================================================================================
 
@@ -543,8 +570,8 @@ def run_staging_layer_flow():
     get_run_logger().info("Staging tables processing session ended.")
 
 
-
-
+    # Set up flow for running DQ tests in staging layer
+    run_dq_test_for_stg_accommodation_bookings_tbl()
 
 
 
