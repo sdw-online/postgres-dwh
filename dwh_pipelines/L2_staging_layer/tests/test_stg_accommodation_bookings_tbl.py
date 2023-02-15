@@ -5,6 +5,8 @@ import pytest
 import psycopg2
 import configparser
 from datetime import datetime
+import logging, coloredlogs
+from pathlib import Path
 
 
 
@@ -482,13 +484,79 @@ def test_duplicate_records_count():
 
 
 
-def run_tests():
-    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py')
-    test_result = pytest.main([test_filepath])
-    return test_result
 
+
+
+
+class TestExecutor():
+    def __init__(self, test_filepath):
+        self.test_filepath = test_filepath
+
+
+    def run_tests(self):
+        test_result = pytest.main([self.test_filepath])
+        return test_result
+    
+
+    def get_test_results(self):
+
+        # Set up root root_logger 
+        root_logger     =   logging.getLogger(__name__)
+        root_logger.setLevel(logging.DEBUG)
+
+
+        # Set up formatter for logs 
+        file_handler_log_formatter      =   logging.Formatter('%(asctime)s  |  %(levelname)s  |  %(message)s  ')
+        console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(message)s', level_styles=dict(
+                                                                                                        debug           =   dict    (color  =   'white'),
+                                                                                                        info            =   dict    (color  =   'green'),
+                                                                                                        warning         =   dict    (color  =   'cyan'),
+                                                                                                        error           =   dict    (color  =   'red',      bold    =   True,   bright      =   True),
+                                                                                                        critical        =   dict    (color  =   'black',    bold    =   True,   background  =   'red')
+                                                                                                    ),
+
+                                                                                            field_styles=dict(
+                                                                                                messages            =   dict    (color  =   'white')
+                                                                                            )
+                                                                                            )
+
+
+        # Set up file handler object for logging events to file
+        current_filepath    =   Path(__file__).stem
+        file_handler        =   logging.FileHandler('logs/L2_staging_layer/' + current_filepath + '.log', mode='w')
+        file_handler.setFormatter(file_handler_log_formatter)
+
+
+        # Set up console handler object for writing event logs to console in real time (i.e. streams events to stderr)
+        console_handler     =   logging.StreamHandler()
+        console_handler.setFormatter(console_handler_log_formatter)
+
+
+        # Add the file handler 
+        root_logger.addHandler(file_handler)
+
+
+        # Only add the console handler if the script is running directly from this location 
+        if __name__=="__main__":
+            root_logger.addHandler(console_handler)
+
+
+        test_results = self.run_tests()
+        total_tests = test_results.get('count')
+        successful_tests = test_results.get('passed')
+        failed_tests = test_results.get('failed')
+
+        root_logger.info(f" Total tests:        {total_tests}    ")
+        root_logger.info(f" Successful tests:   {successful_tests}  ({100   *   successful_tests  / total_tests:.2f}%)   ")
+        root_logger.info(f" Failed tests:       {failed_tests}      ({100   *   failed_tests  / total_tests:.2f}%)   ")
+
+        
+    
+    
 
 
 if __name__=="__main__":
-    test_result = run_tests()
+    test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py')
+    test_executor = TestExecutor(test_filepath=test_filepath)
+    test_executor.get_test_results()
     sys.exit()
