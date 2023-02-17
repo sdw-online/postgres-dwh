@@ -449,7 +449,7 @@ def run_dq_test_for_stg_customer_info_tbl():
         get_run_logger().info("")
 
 
-
+@task
 def run_dq_test_for_stg_flight_bookings_tbl():
     test_name = "test_stg_flight_bookings_tbl.py"
     test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_bookings_tbl.py')
@@ -473,7 +473,7 @@ def run_dq_test_for_stg_flight_bookings_tbl():
         get_run_logger().info("")
 
 
-
+@task
 def run_dq_test_for_stg_flight_destinations_tbl():
     test_name = "test_stg_flight_destinations_tbl.py"
     test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_destinations_tbl.py')
@@ -497,7 +497,7 @@ def run_dq_test_for_stg_flight_destinations_tbl():
         get_run_logger().info("")
 
 
-
+@task
 def run_dq_test_for_stg_flight_promotion_deals_tbl():
     test_name = "test_stg_flight_promotion_deals_tbl.py"
     test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_promotion_deals_tbl.py')
@@ -521,7 +521,7 @@ def run_dq_test_for_stg_flight_promotion_deals_tbl():
         get_run_logger().info("")
 
 
-
+@task
 def run_dq_test_for_stg_flight_schedules_tbl():
     test_name = "test_stg_flight_schedules_tbl.py"
     test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_schedules_tbl.py')
@@ -545,7 +545,7 @@ def run_dq_test_for_stg_flight_schedules_tbl():
         get_run_logger().info("")
 
 
-
+@task
 def run_dq_test_for_stg_flight_ticket_sales_tbl():
     test_name = "test_stg_flight_ticket_sales_tbl.py"
     test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_flight_ticket_sales_tbl.py')
@@ -569,7 +569,7 @@ def run_dq_test_for_stg_flight_ticket_sales_tbl():
         get_run_logger().info("")
 
 
-
+@task
 def run_dq_test_for_stg_sales_agents_tbl():
     test_name = "test_stg_sales_agents_tbl.py"
     test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_sales_agents_tbl.py')
@@ -593,7 +593,7 @@ def run_dq_test_for_stg_sales_agents_tbl():
         get_run_logger().info("")
 
 
-
+@task
 def run_dq_test_for_stg_ticket_prices_tbl():
     test_name = "test_stg_ticket_prices_tbl.py"
     test_filepath =  os.path.abspath('dwh_pipelines/L2_staging_layer/tests/test_stg_ticket_prices_tbl.py')
@@ -618,6 +618,20 @@ def run_dq_test_for_stg_ticket_prices_tbl():
 
 
 
+
+
+@task
+def create_prod_environment_for_staging_layer():
+    from dwh_pipelines.L2_staging_layer.prod.create_prod_env      import  create_prod_environment_for_staging
+    module_name = 'dwh_pipelines.L2_staging_layer.prod.create_prod_env'
+    imported_function = 'create_prod_environment_for_staging'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module to create STAGING PROD environment ...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module to create STAGING PROD environment ...")
+    get_run_logger().info("")
+    
 
 
 
@@ -862,6 +876,14 @@ def run_dq_tests_for_staging_layer_flow():
 
 
 
+# Set up sub-flow for creating PROD environment for staging layer 
+@flow(name="Create PROD environment for staging layer", flow_run_name="creating_staging_prod_env_flow")
+def run_stg_prod_env_creation_flow():
+
+    create_prod_environment_for_staging_layer()
+    root_logger.info("SUCCESS! Completed creating a PRODUCTION environment for STAGING layer. ")
+    get_run_logger().info("SUCCESS! Completed creating a PRODUCTION environment for STAGING layer. ")
+
 
 
 
@@ -886,3 +908,5 @@ if __name__=="__main__":
     # L2 - Extract raw data into staging tables
     run_staging_layer_flow()
     run_dq_tests_for_staging_layer_flow()
+    
+    run_stg_prod_env_creation_flow()
