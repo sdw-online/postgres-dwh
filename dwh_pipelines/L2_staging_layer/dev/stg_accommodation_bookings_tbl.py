@@ -35,7 +35,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/L2_staging_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L2_staging_layer/dev/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 

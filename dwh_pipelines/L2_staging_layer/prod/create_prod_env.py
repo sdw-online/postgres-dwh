@@ -35,7 +35,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/L2_staging_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L2_staging_layer/prod/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -169,7 +169,7 @@ def create_prod_environment_for_staging():
             root_logger.debug(f"")
             root_logger.debug(f"Now creating '{prod_schema_name}' environment ....")
             root_logger.debug(f"")
-            sql_query = f"""    SELECT table_name FROM information_schema.tables WHERE table_schema = '{dev_schema_name}'
+            sql_query = f"""    SELECT table_name FROM information_schema.tables WHERE table_schema = '{dev_schema_name}' AND    table_name LIKE '%stg%' 
             """
             cursor.execute(sql_query)
 
@@ -183,7 +183,7 @@ def create_prod_environment_for_staging():
                 root_logger.info(f"")
                 root_logger.info(f"Now creating '{table_name}' table in production environment ...")
                 # root_logger.info(f"")
-                sql_query = f"""  CREATE TABLE {prod_schema_name}.{table_name} as SELECT * FROM {dev_schema_name}.{table_name}
+                sql_query = f"""  CREATE TABLE IF NOT EXISTS {prod_schema_name}.{table_name} as SELECT * FROM {dev_schema_name}.{table_name}
                 """
                 cursor.execute(sql_query)
                 # root_logger.info(f"")
