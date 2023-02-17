@@ -174,20 +174,26 @@ def create_prod_environment_for_staging():
             cursor.execute(sql_query)
 
             sql_results = cursor.fetchall()
+            no_of_sql_results = len(sql_results)
+            root_logger.debug(f'No of results: {no_of_sql_results} ')
+
 
             for table in sql_results:
-                root_logger.debug(f"")
-                root_logger.debug(f"Now creating '{table}' table in production  ....")
-                root_logger.debug(f"")
                 table_name = table[0]
-                sql_query = f"""  CREATE TABLE IF NOT EXISTS {table_name} as SELECT * FROM {dev_schema_name}.{table_name}
+                root_logger.info(f"")
+                root_logger.info(f"Now creating '{table_name}' table in production environment ...")
+                # root_logger.info(f"")
+                sql_query = f"""  CREATE TABLE {prod_schema_name}.{table_name} as SELECT * FROM {dev_schema_name}.{table_name}
                 """
                 cursor.execute(sql_query)
+                # root_logger.info(f"")
+                root_logger.info(f"Successfully created '{table_name}' table in production environment ")
+                root_logger.info(f"")
             
         
             postgres_connection.commit()
             root_logger.debug(f"")
-            root_logger.debug(f"Successfully created '{prod_schema_name}' environment ")
+            root_logger.debug(f"Successfully created '{prod_schema_name}' environment. ")
             root_logger.debug(f"")
                   
 
