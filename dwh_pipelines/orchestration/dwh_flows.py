@@ -227,7 +227,7 @@ def load_data_to_raw_ticket_prices_tbl():
 
 @task
 def load_data_to_stg_accommodation_bookings_table():
-    from dwh_pipelines.L2_staging_layer.stg_accommodation_bookings_tbl      import  load_data_to_stg_accommodation_bookings_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_accommodation_bookings_tbl      import  load_data_to_stg_accommodation_bookings_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_accommodation_bookings_tbl'
     imported_function = 'load_accommodation_bookings_data_to_stg_table'
     root_logger.info("")
@@ -242,7 +242,7 @@ def load_data_to_stg_accommodation_bookings_table():
 
 @task
 def load_data_to_stg_customer_feedbacks_table():
-    from dwh_pipelines.L2_staging_layer.stg_customer_feedbacks_tbl      import  load_data_to_stg_customer_feedbacks_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_customer_feedbacks_tbl      import  load_data_to_stg_customer_feedbacks_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_customer_feedbacks_tbl'
     imported_function = 'load_customer_feedbacks_data_to_stg_table'
     root_logger.info("")
@@ -256,7 +256,7 @@ def load_data_to_stg_customer_feedbacks_table():
 
 @task
 def load_data_to_stg_customer_info_table():
-    from dwh_pipelines.L2_staging_layer.stg_customer_info_tbl      import  load_data_to_stg_customer_info_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_customer_info_tbl      import  load_data_to_stg_customer_info_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_customer_info_tbl'
     imported_function = 'load_customer_info_data_to_stg_table'
     root_logger.info("")
@@ -271,7 +271,7 @@ def load_data_to_stg_customer_info_table():
 
 @task
 def load_data_to_stg_flight_bookings_table():
-    from dwh_pipelines.L2_staging_layer.stg_flight_bookings_tbl      import  load_data_to_stg_flight_bookings_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_flight_bookings_tbl      import  load_data_to_stg_flight_bookings_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_bookings_tbl'
     imported_function = 'load_flight_bookings_data_to_stg_table'
     root_logger.info("")
@@ -285,7 +285,7 @@ def load_data_to_stg_flight_bookings_table():
 
 @task
 def load_data_to_stg_flight_destinations_table():
-    from dwh_pipelines.L2_staging_layer.stg_flight_destinations_tbl      import  load_data_to_stg_flight_destinations_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_flight_destinations_tbl      import  load_data_to_stg_flight_destinations_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_destinations_tbl'
     imported_function = 'load_flight_destinations_data_to_stg_table'
     root_logger.info("")
@@ -300,7 +300,7 @@ def load_data_to_stg_flight_destinations_table():
 
 @task
 def load_data_to_stg_flight_promotion_deals_table():
-    from dwh_pipelines.L2_staging_layer.stg_flight_promotion_deals_tbl      import  load_data_to_stg_flight_promotion_deals_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_flight_promotion_deals_tbl      import  load_data_to_stg_flight_promotion_deals_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_promotion_deals_tbl'
     imported_function = 'load_flight_promotion_deals_data_to_stg_table'
     root_logger.info("")
@@ -315,7 +315,7 @@ def load_data_to_stg_flight_promotion_deals_table():
 
 @task
 def load_data_to_stg_flight_schedules_table():
-    from dwh_pipelines.L2_staging_layer.stg_flight_schedules_tbl      import  load_data_to_stg_flight_schedules_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_flight_schedules_tbl      import  load_data_to_stg_flight_schedules_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_schedules_tbl'
     imported_function = 'load_flight_schedules_data_to_stg_table'
     root_logger.info("")
@@ -330,7 +330,7 @@ def load_data_to_stg_flight_schedules_table():
 
 @task
 def load_data_to_stg_flight_ticket_sales_table():
-    from dwh_pipelines.L2_staging_layer.stg_flight_ticket_sales_tbl      import  load_data_to_stg_flight_ticket_sales_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_flight_ticket_sales_tbl      import  load_data_to_stg_flight_ticket_sales_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_flight_ticket_sales_tbl'
     imported_function = 'load_flight_ticket_sales_data_to_stg_table'
     root_logger.info("")
@@ -344,7 +344,7 @@ def load_data_to_stg_flight_ticket_sales_table():
 
 @task
 def load_data_to_stg_sales_agents_table():
-    from dwh_pipelines.L2_staging_layer.stg_sales_agents_tbl      import  load_data_to_stg_sales_agents_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_sales_agents_tbl      import  load_data_to_stg_sales_agents_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_sales_agents_tbl'
     imported_function = 'load_sales_agents_data_to_stg_table'
     root_logger.info("")
@@ -358,7 +358,7 @@ def load_data_to_stg_sales_agents_table():
 
 @task
 def load_data_to_stg_ticket_prices_table():
-    from dwh_pipelines.L2_staging_layer.stg_ticket_prices_tbl      import  load_data_to_stg_ticket_prices_table
+    from dwh_pipelines.L2_staging_layer.dev.stg_ticket_prices_tbl      import  load_data_to_stg_ticket_prices_table
     module_name = 'dwh_pipelines.L2_stg_layer.stg_ticket_prices_tbl'
     imported_function = 'load_ticket_prices_data_to_stg_table'
     root_logger.info("")
