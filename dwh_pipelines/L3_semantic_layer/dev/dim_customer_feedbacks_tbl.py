@@ -115,13 +115,11 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_dim_dates_table(postgres_connection):
+def load_data_to_dim_customer_feedbacks_table(postgres_connection):
     try:
         
         # Set up constants
         CURRENT_TIMESTAMP               =   datetime.now()
-        start_date                      =   datetime(2000, 1, 1)
-        end_date                        =   datetime(2030, 12, 31)
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'stg_db_server'
         fdw_user                        =   username
@@ -130,10 +128,10 @@ def load_data_to_dim_dates_table(postgres_connection):
         previous_schema_name            =   'prod'
         active_schema_name              =   'dev'
         active_db_name                  =    database
-        src_table_name                  =   'None'
-        table_name                      =   'dim_dates_tbl'
+        src_table_name                  =   'stg_customer_feedbacks_tbl'
+        table_name                      =   'dim_customer_feedbacks_tbl'
         data_warehouse_layer            =   'SEMANTIC'
-        source_system                   =   ['SDW - Custom Code']
+        source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
         column_index                    =   0 
         total_null_values_in_table      =   0 
@@ -213,222 +211,193 @@ def load_data_to_dim_dates_table(postgres_connection):
 
 
 
-        # # Drop extension postgres_fdw if it exists 
-        # try:
-        #     drop_postgres_fdw_extension = f'''  DROP EXTENSION {fdw_extension} CASCADE
-        #                                         ;   
-        #     '''
-        #     cursor.execute(drop_postgres_fdw_extension)
-        #     postgres_connection.commit()
+        # Drop extension postgres_fdw if it exists 
+        try:
+            drop_postgres_fdw_extension = f'''  DROP EXTENSION {fdw_extension} CASCADE
+                                                ;   
+            '''
+            cursor.execute(drop_postgres_fdw_extension)
+            postgres_connection.commit()
 
 
-        #     root_logger.info("")
-        #     root_logger.info(f"Successfully DROPPED the '{fdw_extension}' extension. Now advancing to re-importing the extension...")
-        #     root_logger.info("")
+            root_logger.info("")
+            root_logger.info(f"Successfully DROPPED the '{fdw_extension}' extension. Now advancing to re-importing the extension...")
+            root_logger.info("")
 
             
-        # except psycopg2.Error as e:
-        #     print(e)
+        except psycopg2.Error as e:
+            print(e)
 
         
 
-        # # Create the postgres_fdw extension  
-        # try:
-        #     import_postgres_fdw = f'''    CREATE EXTENSION {fdw_extension}
-        #                                         ;   
-        #     '''
+        # Create the postgres_fdw extension  
+        try:
+            import_postgres_fdw = f'''    CREATE EXTENSION {fdw_extension}
+                                                ;   
+            '''
             
-        #     cursor.execute(import_postgres_fdw)
-        #     postgres_connection.commit()
+            cursor.execute(import_postgres_fdw)
+            postgres_connection.commit()
 
 
-        #     root_logger.info("")
-        #     root_logger.info(f"Successfully IMPORTED the '{fdw_extension}' extension. Now advancing to creating the foreign server...")
-        #     root_logger.info("")
-        # except psycopg2.Error as e:
-        #     print(e)
+            root_logger.info("")
+            root_logger.info(f"Successfully IMPORTED the '{fdw_extension}' extension. Now advancing to creating the foreign server...")
+            root_logger.info("")
+        except psycopg2.Error as e:
+            print(e)
 
 
 
-        # # Create the foreign server
-        # try: 
-        #     create_foreign_server = f'''    CREATE SERVER {foreign_server}
-        #                                         FOREIGN DATA WRAPPER {fdw_extension}
-        #                                         OPTIONS (host '{host}', dbname '{previous_db_name}', port '{port}')
-        #                                         ;
-        #     '''
-        #     cursor.execute(create_foreign_server)
-        #     postgres_connection.commit()
+        # Create the foreign server
+        try: 
+            create_foreign_server = f'''    CREATE SERVER {foreign_server}
+                                                FOREIGN DATA WRAPPER {fdw_extension}
+                                                OPTIONS (host '{host}', dbname '{previous_db_name}', port '{port}')
+                                                ;
+            '''
+            cursor.execute(create_foreign_server)
+            postgres_connection.commit()
 
 
-        #     root_logger.info("")
-        #     root_logger.info(f"Successfully CREATED the '{foreign_server}' foreign server. Now advancing to user mapping stage...")
-        #     root_logger.info("")
-        # except psycopg2.Error as e:
-        #     print(e)
+            root_logger.info("")
+            root_logger.info(f"Successfully CREATED the '{foreign_server}' foreign server. Now advancing to user mapping stage...")
+            root_logger.info("")
+        except psycopg2.Error as e:
+            print(e)
 
 
         
-        # # Create the user mapping between the fdw_user and local user 
-        # try:
-        #     map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
-        #                                                 SERVER {foreign_server}
-        #                                                 OPTIONS (user '{fdw_user}', password '{password}')
-        #                                                 ;
-        #     '''
+        # Create the user mapping between the fdw_user and local user 
+        try:
+            map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
+                                                        SERVER {foreign_server}
+                                                        OPTIONS (user '{fdw_user}', password '{password}')
+                                                        ;
+            '''
 
-        #     cursor.execute(map_fdw_user_to_local_user)
-        #     postgres_connection.commit()
-
-
-        #     root_logger.info("")
-        #     root_logger.info(f"Successfully mapped the '{fdw_user}' fdw user to the '{username}' local user. ")
-        #     root_logger.info("")
-
-        #     root_logger.info("")
-        #     root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
-        #     root_logger.info("")
-        #     root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{previous_db_name}' database. ")
-        #     root_logger.info("")
-        #     root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
-        #     root_logger.info("")
-        # except psycopg2.Error as e:
-        #     print(e)
+            cursor.execute(map_fdw_user_to_local_user)
+            postgres_connection.commit()
 
 
+            root_logger.info("")
+            root_logger.info(f"Successfully mapped the '{fdw_user}' fdw user to the '{username}' local user. ")
+            root_logger.info("")
 
-        # # Import the foreign schema from the previous layer's source table 
-        # try:
-        #     import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
-        #                                         LIMIT TO ({src_table_name})
-        #                                         FROM SERVER {foreign_server}
-        #                                         INTO {active_schema_name}
-        #                                         ;
-        #     '''
+            root_logger.info("")
+            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
+            root_logger.info("")
+            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{previous_db_name}' database. ")
+            root_logger.info("")
+            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
+            root_logger.info("")
+        except psycopg2.Error as e:
+            print(e)
 
-        #     cursor.execute(import_foreign_schema)
-        #     postgres_connection.commit()
+
+
+        # Import the foreign schema from the previous layer's source table 
+        try:
+            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
+                                                LIMIT TO ({src_table_name})
+                                                FROM SERVER {foreign_server}
+                                                INTO {active_schema_name}
+                                                ;
+            '''
+
+            cursor.execute(import_foreign_schema)
+            postgres_connection.commit()
 
             
-        #     root_logger.info("")
-        #     root_logger.info(f"Successfully imported the '{src_table_name}' table into '{active_db_name}' database . ")
-        #     root_logger.info("")
+            root_logger.info("")
+            root_logger.info(f"Successfully imported the '{src_table_name}' table into '{active_db_name}' database . ")
+            root_logger.info("")
 
  
-        # except psycopg2.Error as e:
-        #     print(e)
-        #     root_logger.error("")
-        #     root_logger.error(f"Unable to import the '{src_table_name}' table into '{active_db_name}' database . ")
-        #     root_logger.error("")
+        except psycopg2.Error as e:
+            print(e)
+            root_logger.error("")
+            root_logger.error(f"Unable to import the '{src_table_name}' table into '{active_db_name}' database . ")
+            root_logger.error("")
 
 
 
 
-        # # ================================================== EXTRACT DATA FROM SOURCE POSTGRES TABLE ==================================================
+        # ================================================== EXTRACT DATA FROM SOURCE POSTGRES TABLE ==================================================
             
-        # # Extract non-data lineage columns from raw table 
-        # try:
-        #     data_lineage_columns = ['created_at',    
-        #                             'updated_at',    
-        #                             'source_system', 
-        #                             'source_file',   
-        #                             'load_timestamp',
-        #                             'dwh_layer']
-            
-        #     desired_sql_columns = []
-            
-
-        #     get_list_of_column_names    =   f'''            SELECT      column_name 
-        #                                                     FROM        information_schema.columns 
-        #                                                     WHERE       table_name = '{src_table_name}'
-        #                                                     ORDER BY    ordinal_position 
-        #     '''
-
-        #     cursor.execute(get_list_of_column_names)
-        #     postgres_connection.commit()
-
-        #     list_of_column_names = cursor.fetchall()
-        #     column_names = [sql_result[0] for sql_result in list_of_column_names]
-            
-
-        #     total_desired_sql_columns_added = 0
-        #     for column_name in column_names:
-        #         if column_name not in data_lineage_columns:
-        #             total_desired_sql_columns_added += 1
-        #             desired_sql_columns.append(column_name)
-        #             root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
-        #     root_logger.info('')
-        #     root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {(len(list_of_column_names)  - total_desired_sql_columns_added )} columns not included were data lineage columns to be added later via ALTER command. ''')
-        #     root_logger.info('')
-        #     root_logger.info('')
-        #     # root_logger.info(f'{desired_sql_columns}')
-            
-        # except psycopg2.Error as e:
-        #     print(e)
-
-
-
-        # # Pull dates_tbl data from semantic tables in Postgres database 
-        # try:
-        #     fetch_stg_dates_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
-        #     '''
-        #     root_logger.debug(fetch_stg_dates_tbl)
-        #     root_logger.info("")
-        #     root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
-        #     root_logger.info("")
-
-
-        #     # Execute SQL command to interact with Postgres database
-        #     cursor.execute(fetch_stg_dates_tbl)
-
-        #     # Extract header names from cursor's description
-        #     postgres_table_headers = [header[0] for header in cursor.description]
-
-
-        #     # Execute script 
-        #     postgres_table_results = cursor.fetchall()
-            
+        # Extract non-data lineage columns from raw table 
         try:
-            # Create a date dimension data frame
-
-            # date_range  =   pd.date_range(start=start_date, end=end_date, freq='D')
-            # dates_df     =   pd.DataFrame({'date': date_range})
-
-
-            dates       =   pd.date_range(start=start_date, end=end_date, freq='D')
-
-
-            # Add columns for various date attributes
-            dates_df     =   pd.DataFrame({'full_date'               :   dates,
-                                            'day_of_week'           :   dates.dayofweek,
-                                            'day_number_in_month'   :   dates.day,
-                                            'day_number_overall'    :   dates.dayofyear,
-                                            'week_number_in_year'   :   dates.weekofyear,
-                                            'month_number'          :   dates.month,
-                                            'month_name'            :   dates.strftime('%B'),
-                                            'year_number'           :   dates.year,
-                                            'is_weekend'            :   (dates.dayofweek >= 5).astype(int),
-                                            'is_holiday'            :   0}
-                            )
+            data_lineage_columns = ['created_at',    
+                                    'updated_at',    
+                                    'source_system', 
+                                    'source_file',   
+                                    'load_timestamp',
+                                    'dwh_layer']
             
-            temp_df = dates_df
-            root_logger.debug(temp_df)
+            desired_sql_columns = []
+            
+
+            get_list_of_column_names    =   f'''            SELECT      column_name 
+                                                            FROM        information_schema.columns 
+                                                            WHERE       table_name = '{src_table_name}'
+                                                            ORDER BY    ordinal_position 
+            '''
+
+            cursor.execute(get_list_of_column_names)
+            postgres_connection.commit()
+
+            list_of_column_names = cursor.fetchall()
+            column_names = [sql_result[0] for sql_result in list_of_column_names]
+            
+
+            total_desired_sql_columns_added = 0
+            for column_name in column_names:
+                if column_name not in data_lineage_columns:
+                    total_desired_sql_columns_added += 1
+                    desired_sql_columns.append(column_name)
+                    root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
+            root_logger.info('')
+            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {(len(list_of_column_names)  - total_desired_sql_columns_added )} columns not included were data lineage columns to be added later via ALTER command. ''')
+            root_logger.info('')
+            root_logger.info('')
+            # root_logger.info(f'{desired_sql_columns}')
+            
+        except psycopg2.Error as e:
+            print(e)
+
+
+
+        # Pull customer_feedbacks_tbl data from semantic tables in Postgres database 
+        try:
+            fetch_stg_customer_feedbacks_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            '''
+            root_logger.debug(fetch_stg_customer_feedbacks_tbl)
+            root_logger.info("")
+            root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
+            root_logger.info("")
+
+
+            # Execute SQL command to interact with Postgres database
+            cursor.execute(fetch_stg_customer_feedbacks_tbl)
+
+            # Extract header names from cursor's description
+            postgres_table_headers = [header[0] for header in cursor.description]
+
+
+            # Execute script 
+            postgres_table_results = cursor.fetchall()
+            
+
+            # Use Postgres results to create data frame for customer_feedbacks_tbl
+            customer_feedbacks_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+
+
+            # Create temporary data frame     
+            temp_df = customer_feedbacks_tbl_df
 
         except psycopg2.Error as e:
             print(e)
 
 
-        # #     # Create temporary data frame    
-        # 
-        # 
-        # 
-        #  
-            # temp_df = dates_tbl_df
-
-        # except psycopg2.Error as e:
-        #     print(e)
-
-
 
 
         
@@ -436,11 +405,11 @@ def load_data_to_dim_dates_table(postgres_connection):
         
 
 
-        # # # ================================================== TRANSFORM DATA FRAME  =======================================
+        # # ================================================== TRANSFORM DATA FRAME  =======================================
         
-        # """ Convert the business rules into code logic to reflect the true state of business events    """
+        """ Convert the business rules into code logic to reflect the true state of business events    """
 
-        # # Filter date columns to only display dates between 2012 and 2022
+        # Filter date columns to only display dates between 2012 and 2022
 
         # temp_df['booking_date']     = pd.to_datetime(temp_df['booking_date'])
         # temp_df['check_in_date']    = pd.to_datetime(temp_df['check_in_date'])
@@ -454,48 +423,43 @@ def load_data_to_dim_dates_table(postgres_connection):
 
 
 
-        # # # Rename 'id' to 'accommodation_old_id'
-        # # temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
+        # # Rename 'id' to 'accommodation_old_id'
+        # temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
 
 
-        # # print(temp_df)
-        # # print(temp_df.columns)
+        # print(temp_df)
+        # print(temp_df.columns)
         
-        # # Write results to temp file for data validation checks 
-        # with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
-        #     temp_results_file_df_to_json = temp_df.to_json(orient="records")
-        #     temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
+        # Write results to temp file for data validation checks 
+        with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
+            temp_results_file_df_to_json = temp_df.to_json(orient="records")
+            temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
 
         
 
 
         # ================================================== LOAD STAGING DATA TO SEMANTIC TABLE =======================================
-
+        
 
         # Set up SQL statements for table deletion and validation check  
-        delete_dim_dates_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_dim_customer_feedbacks_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_dim_dates_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_customer_feedbacks_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_dim_dates_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
-                                                                date_id                    SERIAL PRIMARY KEY,
-                                                                full_date                   DATE NOT NULL,
-                                                                day_of_week                 INTEGER NOT NULL,
-                                                                day_number_in_month         INTEGER NOT NULL,
-                                                                day_number_overall          INTEGER NOT NULL,
-                                                                week_number_in_year         INTEGER NOT NULL,
-                                                                month_number                INTEGER NOT NULL,
-                                                                month_name                  VARCHAR(20) NOT NULL,
-                                                                year_number                 INTEGER NOT NULL,
-                                                                is_weekend                  INTEGER NOT NULL,
-                                                                is_holiday                  INTEGER NOT NULL
+        create_dim_customer_feedbacks_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
+                                                                            feedback_sk             SERIAL PRIMARY KEY,
+                                                                            feedback_id             UUID NOT NULL UNIQUE,
+                                                                            customer_id             UUID NOT NULL,
+                                                                            flight_booking_id       UUID NOT NULL,
+                                                                            feedback_date           DATE NOT NULL,
+                                                                            feedback_text           TEXT NOT NULL
                                                                         );
         '''
 
-        check_if_dim_dates_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_customer_feedbacks_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -503,7 +467,7 @@ def load_data_to_dim_dates_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_dim_dates_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_dim_customer_feedbacks_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -530,26 +494,22 @@ def load_data_to_dim_dates_table(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_dates_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (     
-                                                                                                full_date, 
-                                                                                                day_of_week, 
-                                                                                                day_number_in_month, 
-                                                                                                day_number_overall, 
-                                                                                                week_number_in_year, 
-                                                                                                month_number, 
-                                                                                                month_name, 
-                                                                                                year_number, 
-                                                                                                is_weekend, 
-                                                                                                is_holiday,
-                                                                                                created_at,
-                                                                                                updated_at,
-                                                                                                source_system,
-                                                                                                source_file,
-                                                                                                load_timestamp,
-                                                                                                dwh_layer
-                                                                                            )
-                                                                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                                                                                                );
+        insert_customer_feedbacks_data  =   f'''                      INSERT INTO {active_schema_name}.{table_name} (
+                                                                                feedback_id,
+                                                                                customer_id,
+                                                                                flight_booking_id,
+                                                                                feedback_date,
+                                                                                feedback_text,
+                                                                                created_at,
+                                                                                updated_at,
+                                                                                source_system,
+                                                                                source_file,
+                                                                                load_timestamp,
+                                                                                dwh_layer
+                                                                            )
+                                                                            VALUES (
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                            );
         '''
 
         check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
@@ -576,12 +536,12 @@ def load_data_to_dim_dates_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_dim_dates_tbl_if_exists)
+        cursor.execute(delete_dim_customer_feedbacks_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_dim_dates_tbl_is_deleted)
+        cursor.execute(check_if_dim_customer_feedbacks_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -590,14 +550,14 @@ def load_data_to_dim_dates_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_dates_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customer_feedbacks_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_dates_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customer_feedbacks_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -605,12 +565,12 @@ def load_data_to_dim_dates_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_dim_dates_tbl)
+        cursor.execute(create_dim_customer_feedbacks_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_dim_dates_tbl_exists)
+        cursor.execute(check_if_dim_customer_feedbacks_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -619,14 +579,14 @@ def load_data_to_dim_dates_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_dates_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customer_feedbacks_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_dates_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customer_feedbacks_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -634,7 +594,7 @@ def load_data_to_dim_dates_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_dim_dates_tbl)
+        cursor.execute(add_data_lineage_to_dim_customer_feedbacks_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -672,25 +632,20 @@ def load_data_to_dim_dates_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['full_date'], 
-                row['day_of_week'], 
-                row['day_number_in_month'], 
-                row['day_number_overall'], 
-                row['week_number_in_year'], 
-                row['month_number'], 
-                row['month_name'], 
-                row['year_number'], 
-                row['is_weekend'], 
-                row['is_holiday'],
+                row['feedback_id'],
+                row['customer_id'],
+                row['flight_booking_id'],
+                row['feedback_date'],
+                row['feedback_text'],  
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
                 src_table_name,
                 CURRENT_TIMESTAMP,
                 data_warehouse_layer
-            )
+                    )
 
-            cursor.execute(insert_dates_data, values)
+            cursor.execute(insert_customer_feedbacks_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -698,13 +653,13 @@ def load_data_to_dim_dates_table(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded dates record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded customer_feedbacks record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert dates record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert customer_feedbacks record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -1174,5 +1129,5 @@ def load_data_to_dim_dates_table(postgres_connection):
 
 
 
-load_data_to_dim_dates_table(postgres_connection)
+load_data_to_dim_customer_feedbacks_table(postgres_connection)
 

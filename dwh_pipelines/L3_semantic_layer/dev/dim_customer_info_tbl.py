@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_dim_customers_table(postgres_connection):
+def load_data_to_dim_customer_info_table(postgres_connection):
     try:
         
         # Set up constants
@@ -129,7 +129,7 @@ def load_data_to_dim_customers_table(postgres_connection):
         active_schema_name              =   'dev'
         active_db_name                  =    database
         src_table_name                  =   'stg_customer_info_tbl'
-        table_name                      =   'dim_customers_tbl'
+        table_name                      =   'dim_customer_info_tbl'
         data_warehouse_layer            =   'SEMANTIC'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -366,18 +366,18 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
 
-        # Pull customers_tbl data from semantic tables in Postgres database 
+        # Pull customer_info_tbl data from semantic tables in Postgres database 
         try:
-            fetch_stg_customers_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            fetch_stg_customer_info_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
-            root_logger.debug(fetch_stg_customers_tbl)
+            root_logger.debug(fetch_stg_customer_info_tbl)
             root_logger.info("")
             root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
 
             # Execute SQL command to interact with Postgres database
-            cursor.execute(fetch_stg_customers_tbl)
+            cursor.execute(fetch_stg_customer_info_tbl)
 
             # Extract header names from cursor's description
             postgres_table_headers = [header[0] for header in cursor.description]
@@ -387,12 +387,12 @@ def load_data_to_dim_customers_table(postgres_connection):
             postgres_table_results = cursor.fetchall()
             
 
-            # Use Postgres results to create data frame for customers_tbl
-            customers_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+            # Use Postgres results to create data frame for customer_info_tbl
+            customer_info_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
 
 
             # Create temporary data frame     
-            temp_df = customers_tbl_df
+            temp_df = customer_info_tbl_df
 
         except psycopg2.Error as e:
             print(e)
@@ -438,14 +438,14 @@ def load_data_to_dim_customers_table(postgres_connection):
         
 
         # Set up SQL statements for table deletion and validation check  
-        delete_dim_customers_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_dim_customer_info_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_dim_customers_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_customer_info_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_dim_customers_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
+        create_dim_customer_info_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
                                                                 customer_sk                         SERIAL PRIMARY KEY,
                                                                 customer_id                         UUID NOT NULL,
                                                                 first_name                          VARCHAR(255) NOT NULL,
@@ -470,7 +470,7 @@ def load_data_to_dim_customers_table(postgres_connection):
                                                                 );
         '''
 
-        check_if_dim_customers_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_customer_info_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -478,7 +478,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_dim_customers_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_dim_customer_info_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -505,7 +505,7 @@ def load_data_to_dim_customers_table(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_customers_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
+        insert_customer_info_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
                                                                                 customer_id,                        
                                                                                 first_name,                         
                                                                                 last_name,
@@ -562,12 +562,12 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_dim_customers_tbl_if_exists)
+        cursor.execute(delete_dim_customer_info_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_dim_customers_tbl_is_deleted)
+        cursor.execute(check_if_dim_customer_info_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -576,14 +576,14 @@ def load_data_to_dim_customers_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customers_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customer_info_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customers_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customer_info_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -591,12 +591,12 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_dim_customers_tbl)
+        cursor.execute(create_dim_customer_info_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_dim_customers_tbl_exists)
+        cursor.execute(check_if_dim_customer_info_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -605,14 +605,14 @@ def load_data_to_dim_customers_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customers_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customer_info_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customers_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customer_info_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -620,7 +620,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_dim_customers_tbl)
+        cursor.execute(add_data_lineage_to_dim_customer_info_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -686,7 +686,7 @@ def load_data_to_dim_customers_table(postgres_connection):
                 data_warehouse_layer
                     )
 
-            cursor.execute(insert_customers_data, values)
+            cursor.execute(insert_customer_info_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -694,13 +694,13 @@ def load_data_to_dim_customers_table(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded customers record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded customer_info record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert customers record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert customer_info record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -723,7 +723,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
         note_2 = """      Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information. """
-        note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
+        note_3 = """      Neglecting this step could expose customer_info and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
         
         root_logger.warning(f'')
         root_logger.warning(f'')
@@ -1170,5 +1170,5 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
 
-load_data_to_dim_customers_table(postgres_connection)
+load_data_to_dim_customer_info_table(postgres_connection)
 
