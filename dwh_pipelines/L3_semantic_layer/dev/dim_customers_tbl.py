@@ -419,8 +419,8 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
 
-        # Rename 'customer_id' to 'customer_old_id'
-        temp_df = temp_df.rename(columns={'customer_id': 'customer_old_id'})
+        # # Rename 'customer_id' to 'customer_old_id'
+        # temp_df = temp_df.rename(columns={'customer_id': 'customer_old_id'})
 
 
         # print(temp_df)
@@ -446,8 +446,8 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_dim_customers_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
-                                                                customer_id                         SERIAL PRIMARY KEY,
-                                                                customer_old_id                     UUID NOT NULL,
+                                                                customer_sk                         SERIAL PRIMARY KEY,
+                                                                customer_id                         UUID NOT NULL,
                                                                 first_name                          VARCHAR(255) NOT NULL,
                                                                 last_name                           VARCHAR(255) NOT NULL,
                                                                 full_name                           VARCHAR(510) NOT NULL,
@@ -506,7 +506,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_customers_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                customer_old_id,                        
+                                                                                customer_id,                        
                                                                                 first_name,                         
                                                                                 last_name,
                                                                                 full_name,
@@ -658,7 +658,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['customer_old_id'],                        
+                row['customer_id'],                        
                 row['first_name'],                         
                 row['last_name'],
                 row['full_name'],

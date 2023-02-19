@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_dim_accommodation_bookings_table(postgres_connection):
+def load_data_to_dim_sales_agents_table(postgres_connection):
     try:
         
         # Set up constants
@@ -128,8 +128,8 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         previous_schema_name            =   'prod'
         active_schema_name              =   'dev'
         active_db_name                  =    database
-        src_table_name                  =   'stg_accommodation_bookings_tbl'
-        table_name                      =   'dim_accommodation_bookings_tbl'
+        src_table_name                  =   'stg_sales_agents_tbl'
+        table_name                      =   'dim_sales_agents_tbl'
         data_warehouse_layer            =   'SEMANTIC'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -366,18 +366,18 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
 
 
-        # Pull accommodation_bookings_tbl data from semantic tables in Postgres database 
+        # Pull sales_agents_tbl data from semantic tables in Postgres database 
         try:
-            fetch_stg_accommodation_bookings_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            fetch_stg_sales_agents_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
-            root_logger.debug(fetch_stg_accommodation_bookings_tbl)
+            root_logger.debug(fetch_stg_sales_agents_tbl)
             root_logger.info("")
             root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
 
             # Execute SQL command to interact with Postgres database
-            cursor.execute(fetch_stg_accommodation_bookings_tbl)
+            cursor.execute(fetch_stg_sales_agents_tbl)
 
             # Extract header names from cursor's description
             postgres_table_headers = [header[0] for header in cursor.description]
@@ -387,12 +387,12 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
             postgres_table_results = cursor.fetchall()
             
 
-            # Use Postgres results to create data frame for accommodation_bookings_tbl
-            accommodation_bookings_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+            # Use Postgres results to create data frame for sales_agents_tbl
+            sales_agents_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
 
 
             # Create temporary data frame     
-            temp_df = accommodation_bookings_tbl_df
+            temp_df = sales_agents_tbl_df
 
         except psycopg2.Error as e:
             print(e)
@@ -409,15 +409,15 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         
         """ Convert the business rules into code logic to reflect the true state of business events    """
 
-        # Filter date columns to only display dates between 2012 and 2022
+        # # Filter date columns to only display dates between 2012 and 2022
 
-        temp_df['booking_date']     = pd.to_datetime(temp_df['booking_date'])
-        temp_df['check_in_date']    = pd.to_datetime(temp_df['check_in_date'])
-        temp_df['check_out_date']   = pd.to_datetime(temp_df['check_out_date'])
+        # temp_df['booking_date']     = pd.to_datetime(temp_df['booking_date'])
+        # temp_df['check_in_date']    = pd.to_datetime(temp_df['check_in_date'])
+        # temp_df['check_out_date']   = pd.to_datetime(temp_df['check_out_date'])
 
-        temp_df = temp_df   [( temp_df['booking_date']      >=  '2012-01-01' )      &    (temp_df['booking_date']      <=  '2022-12-31'  )]
-        temp_df = temp_df   [( temp_df['check_in_date']     >=  '2012-01-01' )      &    (temp_df['check_in_date']     <=  '2022-12-31'  )]
-        temp_df = temp_df   [( temp_df['check_out_date']    >=  '2012-01-01' )      &    (temp_df['check_out_date']    <=  '2022-12-31'  )]
+        # temp_df = temp_df   [( temp_df['booking_date']      >=  '2012-01-01' )      &    (temp_df['booking_date']      <=  '2022-12-31'  )]
+        # temp_df = temp_df   [( temp_df['check_in_date']     >=  '2012-01-01' )      &    (temp_df['check_in_date']     <=  '2022-12-31'  )]
+        # temp_df = temp_df   [( temp_df['check_out_date']    >=  '2012-01-01' )      &    (temp_df['check_out_date']    <=  '2022-12-31'  )]
 
 
 
@@ -442,35 +442,31 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         
 
         # Set up SQL statements for table deletion and validation check  
-        delete_dim_accommodation_bookings_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_dim_sales_agents_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_dim_accommodation_bookings_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_sales_agents_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_dim_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
-                                                                                    accommodation_sk                    SERIAL PRIMARY KEY,
-                                                                                    id                    UUID NOT NULL UNIQUE,
-                                                                                    booking_date                        DATE NOT NULL,
-                                                                                    check_in_date                       DATE NOT NULL,
-                                                                                    check_out_date                      DATE NOT NULL,
-                                                                                    checked_in                          VARCHAR(3) NOT NULL,
-                                                                                    confirmation_code                   VARCHAR(10) NOT NULL,
-                                                                                    customer_id                         UUID NOT NULL,
-                                                                                    flight_booking_id                   UUID NOT NULL,
-                                                                                    location                            VARCHAR NOT NULL,
-                                                                                    no_of_adults                        INTEGER NOT NULL,
-                                                                                    no_of_children                      INTEGER NOT NULL,
-                                                                                    payment_method                      VARCHAR NOT NULL,
-                                                                                    room_type                           VARCHAR NOT NULL,
-                                                                                    sales_agent_id                      UUID NOT NULL,
-                                                                                    status                              VARCHAR(255) NOT NULL,
-                                                                                    total_price                         DECIMAL(10,2) NOT NULL
-                                                                        );
+        create_dim_sales_agents_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (      
+                                                                                    agent_sk                    SERIAL PRIMARY KEY,
+                                                                                    id                          UUID NOT NULL UNIQUE,
+                                                                                    commission                  VARCHAR NOT NULL,
+                                                                                    email                       VARCHAR NOT NULL,
+                                                                                    first_name                  VARCHAR NOT NULL,
+                                                                                    last_name                   VARCHAR NOT NULL,
+                                                                                    full_name                   VARCHAR NOT NULL UNIQUE,
+                                                                                    location                    VARCHAR NOT NULL,
+                                                                                    nationality                 VARCHAR NOT NULL,
+                                                                                    phone                       VARCHAR NOT NULL,
+                                                                                    seniority_level             VARCHAR NOT NULL,
+                                                                                    service_speciality          VARCHAR NOT NULL,
+                                                                                    years_experience            VARCHAR NOT NULL
+                                                                                    );
         '''
 
-        check_if_dim_accommodation_bookings_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_sales_agents_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -478,7 +474,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_dim_accommodation_bookings_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_dim_sales_agents_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -505,23 +501,19 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_accommodation_bookings_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                id, 
-                                                                                booking_date, 
-                                                                                check_in_date, 
-                                                                                check_out_date, 
-                                                                                checked_in,
-                                                                                confirmation_code, 
-                                                                                customer_id, 
-                                                                                flight_booking_id, 
+        insert_sales_agents_data  =   f'''                  INSERT INTO {active_schema_name}.{table_name} (
+                                                                                id,
+                                                                                commission,
+                                                                                email,       
+                                                                                first_name,
+                                                                                last_name,
+                                                                                full_name,
                                                                                 location,
-                                                                                no_of_adults, 
-                                                                                no_of_children, 
-                                                                                payment_method, 
-                                                                                room_type,
-                                                                                sales_agent_id, 
-                                                                                status, 
-                                                                                total_price,
+                                                                                nationality,
+                                                                                phone,
+                                                                                seniority_level,
+                                                                                service_speciality,
+                                                                                years_experience,
                                                                                 created_at,
                                                                                 updated_at,
                                                                                 source_system,
@@ -530,7 +522,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
                                                                                 dwh_layer
                                                                             )
                                                                             VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                             );
         '''
 
@@ -558,12 +550,12 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_dim_accommodation_bookings_tbl_if_exists)
+        cursor.execute(delete_dim_sales_agents_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_dim_accommodation_bookings_tbl_is_deleted)
+        cursor.execute(check_if_dim_sales_agents_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -572,14 +564,14 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_accommodation_bookings_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_sales_agents_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_accommodation_bookings_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_sales_agents_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -587,12 +579,12 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_dim_accommodation_bookings_tbl)
+        cursor.execute(create_dim_sales_agents_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_dim_accommodation_bookings_tbl_exists)
+        cursor.execute(check_if_dim_sales_agents_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -601,14 +593,14 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_accommodation_bookings_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_sales_agents_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_accommodation_bookings_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_sales_agents_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -616,7 +608,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_dim_accommodation_bookings_tbl)
+        cursor.execute(add_data_lineage_to_dim_sales_agents_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -654,22 +646,18 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['id'], 
-                row['booking_date'], 
-                row['check_in_date'], 
-                row['check_out_date'], 
-                row['checked_in'],
-                row['confirmation_code'], 
-                row['customer_id'], 
-                row['flight_booking_id'], 
+                row['id'],
+                row['commission'],
+                row['email'],       
+                row['first_name'],
+                row['last_name'],
+                row['full_name'],
                 row['location'],
-                row['no_of_adults'], 
-                row['no_of_children'], 
-                row['payment_method'], 
-                row['room_type'],
-                row['sales_agent_id'], 
-                row['status'], 
-                row['total_price'],   
+                row['nationality'],
+                row['phone'],
+                row['seniority_level'],
+                row['service_speciality'],
+                row['years_experience'],   
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 random.choice(source_system),
@@ -678,7 +666,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
                 data_warehouse_layer
                     )
 
-            cursor.execute(insert_accommodation_bookings_data, values)
+            cursor.execute(insert_sales_agents_data, values)
 
 
             # Validate if each row inserted into the table exists 
@@ -686,13 +674,13 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
                 row_counter += 1
                 successful_rows_upload_count += 1
                 root_logger.debug(f'---------------------------------')
-                root_logger.info(f'INSERT SUCCESS: Uploaded accommodation_bookings record no {row_counter} ')
+                root_logger.info(f'INSERT SUCCESS: Uploaded sales_agents record no {row_counter} ')
                 root_logger.debug(f'---------------------------------')
             else:
                 row_counter += 1
                 failed_rows_upload_count +=1
                 root_logger.error(f'---------------------------------')
-                root_logger.error(f'INSERT FAILED: Unable to insert accommodation_bookings record no {row_counter} ')
+                root_logger.error(f'INSERT FAILED: Unable to insert sales_agents record no {row_counter} ')
                 root_logger.error(f'---------------------------------')
 
 
@@ -1162,5 +1150,5 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
 
 
-load_data_to_dim_accommodation_bookings_table(postgres_connection)
+load_data_to_dim_sales_agents_table(postgres_connection)
 
