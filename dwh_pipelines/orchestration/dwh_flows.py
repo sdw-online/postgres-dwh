@@ -622,7 +622,7 @@ def run_dq_test_for_stg_ticket_prices_tbl():
 
 @task
 def create_prod_environment_for_staging_layer():
-    from dwh_pipelines.L2_staging_layer.prod.create_prod_env      import  create_prod_environment_for_staging
+    from dwh_pipelines.L2_staging_layer.prod.create_stg_prod_env      import  create_prod_environment_for_staging
     module_name = 'dwh_pipelines.L2_staging_layer.prod.create_prod_env'
     imported_function = 'create_prod_environment_for_staging'
     root_logger.info("")
