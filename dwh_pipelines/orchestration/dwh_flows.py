@@ -1148,66 +1148,66 @@ def run_raw_layer_flow():
 
 
 # Set up sub-flow for executing tasks in staging layer 
-@flow(name="Execute tasks in staging layer", flow_run_name="raw_to_dim_layer_flow")
+@flow(name="Execute tasks in staging layer", flow_run_name="raw_to_stg_layer_flow")
 def run_staging_layer_flow():
 
-    load_data_to_dim_accommodation_bookings_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_accommodation_bookings_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_accommodation_bookings_table'! ")
+    load_data_to_stg_accommodation_bookings_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_accommodation_bookings_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_accommodation_bookings_table'! ")
 
 
 
-    load_data_to_dim_customer_feedbacks_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_customer_feedbacks_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_customer_feedbacks_table'! ")
+    load_data_to_stg_customer_feedbacks_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_customer_feedbacks_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_customer_feedbacks_table'! ")
 
 
 
-    load_data_to_dim_customer_info_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_customer_info_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_customer_info_table'! ")
+    load_data_to_stg_customer_info_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_customer_info_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_customer_info_table'! ")
 
 
 
-    load_data_to_dim_flight_bookings_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_bookings_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_bookings_table'! ")
+    load_data_to_stg_flight_bookings_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_bookings_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_bookings_table'! ")
 
 
 
-    load_data_to_dim_flight_destinations_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_destinations_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_destinations_table'! ")
+    load_data_to_stg_flight_destinations_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_destinations_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_destinations_table'! ")
 
 
 
-    load_data_to_dim_flight_promotion_deals_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_promotion_deals_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_promotion_deals_table'! ")
+    load_data_to_stg_flight_promotion_deals_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_promotion_deals_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_promotion_deals_table'! ")
 
 
 
-    load_data_to_dim_flight_schedules_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_schedules_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_schedules_table'! ")
+    load_data_to_stg_flight_schedules_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_schedules_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_schedules_table'! ")
 
 
 
-    load_data_to_dim_flight_ticket_sales_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_ticket_sales_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_ticket_sales_table'! ")
+    load_data_to_stg_flight_ticket_sales_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_flight_ticket_sales_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_flight_ticket_sales_table'! ")
 
 
 
-    load_data_to_dim_sales_agents_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_sales_agents_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_sales_agents_table'! ")
+    load_data_to_stg_sales_agents_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_sales_agents_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_sales_agents_table'! ")
 
 
 
-    load_data_to_dim_ticket_prices_table()
-    root_logger.info("SUCCESS! Completed loading raw data into 'dim_ticket_prices_table'! ")
-    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_ticket_prices_table'! ")
+    load_data_to_stg_ticket_prices_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'stg_ticket_prices_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'stg_ticket_prices_table'! ")
 
 
     root_logger.info("Now terminating session for staging layer tasks...")
@@ -1221,66 +1221,66 @@ def run_staging_layer_flow():
 
 
 # Set up sub-flow for executing tasks in staging layer 
-@flow(name="Run DQ test for staging tables", flow_run_name="dq_tests_for_dim_layer_flow")
+@flow(name="Run DQ test for staging tables", flow_run_name="dq_tests_for_stg_layer_flow")
 def run_dq_tests_for_staging_layer_flow():
 
     # Set up flow for running DQ tests in staging layer
-    run_dq_test_for_dim_accommodation_bookings_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_accommodation_bookings_tbl' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_accommodation_bookings_tbl' table! ")
+    run_dq_test_for_stg_accommodation_bookings_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_accommodation_bookings_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_accommodation_bookings_tbl' table! ")
 
 
 
-    run_dq_test_for_dim_customer_feedbacks_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_feedbacks_tbl' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_feedbacks_tbl' table! ")
+    run_dq_test_for_stg_customer_feedbacks_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_feedbacks_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_feedbacks_tbl' table! ")
 
 
 
-    run_dq_test_for_dim_customer_info_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+    run_dq_test_for_stg_customer_info_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
 
 
-    run_dq_test_for_dim_flight_bookings_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
-
-
-
-    run_dq_test_for_dim_flight_destinations_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_flight_destinations_tb' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_flight_destinations_tb' table! ")
+    run_dq_test_for_stg_flight_bookings_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
 
 
 
-    run_dq_test_for_dim_flight_promotion_deals_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+    run_dq_test_for_stg_flight_destinations_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_flight_destinations_tb' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_flight_destinations_tb' table! ")
 
 
 
-    run_dq_test_for_dim_flight_schedules_tbl()
+    run_dq_test_for_stg_flight_promotion_deals_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_customer_info_tbl' table! ")
+
+
+
+    run_dq_test_for_stg_flight_schedules_tbl()
     root_logger.info("SUCCESS! Completed performing DQ tests on the 'flight_promotion_deals_tbl' table! ")
     get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'flight_promotion_deals_tbl' table! ")
 
 
 
-    run_dq_test_for_dim_flight_ticket_sales_tbl()
+    run_dq_test_for_stg_flight_ticket_sales_tbl()
     root_logger.info("SUCCESS! Completed performing DQ tests on the 'flight_ticket_sales_tbl' table! ")
     get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'flight_ticket_sales_tbl' table! ")
 
 
 
-    run_dq_test_for_dim_sales_agents_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_sales_agents_tbl' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_sales_agents_tbl' table! ")
+    run_dq_test_for_stg_sales_agents_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_sales_agents_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_sales_agents_tbl' table! ")
 
 
 
-    run_dq_test_for_dim_ticket_prices_tbl()
-    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_ticket_prices_tbl' table! ")
-    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_ticket_prices_tbl' table! ")
+    run_dq_test_for_stg_ticket_prices_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'stg_ticket_prices_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'stg_ticket_prices_tbl' table! ")
 
 
 
