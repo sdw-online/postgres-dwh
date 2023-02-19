@@ -339,6 +339,37 @@ def test_duplicate_records_count():
 
 
 
+
+
+
+
+# ====================================== BUSINESS RULES ======================================
+# ============================================================================================= 
+
+
+"""  Check the values in the duration column is greater than 0   """
+
+def test_for_positive_duration_values():
+# Check that duration is greater than 0
+    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE duration <= 0 """
+    cursor.execute(sql_query)
+
+    sql_results = cursor.fetchone()
+    total_no_of_negative_values = sql_results[0]
+
+    assert total_no_of_negative_values == 0, f"There are {total_no_of_negative_values} negative values in the duration columns. "
+
+
+
+
+
+
+
+
+
+
+
+
 def run_tests():
     test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_schedules_tbl.py')
     test_result = pytest.main([test_filepath])

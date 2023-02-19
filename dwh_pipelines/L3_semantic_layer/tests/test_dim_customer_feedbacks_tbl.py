@@ -360,7 +360,7 @@ def test_customer_feedback_char_length_test():
     sql_results = cursor.fetchall()
 
 
-     # Assert the number of characters for the id column is equal to 36
+     # Assert the number of characters for customer feedback is less than the expected feedback length
     for sql_result in sql_results:
         customer_id     =   sql_result[0]
         feedback        =   sql_result[1]

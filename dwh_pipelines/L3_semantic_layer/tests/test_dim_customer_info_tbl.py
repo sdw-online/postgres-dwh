@@ -381,7 +381,7 @@ def test_for_positive_age_values():
     cursor.execute(sql_query)
     sql_result = cursor.fetchone()
     total_no_of_negative_age_values = sql_result[0]
-    assert total_no_of_negative_age_values == 0, f"There are  {total_no_of_negative_age_values} negative values in the age column. "
+    assert total_no_of_negative_age_values == 0, f"There are {total_no_of_negative_age_values} negative values in the age column. "
 
 
 
