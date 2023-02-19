@@ -451,7 +451,7 @@ def load_data_to_dim_flight_destinations_table(postgres_connection):
         # Set up SQL statements for table creation and validation check 
         create_dim_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
                                                                                     flight_sk                       SERIAL PRIMARY KEY,
-                                                                                    flight_id                       UUID NOT NULL UNIQUE,
+                                                                                    flight_id                       UUID NOT NULL UNI   QUE,
                                                                                     arrival_city                    VARCHAR NOT NULL,
                                                                                     departure_city                  VARCHAR NOT NULL
                                                                        );

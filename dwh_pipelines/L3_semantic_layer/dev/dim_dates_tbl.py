@@ -388,13 +388,42 @@ def load_data_to_dim_dates_table(postgres_connection):
         #     # Execute script 
         #     postgres_table_results = cursor.fetchall()
             
+        try:
+            # Create a date dimension data frame
 
-        #     # Use Postgres results to create data frame for dates_tbl
-        #     dates_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+            # date_range  =   pd.date_range(start=start_date, end=end_date, freq='D')
+            # dates_df     =   pd.DataFrame({'date': date_range})
 
 
-        # #     # Create temporary data frame     
-        #     temp_df = dates_tbl_df
+            dates       =   pd.date_range(start=start_date, end=end_date, freq='D')
+
+
+            # Add columns for various date attributes
+            dates_df     =   pd.DataFrame({'full_date'               :   dates,
+                                            'day_of_week'           :   dates.dayofweek,
+                                            'day_number_in_month'   :   dates.day,
+                                            'day_number_overall'    :   dates.dayofyear,
+                                            'week_number_in_year'   :   dates.weekofyear,
+                                            'month_number'          :   dates.month,
+                                            'month_name'            :   dates.strftime('%B'),
+                                            'year_number'           :   dates.year,
+                                            'is_weekend'            :   (dates.dayofweek >= 5).astype(int),
+                                            'is_holiday'            :   0}
+                            )
+            
+            temp_df = dates_df
+            root_logger.debug(temp_df)
+
+        except psycopg2.Error as e:
+            print(e)
+
+
+        # #     # Create temporary data frame    
+        # 
+        # 
+        # 
+        #  
+            # temp_df = dates_tbl_df
 
         # except psycopg2.Error as e:
         #     print(e)
@@ -452,16 +481,17 @@ def load_data_to_dim_dates_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_dim_dates_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
-                                                                                    date_key                SERIAL PRIMARY KEY,
-                                                                                    date                    DATE NOT NULL,
-                                                                                    year                    INTEGER NOT NULL,
-                                                                                    quarter                 INTEGER NOT NULL,
-                                                                                    month                   INTEGER NOT NULL,
-                                                                                    day                     INTEGER NOT NULL,
-                                                                                    day_of_week             INTEGER NOT NULL,
-                                                                                    day_of_year             INTEGER NOT NULL,
-                                                                                    week_of_year            INTEGER NOT NULL,
-                                                                                    is_weekday              BOOLEAN NOT NULL
+                                                                date_id                    SERIAL PRIMARY KEY,
+                                                                full_date                   DATE NOT NULL,
+                                                                day_of_week                 INTEGER NOT NULL,
+                                                                day_number_in_month         INTEGER NOT NULL,
+                                                                day_number_overall          INTEGER NOT NULL,
+                                                                week_number_in_year         INTEGER NOT NULL,
+                                                                month_number                INTEGER NOT NULL,
+                                                                month_name                  VARCHAR(20) NOT NULL,
+                                                                year_number                 INTEGER NOT NULL,
+                                                                is_weekend                  INTEGER NOT NULL,
+                                                                is_holiday                  INTEGER NOT NULL
                                                                         );
         '''
 
@@ -500,45 +530,25 @@ def load_data_to_dim_dates_table(postgres_connection):
         '''
 
         # Set up SQL statements for records insert and validation check
-        insert_dates_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (                                                                                
-                                                                                                date_key,
-                                                                                                full_date,
-                                                                                                day_of_week,
-                                                                                                day_number_in_month,
-                                                                                                day_number_overall,
-                                                                                                week_number_in_year,
-                                                                                                week_number_overall,
-                                                                                                month_number,
-                                                                                                month_name,
-                                                                                                year_number,
-                                                                                                is_weekend,
+        insert_dates_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (     
+                                                                                                full_date, 
+                                                                                                day_of_week, 
+                                                                                                day_number_in_month, 
+                                                                                                day_number_overall, 
+                                                                                                week_number_in_year, 
+                                                                                                month_number, 
+                                                                                                month_name, 
+                                                                                                year_number, 
+                                                                                                is_weekend, 
                                                                                                 is_holiday,
-                                                                                                created_date,
-                                                                                                last_updated_date,
+                                                                                                created_at,
+                                                                                                updated_at,
                                                                                                 source_system,
-                                                                                                source_table_name,
-                                                                                                extract_date,
-                                                                                                data_warehouse_layer
+                                                                                                source_file,
+                                                                                                load_timestamp,
+                                                                                                dwh_layer
                                                                                             )
-                                                                                            VALUES (
-                                                                                                %(date_key)s,
-                                                                                                %(full_date)s,
-                                                                                                %(day_of_week)s,
-                                                                                                %(day_number_in_month)s,
-                                                                                                %(day_number_overall)s,
-                                                                                                %(week_number_in_year)s,
-                                                                                                %(week_number_overall)s,
-                                                                                                %(month_number)s,
-                                                                                                %(month_name)s,
-                                                                                                %(year_number)s,
-                                                                                                %(is_weekend)s,
-                                                                                                %(is_holiday)s,
-                                                                                                %(created_date)s,
-                                                                                                %(last_updated_date)s,
-                                                                                                %(source_system)s,
-                                                                                                %(source_table_name)s,
-                                                                                                %(extract_date)s,
-                                                                                                %(data_warehouse_layer)s
+                                                                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                                                                                                 );
         '''
 
@@ -661,26 +671,24 @@ def load_data_to_dim_dates_table(postgres_connection):
 
 
         for index, row in temp_df.iterrows():
-            values = {
-                'date_key': row['date_key'],
-                'full_date': row['full_date'],
-                'day_of_week': row['day_of_week'],
-                'day_number_in_month': row['day_number_in_month'],
-                'day_number_overall': row['day_number_overall'],
-                'week_number_in_year': row['week_number_in_year'],
-                'week_number_overall': row['week_number_overall'],
-                'month_number': row['month_number'],
-                'month_name': row['month_name'],
-                'year_number': row['year_number'],
-                'is_weekend': row['is_weekend'],
-                'is_holiday': row['is_holiday'],
-                'created_date': CURRENT_TIMESTAMP,
-                'last_updated_date': CURRENT_TIMESTAMP,
-                'source_system': random.choice(source_system),
-                'source_table_name': src_table_name,
-                'extract_date': CURRENT_TIMESTAMP,
-                'data_warehouse_layer': data_warehouse_layer
-            }
+            values = (
+                row['full_date'], 
+                row['day_of_week'], 
+                row['day_number_in_month'], 
+                row['day_number_overall'], 
+                row['week_number_in_year'], 
+                row['month_number'], 
+                row['month_name'], 
+                row['year_number'], 
+                row['is_weekend'], 
+                row['is_holiday'],
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP,
+                random.choice(source_system),
+                src_table_name,
+                CURRENT_TIMESTAMP,
+                data_warehouse_layer
+            )
 
             cursor.execute(insert_dates_data, values)
 
