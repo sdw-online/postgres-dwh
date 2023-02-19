@@ -354,6 +354,34 @@ def test_duplicate_records_count():
 
 
 
+
+
+
+
+
+# ====================================== BUSINESS RULES ======================================
+# ============================================================================================= 
+
+
+
+
+
+""" Check that flight ticket sales are between the expected ranges """
+
+
+def test_no_of_discounts_in_range():
+    min_discount_expected = 0
+    max_discount_expected = 300
+    # Check that discount is between the expected ranges
+
+    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE discount < {min_discount_expected} OR discount > {max_discount_expected}  """
+    cursor.execute(sql_query)
+
+    sql_result = cursor.fetchone()
+    total_no_of_discounts = sql_result[0]
+    assert total_no_of_discounts == 0, f"There are {total_no_of_discounts} ticket sales that are not between {min_discount_expected} and {max_discount_expected}. "
+
+
 def run_tests():
     test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py')
     test_result = pytest.main([test_filepath])
