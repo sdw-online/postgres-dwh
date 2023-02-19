@@ -366,6 +366,28 @@ def test_duplicate_records_count():
     assert total_no_of_duplicates == 0, f"Duplicate entries detected - {table_name} should contain no duplicate entries."
 
 
+
+# ====================================== BUSINESS RULES ======================================
+# ============================================================================================= 
+
+
+"""  Test the values in the age column are positive integers   """
+
+
+def test_for_positive_age_values():
+    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE age <= 0 """
+    cursor.execute(sql_query)
+    sql_result = cursor.fetchone()
+    total_no_of_negative_age_values = sql_result[0]
+    assert total_no_of_negative_age_values == 0, f"There are  {total_no_of_negative_age_values} negative values in the age column. "
+
+
+
+
+
+
+
+
 def run_tests():
     test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_customer_info_tbl.py')
     test_result = pytest.main([test_filepath])
