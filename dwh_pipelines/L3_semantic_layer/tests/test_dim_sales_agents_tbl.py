@@ -26,7 +26,7 @@ if USING_AIRFLOW:
 
     host                    =   config['postgres_airflow_config']['HOST']
     port                    =   config['postgres_airflow_config']['PORT']
-    database                =   config['postgres_airflow_config']['STAGING_DB']
+    database                =   config['postgres_airflow_config']['SEMANTIC_DB']
     username                =   config['postgres_airflow_config']['USERNAME']
     password                =   config['postgres_airflow_config']['PASSWORD']
     
@@ -43,7 +43,7 @@ else:
 
     host                    =   config['travel_data_filepath']['HOST']
     port                    =   config['travel_data_filepath']['PORT']
-    database                =   config['travel_data_filepath']['STAGING_DB']
+    database                =   config['travel_data_filepath']['SEMANTIC_DB']
     username                =   config['travel_data_filepath']['USERNAME']
     password                =   config['travel_data_filepath']['PASSWORD']
 
@@ -185,6 +185,7 @@ def test_column_data_types():
 
     # Create a dictionary that specifies the expected data types for each column  
     expected_data_types = {
+        'agent_sk'                      :           "integer", 
         'id'                            :           "uuid",
         'commission'                    :           "character varying",
         'email'                         :           "character varying",       
