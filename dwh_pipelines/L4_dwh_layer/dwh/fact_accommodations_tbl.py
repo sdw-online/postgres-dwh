@@ -128,8 +128,8 @@ def load_data_to_fact_sales_table(postgres_connection):
         previous_schema_name            =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
-        src_table_name                  =   'dim_flight_ticket_sales_tbl'
-        table_name                      =   'fact_sales_tbl'
+        src_table_name                  =   'dim_accommodation_bookings_tbl'
+        table_name                      =   'fact_accommodations_tbl'
         data_warehouse_layer            =   'DWH'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -451,18 +451,23 @@ def load_data_to_fact_sales_table(postgres_connection):
         # Set up SQL statements for table creation and validation check 
         create_dim_flight_ticket_sales_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
                                                                         SELECT 
-                                                                                    flight_booking_sk as flight_booking_id,  
-                                                                                    agent_first_name, 
-                                                                                    agent_id, 
-                                                                                    agent_last_name,
-                                                                                    customer_first_name, 
+                                                                                    accommodation_sk as accommodation_id, 
+                                                                                    id, 
+                                                                                    booking_date, 
+                                                                                    check_in_date, 
+                                                                                    check_out_date, 
+                                                                                    checked_in, 
+                                                                                    confirmation_code, 
                                                                                     customer_id, 
-                                                                                    customer_last_name, 
-                                                                                    discount,
-                                                                                    promotion_id, 
-                                                                                    promotion_name, 
-                                                                                    ticket_sales,
-                                                                                    ticket_sales_date
+                                                                                    flight_booking_id, 
+                                                                                    location, 
+                                                                                    no_of_adults, 
+                                                                                    no_of_children,
+                                                                                    payment_method, 
+                                                                                    room_type, 
+                                                                                    sales_agent_id, 
+                                                                                    status, 
+                                                                                    total_price
                                                                         FROM {active_schema_name}.{src_table_name}
         '''
  
