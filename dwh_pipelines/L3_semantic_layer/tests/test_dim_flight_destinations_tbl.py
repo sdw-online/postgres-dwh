@@ -335,6 +335,50 @@ def test_duplicate_records_count():
 
 
 
+
+
+
+
+
+
+
+# ====================================== BUSINESS RULES ======================================
+# ============================================================================================= 
+
+
+# ====================================== TEST 11: ARRIVAL CITY CHECK ======================================
+
+"""  Test the values in the arrival_city column are not NULL   """
+
+
+def test_for_no_nulls_in_arrival_city():
+    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE arrival_city is NULL """
+    cursor.execute(sql_query)
+    sql_result = cursor.fetchone()
+    total_no_of_nulls_in_arrival_city = sql_result[0]
+    assert total_no_of_nulls_in_arrival_city == 0, f"There are {total_no_of_nulls_in_arrival_city} NULL values in the arrival_city column. "
+
+
+# ====================================== TEST 11: DEPARTURE CITY CHECK ======================================
+
+"""  Test the values in the departure_city column are not NULL   """
+
+
+def test_for_no_nulls_in_departure_city():
+    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE departure_city is NULL """
+    cursor.execute(sql_query)
+    sql_result = cursor.fetchone()
+    total_no_of_nulls_in_departure_city = sql_result[0]
+    assert total_no_of_nulls_in_departure_city == 0, f"There are {total_no_of_nulls_in_departure_city} NULL values in the departure_city column. "
+
+
+
+
+
+
+
+
+
 def run_tests():
     test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_destinations_tbl.py')
     test_result = pytest.main([test_filepath])

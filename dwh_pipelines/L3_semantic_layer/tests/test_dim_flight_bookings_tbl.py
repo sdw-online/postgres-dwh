@@ -370,6 +370,8 @@ def test_duplicate_records_count():
 
 
 
+
+
 # ====================================== BUSINESS RULES ======================================
 # ============================================================================================= 
 
@@ -385,6 +387,10 @@ def test_for_positive_ticket_price_values():
     sql_result = cursor.fetchone()
     total_no_of_negative_ticket_price_values = sql_result[0]
     assert total_no_of_negative_ticket_price_values == 0, f"There are {total_no_of_negative_ticket_price_values} negative values in the ticket_price column. "
+
+
+
+
 
 
 
