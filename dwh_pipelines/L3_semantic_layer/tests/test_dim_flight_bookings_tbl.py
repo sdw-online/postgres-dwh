@@ -366,6 +366,29 @@ def test_duplicate_records_count():
     assert total_no_of_duplicates == 0, f"Duplicate entries detected - {table_name} should contain no duplicate entries."
 
 
+
+
+
+
+# ====================================== BUSINESS RULES ======================================
+# ============================================================================================= 
+
+
+# ====================================== TEST 12: TICKET PRICE CHECK ======================================
+
+"""  Test the values in the ticket_price column are positive integers   """
+
+
+def test_for_positive_ticket_price_values():
+    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE ticket_price <= 0 """
+    cursor.execute(sql_query)
+    sql_result = cursor.fetchone()
+    total_no_of_negative_ticket_price_values = sql_result[0]
+    assert total_no_of_negative_ticket_price_values == 0, f"There are {total_no_of_negative_ticket_price_values} negative values in the ticket_price column. "
+
+
+
+
 def run_tests():
     test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_bookings_tbl.py')
     test_result = pytest.main([test_filepath])

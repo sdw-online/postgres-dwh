@@ -371,6 +371,8 @@ def test_duplicate_records_count():
 # ============================================================================================= 
 
 
+# ====================================== TEST 11: AGE DOMAIN CHECK ======================================
+
 """  Test the values in the age column are positive integers   """
 
 
