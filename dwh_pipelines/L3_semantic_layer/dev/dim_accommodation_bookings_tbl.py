@@ -356,7 +356,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
                     desired_sql_columns.append(column_name)
                     root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
             root_logger.info('')
-            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {len(list_of_column_names)} columns not included were data lineage columns to be added later via ALTER command. ''')
+            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {(len(list_of_column_names)  - total_desired_sql_columns_added )} columns not included were data lineage columns to be added later via ALTER command. ''')
             root_logger.info('')
             root_logger.info('')
             # root_logger.info(f'{desired_sql_columns}')
@@ -409,23 +409,23 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         
         """ Convert the business rules into code logic to reflect the true state of business events    """
 
-        # Convert date fields (booking_date, check_in_date, check_out_date) from integer to date type (with yyyy-mm-dd)
+        # Filter date columns to only display dates between 2012 and 2022
 
-        # temp_df['booking_date'] = temp_df['booking_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        # temp_df['check_in_date'] = temp_df['check_in_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        # temp_df['check_out_date'] = temp_df['check_out_date'].apply(lambda x: datetime.utcfromtimestamp(x/1000).strftime('%Y-%m-%d'))
-        
-        
-        # # Round total_price column to 2dp
-        # temp_df['total_price'] = temp_df['total_price'].astype(float)
-        # temp_df['total_price'] = temp_df['total_price'].round(2)
+        temp_df['booking_date']     = pd.to_datetime(temp_df['booking_date'])
+        temp_df['check_in_date']    = pd.to_datetime(temp_df['check_in_date'])
+        temp_df['check_out_date']   = pd.to_datetime(temp_df['check_out_date'])
+
+        temp_df = temp_df   [( temp_df['booking_date']      >=  '2012-01-01' )      &    (temp_df['booking_date']      <=  '2022-12-31'  )]
+        temp_df = temp_df   [( temp_df['check_in_date']     >=  '2012-01-01' )      &    (temp_df['check_in_date']     <=  '2022-12-31'  )]
+        temp_df = temp_df   [( temp_df['check_out_date']    >=  '2012-01-01' )      &    (temp_df['check_out_date']    <=  '2022-12-31'  )]
 
 
-        # Rename 'id' to 'accommodation_booking_old_id'
+
+
+
+        # Rename 'id' to 'accommodation_old_id'
         temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
 
-        # # Rename 'num_children' to 'no_of_children'
-        # temp_df = temp_df.rename(columns={'num_children': 'no_of_children'})
 
         # print(temp_df)
         # print(temp_df.columns)
@@ -450,7 +450,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_dim_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
-                                                                                    accommodation_id                    SERIAL PRIMARY KEY NOT NULL UNIQUE,
+                                                                                    accommodation_id                    SERIAL PRIMARY KEY,
                                                                                     accommodation_old_id                UUID NOT NULL,
                                                                                     booking_date                        DATE NOT NULL,
                                                                                     check_in_date                       DATE NOT NULL,
