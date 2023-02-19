@@ -421,8 +421,8 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         # temp_df['total_price'] = temp_df['total_price'].round(2)
 
 
-        # # Rename 'num_adults' to 'no_of_adults'
-        # temp_df = temp_df.rename(columns={'num_adults': 'no_of_adults'})
+        # Rename 'id' to 'accommodation_booking_old_id'
+        temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
 
         # # Rename 'num_children' to 'no_of_children'
         # temp_df = temp_df.rename(columns={'num_children': 'no_of_children'})
@@ -449,23 +449,24 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_dim_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} (
-                                                                                    id                      UUID PRIMARY KEY NOT NULL UNIQUE,
-                                                                                    booking_date            DATE NOT NULL,
-                                                                                    check_in_date           DATE NOT NULL,
-                                                                                    check_out_date          DATE NOT NULL,
-                                                                                    checked_in              VARCHAR(3) NOT NULL,
-                                                                                    confirmation_code       VARCHAR(10) NOT NULL,
-                                                                                    customer_id             UUID NOT NULL,
-                                                                                    flight_booking_id       UUID NOT NULL,
-                                                                                    location                VARCHAR NOT NULL,
-                                                                                    no_of_adults            INTEGER NOT NULL,
-                                                                                    no_of_children          INTEGER NOT NULL,
-                                                                                    payment_method          VARCHAR NOT NULL,
-                                                                                    room_type               VARCHAR NOT NULL,
-                                                                                    sales_agent_id          UUID NOT NULL,
-                                                                                    status                  VARCHAR(255) NOT NULL,
-                                                                                    total_price             DECIMAL(10,2) NOT NULL
+        create_dim_accommodation_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
+                                                                                    accommodation_id                    SERIAL PRIMARY KEY NOT NULL UNIQUE,
+                                                                                    accommodation_old_id                UUID NOT NULL,
+                                                                                    booking_date                        DATE NOT NULL,
+                                                                                    check_in_date                       DATE NOT NULL,
+                                                                                    check_out_date                      DATE NOT NULL,
+                                                                                    checked_in                          VARCHAR(3) NOT NULL,
+                                                                                    confirmation_code                   VARCHAR(10) NOT NULL,
+                                                                                    customer_id                         UUID NOT NULL,
+                                                                                    flight_booking_id                   UUID NOT NULL,
+                                                                                    location                            VARCHAR NOT NULL,
+                                                                                    no_of_adults                        INTEGER NOT NULL,
+                                                                                    no_of_children                      INTEGER NOT NULL,
+                                                                                    payment_method                      VARCHAR NOT NULL,
+                                                                                    room_type                           VARCHAR NOT NULL,
+                                                                                    sales_agent_id                      UUID NOT NULL,
+                                                                                    status                              VARCHAR(255) NOT NULL,
+                                                                                    total_price                         DECIMAL(10,2) NOT NULL
                                                                         );
         '''
 
@@ -505,7 +506,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
         # Set up SQL statements for records insert and validation check
         insert_accommodation_bookings_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                id, 
+                                                                                accommodation_old_id, 
                                                                                 booking_date, 
                                                                                 check_in_date, 
                                                                                 check_out_date, 
@@ -653,7 +654,7 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
         for index, row in temp_df.iterrows():
             values = (
-                row['id'], 
+                row['accommodation_old_id'], 
                 row['booking_date'], 
                 row['check_in_date'], 
                 row['check_out_date'], 
