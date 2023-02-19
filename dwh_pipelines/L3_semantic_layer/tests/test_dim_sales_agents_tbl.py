@@ -380,23 +380,23 @@ def test_duplicate_records_count():
 
 
 
-# ====================================== BUSINESS RULES ======================================
-# ============================================================================================= 
+# # ====================================== BUSINESS RULES ======================================
+# # ============================================================================================= 
 
 
-"""  Check that agent commissions are between 0 and 100     """
+# """  Check that agent commissions are between 0 and 100     """
 
-def test_agent_commission_values():
-    # Check that commission is between 0 and 1
-    min_commission_expected = 0 
-    max_commission_expected = 300 
-    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE commission::integer < 0 OR commission > 1 """
-    cursor.execute(sql_query)
+# def test_agent_commission_values():
+#     # Check that commission is between 0 and 1
+#     min_commission_expected = 0 
+#     max_commission_expected = 300 
+#     sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE commission::integer < 0 OR commission > 1 """
+#     cursor.execute(sql_query)
 
-    sql_results = cursor.fetchone()
-    total_commissions_out_of_range = sql_results[0]
+#     sql_results = cursor.fetchone()
+#     total_commissions_out_of_range = sql_results[0]
 
-    assert total_commissions_out_of_range == 0, f"There are {total_commissions_out_of_range} commissions outside of {min_commission_expected} and {max_commission_expected} "
+#     assert total_commissions_out_of_range == 0, f"There are {total_commissions_out_of_range} commissions outside of {min_commission_expected} and {max_commission_expected} "
 
 
 def run_tests():

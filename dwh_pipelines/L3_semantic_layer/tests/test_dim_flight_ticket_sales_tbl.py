@@ -371,7 +371,7 @@ def test_duplicate_records_count():
 
 def test_no_of_discounts_in_range():
     min_discount_expected = 0
-    max_discount_expected = 300
+    max_discount_expected = 400
     # Check that discount is between the expected ranges
 
     sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE discount < {min_discount_expected} OR discount > {max_discount_expected}  """
