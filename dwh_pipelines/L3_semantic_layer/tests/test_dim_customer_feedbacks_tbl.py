@@ -79,6 +79,10 @@ schema_name                     =   'dev'
 database_name                   =    database
 
 
+# ====================================== DATA QUALITY CHECKS ======================================
+# ================================================================================================= 
+
+
 
 # ====================================== TEST 1: DATABASE CONNECTION CHECK ======================================
 
@@ -330,6 +334,51 @@ def test_duplicate_records_count():
     
     # Assert the number of uniqueness constraints for the table specified is at least 1
     assert total_no_of_duplicates == 0, f"Duplicate entries detected - {table_name} should contain no duplicate entries."
+
+
+
+
+# ====================================== BUSINESS RULES ======================================
+# ============================================================================================= 
+
+
+# ====================================== TEST 11: FEEDBACK CHARACTERS CHECK ======================================
+
+
+""" Test each customer's feedback in the table is no more than 200 characters in length  """
+
+
+def test_customer_feedback_char_length_test():
+    expected_feedback_length = 200
+    sql_results = cursor.fetchall()
+    
+
+    sql_query = f"""     SELECT customer_id, feedback_text FROM {schema_name}.{table_name} 
+    """
+    cursor.execute(sql_query)
+    
+    sql_results = cursor.fetchall()
+
+
+     # Assert the number of characters for the id column is equal to 36
+    for sql_result in sql_results:
+        customer_id     =   sql_result[0]
+        feedback        =   sql_result[1]
+          
+        length_of_customer_feedback = len(feedback)
+        assert length_of_customer_feedback <= expected_feedback_length, f"Customer feedback must not exceed {expected_feedback_length} characters. The customer ID with the invalid feedback length is '{customer_id}' ID. "
+
+
+
+
+
+
+
+
+
+
+
+
 
 def run_tests():
     test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_customer_feedbacks_tbl.py')
