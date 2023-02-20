@@ -356,7 +356,7 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
                     desired_sql_columns.append(column_name)
                     root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
             root_logger.info('')
-            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {len(list_of_column_names)} columns not included were data lineage columns to be added later via ALTER command. ''')
+            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {(len(list_of_column_names)  - total_desired_sql_columns_added )} columns not included were data lineage columns to be added later via ALTER command. ''')
             root_logger.info('')
             root_logger.info('')
             # root_logger.info(f'{desired_sql_columns}')

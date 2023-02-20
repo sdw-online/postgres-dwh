@@ -622,7 +622,7 @@ def run_dq_test_for_stg_ticket_prices_tbl():
 
 @task
 def create_prod_environment_for_staging_layer():
-    from dwh_pipelines.L2_staging_layer.prod.create_prod_env      import  create_prod_environment_for_staging
+    from dwh_pipelines.L2_staging_layer.prod.create_stg_prod_env      import  create_prod_environment_for_staging
     module_name = 'dwh_pipelines.L2_staging_layer.prod.create_prod_env'
     imported_function = 'create_prod_environment_for_staging'
     root_logger.info("")
@@ -632,6 +632,565 @@ def create_prod_environment_for_staging_layer():
     get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module to create STAGING PROD environment ...")
     get_run_logger().info("")
     
+
+# # ============================================== 3. SEMANTIC LAYER ============================================== 
+
+# Set up tasks for semantic layer
+
+
+@task
+def load_data_to_dim_accommodation_bookings_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_accommodation_bookings_tbl      import  load_data_to_dim_accommodation_bookings_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_accommodation_bookings_tbl'
+    imported_function = 'load_accommodation_bookings_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_customer_feedbacks_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_customer_feedbacks_tbl      import  load_data_to_dim_customer_feedbacks_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_customer_feedbacks_tbl'
+    imported_function = 'load_customer_feedbacks_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_customer_info_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_customer_info_tbl      import  load_data_to_dim_customer_info_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_customer_info_tbl'
+    imported_function = 'load_customer_info_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_flight_bookings_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_flight_bookings_tbl      import  load_data_to_dim_flight_bookings_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_flight_bookings_tbl'
+    imported_function = 'load_flight_bookings_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_flight_destinations_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_flight_destinations_tbl      import  load_data_to_dim_flight_destinations_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_flight_destinations_tbl'
+    imported_function = 'load_flight_destinations_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_flight_promotion_deals_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_flight_promotion_deals_tbl      import  load_data_to_dim_flight_promotion_deals_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_flight_promotion_deals_tbl'
+    imported_function = 'load_flight_promotion_deals_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_flight_schedules_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_flight_schedules_tbl      import  load_data_to_dim_flight_schedules_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_flight_schedules_tbl'
+    imported_function = 'load_flight_schedules_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_flight_ticket_sales_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_flight_ticket_sales_tbl      import  load_data_to_dim_flight_ticket_sales_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_flight_ticket_sales_tbl'
+    imported_function = 'load_flight_ticket_sales_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_sales_agents_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_sales_agents_tbl      import  load_data_to_dim_sales_agents_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_sales_agents_tbl'
+    imported_function = 'load_sales_agents_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_ticket_prices_table():
+    from dwh_pipelines.L3_semantic_layer.dev.dim_ticket_prices_tbl      import  load_data_to_dim_ticket_prices_table
+    module_name = 'dwh_pipelines.L3_semantic_layer.dim_ticket_prices_tbl'
+    imported_function = 'load_ticket_prices_data_to_dim_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+# Set up tasks for running DQ tests in semantic layer
+
+
+@task
+def run_dq_test_for_dim_accommodation_bookings_tbl():
+    test_name = "test_dim_accommodation_bookings_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_accommodation_bookings_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+@task
+def run_dq_test_for_dim_customer_feedbacks_tbl():
+    test_name = "test_dim_customer_feedbacks_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_customer_feedbacks_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+@task
+def run_dq_test_for_dim_customer_info_tbl():
+    test_name = "test_dim_customer_info_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_customer_info_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+@task
+def run_dq_test_for_dim_flight_bookings_tbl():
+    test_name = "test_dim_flight_bookings_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_bookings_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+@task
+def run_dq_test_for_dim_flight_destinations_tbl():
+    test_name = "test_dim_flight_destinations_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_destinations_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+@task
+def run_dq_test_for_dim_flight_promotion_deals_tbl():
+    test_name = "test_dim_flight_promotion_deals_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_promotion_deals_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+@task
+def run_dq_test_for_dim_flight_schedules_tbl():
+    test_name = "test_dim_flight_schedules_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_schedules_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+@task
+def run_dq_test_for_dim_flight_ticket_sales_tbl():
+    test_name = "test_dim_flight_ticket_sales_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+@task
+def run_dq_test_for_dim_sales_agents_tbl():
+    test_name = "test_dim_sales_agents_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_sales_agents_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+@task
+def run_dq_test_for_dim_ticket_prices_tbl():
+    test_name = "test_dim_ticket_prices_tbl.py"
+    test_filepath =  os.path.abspath('dwh_pipelines/L3_semantic_layer/tests/test_dim_ticket_prices_tbl.py')
+    result = subprocess.run(['pytest', test_filepath], capture_output=True ) 
+    output = result.stdout.decode('utf-8')
+    root_logger.info("")
+    root_logger.info(f"Now running the '{test_name}' script...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now running the '{test_name}' script...")
+    get_run_logger().info("")
+
+    if "FAILED" in output:
+        raise ValueError(f"One or more tests in '{test_name}' test has failed... ")
+    else:
+        root_logger.info("")
+        root_logger.info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        root_logger.info("")
+        get_run_logger().info("")
+        get_run_logger().info(f"SUCCESS - All tests for '{test_name}' test have passed!")
+        get_run_logger().info("")
+
+
+
+
+
+@task
+def create_prod_environment_for_semantic_layer():
+    from dwh_pipelines.L3_semantic_layer.prod.create_sem_prod_env      import  create_prod_environment_for_semantic
+    module_name = 'dwh_pipelines.L3_semantic_layer.prod.create_prod_env'
+    imported_function = 'create_prod_environment_for_semantic'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module to create semantic PROD environment ...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module to create semantic PROD environment ...")
+    get_run_logger().info("")
+    
+
+
+# # ============================================== 4. DATA WAREHOUSE LAYER ============================================== 
+
+# Set up tasks for dwh layer
+
+
+@task
+def load_data_to_fact_accommodations_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.fact_accommodations_tbl      import  load_data_to_fact_accommodations_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.fact_accommodations_tbl'
+    imported_function = 'load_data_to_fact_accommodations_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+@task
+def load_data_to_fact_sales_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.fact_sales_tbl      import  load_data_to_fact_sales_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.fact_sales_tbl'
+    imported_function = 'load_data_to_fact_sales_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_customers_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_customers_tbl      import  load_data_to_dim_customers_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_customers_tbl'
+    imported_function = 'load_data_to_dim_customers_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_date_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_date_tbl      import  load_data_to_dim_date_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_date_tbl'
+    imported_function = 'load_data_to_dim_date_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_destinations_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_destinations_tbl      import  load_data_to_dim_destinations_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_destinations_tbl'
+    imported_function = 'load_data_to_dim_destinations_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_flights_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_flights_tbl      import  load_data_to_dim_flights_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_flights_tbl'
+    imported_function = 'load_data_to_dim_flights_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_prices_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_prices_tbl      import  load_data_to_dim_prices_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_prices_tbl'
+    imported_function = 'load_data_to_dim_prices_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_promotions_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_promotions_tbl      import  load_data_to_dim_promotions_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_promotions_tbl'
+    imported_function = 'load_data_to_dim_promotions_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_sales_employees_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_sales_employees_tbl      import  load_data_to_dim_sales_employees_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_sales_employees_tbl'
+    imported_function = 'load_data_to_dim_sales_employees_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_schedules_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_schedules_tbl      import  load_data_to_dim_schedules_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_schedules_tbl'
+    imported_function = 'load_data_to_dim_schedules_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
 
 
 
@@ -887,6 +1446,223 @@ def run_stg_prod_env_creation_flow():
 
 
 
+# # ============================================== 3. SEMANTIC LAYER ============================================== 
+
+# Set up sub-flow for executing tasks in semantic layer 
+@flow(name="Execute tasks in semantic layer", flow_run_name="raw_to_dim_layer_flow")
+def run_semantic_layer_flow():
+
+    load_data_to_dim_accommodation_bookings_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_accommodation_bookings_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_accommodation_bookings_table'! ")
+
+
+
+    load_data_to_dim_customer_feedbacks_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_customer_feedbacks_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_customer_feedbacks_table'! ")
+
+
+
+    load_data_to_dim_customer_info_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_customer_info_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_customer_info_table'! ")
+
+
+
+    load_data_to_dim_flight_bookings_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_bookings_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_bookings_table'! ")
+
+
+
+    load_data_to_dim_flight_destinations_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_destinations_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_destinations_table'! ")
+
+
+
+    load_data_to_dim_flight_promotion_deals_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_promotion_deals_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_promotion_deals_table'! ")
+
+
+
+    load_data_to_dim_flight_schedules_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_schedules_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_schedules_table'! ")
+
+
+
+    load_data_to_dim_flight_ticket_sales_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_flight_ticket_sales_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_flight_ticket_sales_table'! ")
+
+
+
+    load_data_to_dim_sales_agents_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_sales_agents_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_sales_agents_table'! ")
+
+
+
+    load_data_to_dim_ticket_prices_table()
+    root_logger.info("SUCCESS! Completed loading raw data into 'dim_ticket_prices_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading raw data into 'dim_ticket_prices_table'! ")
+
+
+    root_logger.info("Now terminating session for semantic layer tasks...")
+    root_logger.info("")
+    root_logger.info("semantic tables processing session ended.")
+    get_run_logger().info("Now terminating session for semantic layer tasks...")
+    get_run_logger().info("")
+    get_run_logger().info("semantic tables processing session ended.")
+
+
+
+
+# Set up sub-flow for executing tasks in semantic layer 
+@flow(name="Run DQ test for semantic tables", flow_run_name="dq_tests_for_dim_layer_flow")
+def run_dq_tests_for_semantic_layer_flow():
+
+    # Set up flow for running DQ tests in semantic layer
+    run_dq_test_for_dim_accommodation_bookings_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_accommodation_bookings_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_accommodation_bookings_tbl' table! ")
+
+
+
+    run_dq_test_for_dim_customer_feedbacks_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_feedbacks_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_feedbacks_tbl' table! ")
+
+
+
+    run_dq_test_for_dim_customer_info_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+
+
+    run_dq_test_for_dim_flight_bookings_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+
+
+
+    run_dq_test_for_dim_flight_destinations_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_flight_destinations_tb' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_flight_destinations_tb' table! ")
+
+
+
+    run_dq_test_for_dim_flight_promotion_deals_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_customer_info_tbl' table! ")
+
+
+
+    run_dq_test_for_dim_flight_schedules_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'flight_promotion_deals_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'flight_promotion_deals_tbl' table! ")
+
+
+
+    run_dq_test_for_dim_flight_ticket_sales_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'flight_ticket_sales_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'flight_ticket_sales_tbl' table! ")
+
+
+
+    run_dq_test_for_dim_sales_agents_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_sales_agents_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_sales_agents_tbl' table! ")
+
+
+
+    run_dq_test_for_dim_ticket_prices_tbl()
+    root_logger.info("SUCCESS! Completed performing DQ tests on the 'dim_ticket_prices_tbl' table! ")
+    get_run_logger().info("SUCCESS! Completed performing DQ tests on the 'dim_ticket_prices_tbl' table! ")
+
+
+
+# Set up sub-flow for creating PROD environment for semantic layer 
+@flow(name="Create PROD environment for semantic layer", flow_run_name="creating_semantic_prod_env_flow")
+def run_semantic_prod_env_creation_flow():
+
+    create_prod_environment_for_semantic_layer()
+    root_logger.info("SUCCESS! Completed creating a PRODUCTION environment for semantic layer. ")
+    get_run_logger().info("SUCCESS! Completed creating a PRODUCTION environment for semantic layer. ")
+
+
+
+# # ============================================== 4. DATA WAREHOUSE LAYER ============================================== 
+
+# Set up sub-flow for executing tasks in data warehouse layer 
+@flow(name="Execute tasks in data warehouse layer", flow_run_name="mdm_to_dwh_layer_flow")
+def run_dwh_layer_flow():
+
+    load_data_to_fact_accommodations_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'fact_accommodations_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'fact_accommodations_table'! ")
+
+
+    load_data_to_fact_sales_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'fact_sales_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'fact_sales_table'! ")
+
+
+
+    load_data_to_dim_customers_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_customers_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_customers_table'! ")
+
+
+
+
+    load_data_to_dim_date_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_date_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_date_table'! ")
+
+
+
+
+    load_data_to_dim_destinations_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_destinations_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_destinations_table'! ")
+
+
+
+    load_data_to_dim_flights_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_flights_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_flights_table'! ")
+
+
+
+
+    load_data_to_dim_prices_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_prices_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_prices_table'! ")
+
+
+
+    load_data_to_dim_promotions_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_promotions_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_promotions_table'! ")
+
+
+
+
+    load_data_to_dim_sales_employees_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_sales_employees_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_sales_employees_table'! ")
+
+
+
+    load_data_to_dim_schedules_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_schedules_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_schedules_table'! ")
+
+
 
 
 # ============================================== FLOW RUNS ==============================================
@@ -905,8 +1681,19 @@ if __name__=="__main__":
     run_raw_layer_flow()
     
 
-    # L2 - Extract raw data into staging tables
+    # L2 - Load raw data into staging tables
     run_staging_layer_flow()
     run_dq_tests_for_staging_layer_flow()
     
     run_stg_prod_env_creation_flow()
+
+
+    # L3 - Load staging data into MDM tables
+    run_semantic_layer_flow()
+    run_dq_tests_for_semantic_layer_flow()
+    
+    run_semantic_prod_env_creation_flow()
+
+
+    # L4 - Load MDM data into DWH tables
+    run_dwh_layer_flow()
