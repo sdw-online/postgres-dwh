@@ -452,7 +452,7 @@ def load_data_to_fact_sales_table(postgres_connection):
         create_dim_flight_ticket_sales_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
                                                                         SELECT 
                                                                                     accommodation_sk as accommodation_id, 
-                                                                                    id, 
+                                                                                    id as accommodation_old_id, 
                                                                                     booking_date, 
                                                                                     check_in_date, 
                                                                                     check_out_date, 
