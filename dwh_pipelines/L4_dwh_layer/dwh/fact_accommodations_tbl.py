@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_fact_sales_table(postgres_connection):
+def load_data_to_fact_accommodations_table(postgres_connection):
     try:
         
         # Set up constants
@@ -966,5 +966,5 @@ def load_data_to_fact_sales_table(postgres_connection):
 
 
 
-load_data_to_fact_sales_table(postgres_connection)
+load_data_to_fact_accommodations_table(postgres_connection)
 

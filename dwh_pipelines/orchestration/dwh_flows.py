@@ -1043,6 +1043,157 @@ def create_prod_environment_for_semantic_layer():
     
 
 
+# # ============================================== 4. DATA WAREHOUSE LAYER ============================================== 
+
+# Set up tasks for dwh layer
+
+
+@task
+def load_data_to_fact_accommodations_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.fact_accommodations_tbl      import  load_data_to_fact_accommodations_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.fact_accommodations_tbl'
+    imported_function = 'load_data_to_fact_accommodations_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+@task
+def load_data_to_fact_sales_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.fact_sales_tbl      import  load_data_to_fact_sales_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.fact_sales_tbl'
+    imported_function = 'load_data_to_fact_sales_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_customers_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_customers_tbl      import  load_data_to_dim_customers_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_customers_tbl'
+    imported_function = 'load_data_to_dim_customers_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_date_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_date_tbl      import  load_data_to_dim_date_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_date_tbl'
+    imported_function = 'load_data_to_dim_date_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_destinations_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_destinations_tbl      import  load_data_to_dim_destinations_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_destinations_tbl'
+    imported_function = 'load_data_to_dim_destinations_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_flights_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_flights_tbl      import  load_data_to_dim_flights_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_flights_tbl'
+    imported_function = 'load_data_to_dim_flights_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_prices_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_prices_tbl      import  load_data_to_dim_prices_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_prices_tbl'
+    imported_function = 'load_data_to_dim_prices_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def load_data_to_dim_promotions_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_promotions_tbl      import  load_data_to_dim_promotions_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_promotions_tbl'
+    imported_function = 'load_data_to_dim_promotions_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_sales_employees_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_sales_employees_tbl      import  load_data_to_dim_sales_employees_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_sales_employees_tbl'
+    imported_function = 'load_data_to_dim_sales_employees_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def load_data_to_dim_schedules_table():
+    from dwh_pipelines.L4_dwh_layer.dwh.dim_schedules_tbl      import  load_data_to_dim_schedules_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_schedules_tbl'
+    imported_function = 'load_data_to_dim_schedules_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+
+
+
 
 
 
@@ -1444,6 +1595,76 @@ def run_semantic_prod_env_creation_flow():
 
 
 
+# # ============================================== 4. DATA WAREHOUSE LAYER ============================================== 
+
+# Set up sub-flow for executing tasks in data warehouse layer 
+@flow(name="Execute tasks in data warehouse layer", flow_run_name="mdm_to_dwh_layer_flow")
+def run_dwh_layer_flow():
+
+    load_data_to_fact_accommodations_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'fact_accommodations_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'fact_accommodations_table'! ")
+
+
+    load_data_to_fact_sales_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'fact_sales_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'fact_sales_table'! ")
+
+
+
+    load_data_to_dim_customers_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_customers_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_customers_table'! ")
+
+
+
+
+    load_data_to_dim_date_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_date_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_date_table'! ")
+
+
+
+
+    load_data_to_dim_destinations_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_destinations_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_destinations_table'! ")
+
+
+
+    load_data_to_dim_flights_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_flights_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_flights_table'! ")
+
+
+
+
+    load_data_to_dim_prices_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_prices_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_prices_table'! ")
+
+
+
+    load_data_to_dim_promotions_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_promotions_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_promotions_table'! ")
+
+
+
+
+    load_data_to_dim_sales_employees_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_sales_employees_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_sales_employees_table'! ")
+
+
+
+    load_data_to_dim_schedules_table()
+    root_logger.info("SUCCESS! Completed loading MDM data into 'dim_schedules_table'! ")
+    get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_schedules_table'! ")
+
+
+
+
 # ============================================== FLOW RUNS ==============================================
 # ====================================================================================================
 
@@ -1460,7 +1681,7 @@ if __name__=="__main__":
     run_raw_layer_flow()
     
 
-    # L2 - Extract raw data into staging tables
+    # L2 - Load raw data into staging tables
     run_staging_layer_flow()
     run_dq_tests_for_staging_layer_flow()
     
@@ -1472,3 +1693,7 @@ if __name__=="__main__":
     run_dq_tests_for_semantic_layer_flow()
     
     run_semantic_prod_env_creation_flow()
+
+
+    # L4 - Load MDM data into DWH tables
+    run_dwh_layer_flow()
