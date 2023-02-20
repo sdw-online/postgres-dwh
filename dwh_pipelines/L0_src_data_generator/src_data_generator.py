@@ -60,16 +60,16 @@ def generate_travel_data():
 
   # Establish the relevant constants for generating the synthetic travel data 
 
-  NO_OF_CUSTOMER_INFO_ROWS = 100
-  NO_OF_FLIGHT_SCHEDULES = 100
-  NO_OF_CUSTOMER_FEEDBACKS = 100
-  NO_OF_TICKET_PRICES = 100
-  NO_OF_FLIGHT_BOOKINGS = 100
-  NO_OF_FLIGHT_DESTINATIONS = 100
-  NO_OF_FLIGHT_TICKET_SALES = 100
-  NO_OF_FLIGHT_PROMOS_AND_DEALS = 100
-  NO_OF_SALES_AGENTS = 100
-  NO_OF_ACCOMMODATION_BOOKINGS = 400 
+  NO_OF_CUSTOMER_INFO_ROWS              =       1500
+  NO_OF_FLIGHT_SCHEDULES                =       1000000
+  NO_OF_CUSTOMER_FEEDBACKS              =       2000
+  NO_OF_TICKET_PRICES                   =       70
+  NO_OF_FLIGHT_BOOKINGS                 =       10000000
+  NO_OF_FLIGHT_DESTINATIONS             =       300
+  NO_OF_FLIGHT_TICKET_SALES             =       1000000
+  NO_OF_FLIGHT_PROMOS_AND_DEALS         =       6000
+  NO_OF_SALES_AGENTS                    =       300
+  NO_OF_ACCOMMODATION_BOOKINGS          =       40000000 
 
 
   # Set up environment variables 
