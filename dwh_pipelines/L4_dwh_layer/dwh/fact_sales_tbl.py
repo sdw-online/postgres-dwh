@@ -438,7 +438,7 @@ def load_data_to_fact_sales_table(postgres_connection):
         
 
 
-        # ================================================== LOAD STAGING DATA TO DWH TABLE =======================================
+        # ================================================== LOAD MDM DATA TO DWH TABLE =======================================
         
 
         # Set up SQL statements for table deletion and validation check  

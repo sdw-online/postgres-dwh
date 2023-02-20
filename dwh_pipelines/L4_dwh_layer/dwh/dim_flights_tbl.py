@@ -399,37 +399,6 @@ def load_data_to_dim_flights_table(postgres_connection):
 
 
 
-
-        
-
-        
-
-
-        # # ================================================== TRANSFORM DATA FRAME  =======================================
-        
-        """ Convert the business rules into code logic to reflect the true state of business events    """
-
-        # # Filter date columns to only display dates between 2012 and 2022
-
-        # temp_df['booking_date']     = pd.to_datetime(temp_df['booking_date'])
-        # temp_df['check_in_date']    = pd.to_datetime(temp_df['check_in_date'])
-        # temp_df['check_out_date']   = pd.to_datetime(temp_df['check_out_date'])
-
-        # temp_df = temp_df   [( temp_df['booking_date']      >=  '2012-01-01' )      &    (temp_df['booking_date']      <=  '2022-12-31'  )]
-        # temp_df = temp_df   [( temp_df['check_in_date']     >=  '2012-01-01' )      &    (temp_df['check_in_date']     <=  '2022-12-31'  )]
-        # temp_df = temp_df   [( temp_df['check_out_date']    >=  '2012-01-01' )      &    (temp_df['check_out_date']    <=  '2022-12-31'  )]
-
-
-
-
-
-        # # Rename 'id' to 'accommodation_old_id'
-        # temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
-
-
-        # print(temp_df)
-        # print(temp_df.columns)
-        
         # Write results to temp file for data validation checks 
         with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
             temp_results_file_df_to_json = temp_df.to_json(orient="records")
@@ -438,7 +407,7 @@ def load_data_to_dim_flights_table(postgres_connection):
         
 
 
-        # ================================================== LOAD STAGING DATA TO DWH TABLE =======================================
+        # ================================================== LOAD MDM DATA TO DWH TABLE =======================================
         
 
         # Set up SQL statements for table deletion and validation check  
