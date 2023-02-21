@@ -538,6 +538,45 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         '''
 
 
+        add_foreign_key_columns = f'''          ALTER TABLE {active_schema_name}.{table_name}
+                                                    ADD COLUMN customer_sk INTEGER,
+                                                    ADD COLUMN flight_booking_sk INTEGER,
+                                                    ADD COLUMN sales_agent_sk INTEGER
+                                                    ;
+        '''
+
+
+        add_fk_constraint_to_accommodation_bookings_tbl = f'''  ALTER TABLE {active_schema_name}.{table_name}
+                                                                    ADD FOREIGN KEY     (customer_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_customer_info_tbl(customer_sk),
+                                                                    
+                                                                    ADD FOREIGN KEY     (flight_booking_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_flight_bookings_tbl(flight_booking_sk),
+
+                                                                    ADD FOREIGN KEY     (sales_agent_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_sales_agents_tbl(agent_sk)
+
+        '''
+
+        add_table_joins_to_accommodation_bookings_tbl  = f'''   UPDATE {active_schema_name}.{table_name} ab
+                                                                    SET customer_sk = c.customer_sk
+                                                                    FROM {active_schema_name}.dim_customer_info_tbl c
+                                                                    WHERE ab.customer_id = c.customer_id
+                                                                    ;
+
+                                                                UPDATE {active_schema_name}.{table_name} ab
+                                                                    SET flight_booking_sk = fb.flight_booking_sk
+                                                                    FROM {active_schema_name}.dim_flight_bookings_tbl fb
+                                                                    WHERE ab.flight_booking_id = fb.flight_booking_id
+                                                                    ;
+
+                                                                
+                                                                UPDATE {active_schema_name}.{table_name} ab
+                                                                    SET sales_agent_sk = sa.agent_sk
+                                                                    FROM {active_schema_name}.dim_sales_agents_tbl sa
+                                                                    WHERE ab.sales_agent_id = sa.id
+                                                                    ;                                                   
+        '''
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
@@ -710,6 +749,19 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         root_logger.debug(f"")
 
 
+        # Add foreign keys
+        cursor.execute(add_foreign_key_columns)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_fk_constraint_to_accommodation_bookings_tbl)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_table_joins_to_accommodation_bookings_tbl)
+        root_logger.debug("")
+        root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
+        root_logger.debug("")
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 

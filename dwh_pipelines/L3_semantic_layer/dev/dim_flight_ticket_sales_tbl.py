@@ -530,6 +530,36 @@ def load_data_to_dim_flight_ticket_sales_table(postgres_connection):
         '''
 
 
+        add_foreign_key_columns = f'''          ALTER TABLE {active_schema_name}.{table_name}
+                                                    ADD COLUMN customer_sk INTEGER,
+                                                    ADD COLUMN sales_agent_sk INTEGER
+                                                    ;
+        '''
+
+
+        add_fk_constraint_to_accommodation_bookings_tbl = f'''  ALTER TABLE {active_schema_name}.{table_name}
+                                                                    ADD FOREIGN KEY     (customer_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_customer_info_tbl(customer_sk),
+                                                                
+                                                                    ADD FOREIGN KEY     (sales_agent_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_sales_agents_tbl(agent_sk)
+
+        '''
+
+        add_table_joins_to_accommodation_bookings_tbl  = f'''   UPDATE {active_schema_name}.{table_name} ts
+                                                                    SET customer_sk = c.customer_sk
+                                                                    FROM {active_schema_name}.dim_customer_info_tbl c
+                                                                    WHERE ts.customer_id = c.customer_id
+                                                                    ;
+
+                                                                
+                                                                UPDATE {active_schema_name}.{table_name} ts
+                                                                    SET sales_agent_sk = sa.agent_sk
+                                                                    FROM {active_schema_name}.dim_sales_agents_tbl sa
+                                                                    WHERE ts.agent_id = sa.id
+                                                                    ;                                                   
+        '''
+     
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
@@ -697,6 +727,19 @@ def load_data_to_dim_flight_ticket_sales_table(postgres_connection):
         root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
         root_logger.debug(f"")
 
+        # Add foreign keys
+        cursor.execute(add_foreign_key_columns)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_fk_constraint_to_accommodation_bookings_tbl)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_table_joins_to_accommodation_bookings_tbl)
+        root_logger.debug("")
+        root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
+        root_logger.debug("")
 
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================

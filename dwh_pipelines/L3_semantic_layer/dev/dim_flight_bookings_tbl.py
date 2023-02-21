@@ -520,7 +520,6 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
         check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
         '''
 
-
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
@@ -685,6 +684,19 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
         root_logger.debug(f"")
 
 
+        # Add foreign keys
+        cursor.execute(add_foreign_key_columns)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_fk_constraints_to_table)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_table_joins_to_table)
+        root_logger.debug("")
+        root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
+        root_logger.debug("")
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 

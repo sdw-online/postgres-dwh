@@ -513,7 +513,23 @@ def load_data_to_dim_flight_promotion_deals_table(postgres_connection):
         check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
         '''
 
+        add_foreign_key_columns = f'''          ALTER TABLE {active_schema_name}.{table_name}
+                                                    ADD COLUMN flight_booking_sk INTEGER
+                                                    ;
+        '''
+        add_fk_constraints_to_table = f'''  ALTER TABLE {active_schema_name}.{table_name}
 
+                                                                    ADD FOREIGN KEY     (flight_booking_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_flight_bookings_tbl(flight_booking_sk)
+        '''
+
+        add_table_joins_to_table  = f'''   UPDATE {active_schema_name}.{table_name} fp
+                                                SET flight_booking_sk = fb.flight_booking_sk
+                                                FROM {active_schema_name}.dim_flight_bookings_tbl fb
+                                                WHERE fp.flight_booking_id = fb.flight_booking_id
+                                                ;
+                                                
+        '''
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
@@ -673,6 +689,19 @@ def load_data_to_dim_flight_promotion_deals_table(postgres_connection):
         root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
         root_logger.debug(f"")
 
+        # Add foreign keys
+        cursor.execute(add_foreign_key_columns)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_fk_constraints_to_table)
+        root_logger.debug("")
+        root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
+        root_logger.debug("")
+        cursor.execute(add_table_joins_to_table)
+        root_logger.debug("")
+        root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
+        root_logger.debug("")
 
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
