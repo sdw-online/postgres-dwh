@@ -191,6 +191,8 @@ def test_column_data_types():
     # Create a dictionary that specifies the expected data types for each column  
     expected_data_types = {
        'agent_first_name'                   :           "character varying", 
+        'sales_agent_sk'                 :           "integer", 
+        'customer_sk'                 :           "integer", 
         'flight_booking_sk'                 :           "integer", 
         'agent_id'                          :           "uuid", 
         'agent_last_name'                   :           "character varying",

@@ -520,6 +520,36 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
         check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
         '''
 
+        add_foreign_key_columns = f'''          ALTER TABLE {active_schema_name}.{table_name}
+                                                    ADD COLUMN customer_sk INTEGER,
+                                                    ADD COLUMN flight_sk INTEGER
+                                                    ;
+        '''
+
+
+        add_fk_constraints_to_table = f'''  ALTER TABLE {active_schema_name}.{table_name}
+                                                                    ADD FOREIGN KEY     (customer_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_customer_info_tbl(customer_sk),
+                                                                    
+                                                                    ADD FOREIGN KEY     (flight_sk)
+                                                                    REFERENCES          {active_schema_name}.dim_flight_schedules_tbl(flight_sk)
+
+        '''
+
+        add_table_joins_to_table  = f'''   UPDATE {active_schema_name}.{table_name} ab
+                                                                    SET customer_sk = c.customer_sk
+                                                                    FROM {active_schema_name}.dim_customer_info_tbl c
+                                                                    WHERE ab.customer_id = c.customer_id
+                                                                    ;
+
+                                                                UPDATE {active_schema_name}.{table_name} ab
+                                                                    SET flight_sk = fb.flight_sk
+                                                                    FROM {active_schema_name}.dim_flight_schedules_tbl fb
+                                                                    WHERE ab.flight_id = fb.flight_id
+                                                                    ;
+                     
+        '''
+      
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
