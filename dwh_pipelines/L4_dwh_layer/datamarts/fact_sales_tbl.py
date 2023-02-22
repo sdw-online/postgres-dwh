@@ -290,6 +290,7 @@ def load_data_to_fact_sales_table(postgres_connection):
             root_logger.info("")
             root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
             root_logger.info("")
+
         except psycopg2.Error as e:
             print(e)
 
@@ -298,9 +299,10 @@ def load_data_to_fact_sales_table(postgres_connection):
         # Import the foreign schema from the previous layer's source table 
         try:
             import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
-                                                LIMIT TO ({src_table_name})
+                                               -- LIMIT TO ({src_table_name})
                                                 FROM SERVER {foreign_server}
                                                 INTO {active_schema_name}
+                                                OPTIONS (import_foreign_keys 'true')
                                                 ;
             '''
 
@@ -317,6 +319,63 @@ def load_data_to_fact_sales_table(postgres_connection):
             print(e)
             root_logger.error("")
             root_logger.error(f"Unable to import the '{src_table_name}' table into '{active_db_name}' database . ")
+            root_logger.error("")
+
+        
+        # Add the foreign key constraints 
+        try:
+            add_foreign_key_columns = f'''          ALTER TABLE {active_schema_name}.{src_table_name}
+                                                        ADD COLUMN customer_sk INTEGER,
+                                                        ADD COLUMN sales_agent_sk INTEGER
+                                                        ;
+            '''
+
+
+            add_fk_constraint_to_table = f'''       ALTER TABLE {active_schema_name}.{src_table_name}
+                                                                        ADD CONSTRAINT   table1_customer_sk_fkey     FOREIGN KEY     (customer_sk)
+                                                                        REFERENCES          {active_schema_name}.dim_customer_info_tbl(customer_sk),
+                                                                    
+                                                                        ADD CONSTRAINT   table1_sales_agent_sk_fkey   FOREIGN KEY     (sales_agent_sk)
+                                                                        REFERENCES          {active_schema_name}.dim_sales_agents_tbl(agent_sk)
+
+            '''
+
+            add_table_joins_to_table  = f'''        UPDATE {active_schema_name}.{src_table_name} ts
+                                                                        SET customer_sk = c.customer_sk
+                                                                        FROM {active_schema_name}.dim_customer_info_tbl c
+                                                                        WHERE ts.customer_id = c.customer_id
+                                                                        ;
+
+                                                                    
+                                                                    UPDATE {active_schema_name}.{src_table_name} ts
+                                                                        SET sales_agent_sk = sa.agent_sk
+                                                                        FROM {active_schema_name}.dim_sales_agents_tbl sa
+                                                                        WHERE ts.agent_id = sa.id
+                                                                        ;                                                   
+            '''
+
+            cursor.execute(add_foreign_key_columns)
+            root_logger.debug("")
+            root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
+            root_logger.debug("")
+
+            cursor.execute(add_fk_constraint_to_table)
+            root_logger.debug("")
+            root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
+            root_logger.debug("")
+
+            cursor.execute(add_table_joins_to_table)
+            root_logger.debug("")
+            root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
+            root_logger.debug("")
+            
+    
+            postgres_connection.commit()
+        
+        except psycopg2.Error as e:
+            print(e)
+            root_logger.error("")
+            root_logger.error(f"Unable to import the foreign keys into '{src_table_name}' table and '{active_db_name}' database . ")
             root_logger.error("")
 
 
@@ -399,36 +458,6 @@ def load_data_to_fact_sales_table(postgres_connection):
 
 
 
-
-        
-
-        
-
-
-        # # ================================================== TRANSFORM DATA FRAME  =======================================
-        
-        """ Convert the business rules into code logic to reflect the true state of business events    """
-
-        # # Filter date columns to only display dates between 2012 and 2022
-
-        # temp_df['booking_date']     = pd.to_datetime(temp_df['booking_date'])
-        # temp_df['check_in_date']    = pd.to_datetime(temp_df['check_in_date'])
-        # temp_df['check_out_date']   = pd.to_datetime(temp_df['check_out_date'])
-
-        # temp_df = temp_df   [( temp_df['booking_date']      >=  '2012-01-01' )      &    (temp_df['booking_date']      <=  '2022-12-31'  )]
-        # temp_df = temp_df   [( temp_df['check_in_date']     >=  '2012-01-01' )      &    (temp_df['check_in_date']     <=  '2022-12-31'  )]
-        # temp_df = temp_df   [( temp_df['check_out_date']    >=  '2012-01-01' )      &    (temp_df['check_out_date']    <=  '2022-12-31'  )]
-
-
-
-
-
-        # # Rename 'id' to 'accommodation_old_id'
-        # temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
-
-
-        # print(temp_df)
-        # print(temp_df.columns)
         
         # Write results to temp file for data validation checks 
         with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
@@ -463,7 +492,9 @@ def load_data_to_fact_sales_table(postgres_connection):
                                                                                     promotion_id, 
                                                                                     promotion_name, 
                                                                                     ticket_sales,
-                                                                                    ticket_sales_date
+                                                                                    ticket_sales_date,
+                                                                                    customer_sk,
+                                                                                    agent_sk
                                                                         FROM {active_schema_name}.{src_table_name}
         '''
  
