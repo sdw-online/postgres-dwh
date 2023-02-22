@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_dim_destinations_table(postgres_connection):
+def load_data_to_dim_promotions_table(postgres_connection):
     try:
         
         # Set up constants
@@ -128,8 +128,8 @@ def load_data_to_dim_destinations_table(postgres_connection):
         previous_schema_name            =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
-        src_table_name                  =   'dim_flight_destinations_tbl'
-        table_name                      =   'dim_destinations_tbl'
+        src_table_name                  =   'dim_flight_promotion_deals_tbl'
+        table_name                      =   'dim_promotions_tbl'
         data_warehouse_layer            =   'DWH'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -368,16 +368,16 @@ def load_data_to_dim_destinations_table(postgres_connection):
 
         # Pull sales_agents_tbl data from dwh tables in Postgres database 
         try:
-            fetch_dim_flight_destinations_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            fetch_dim_flight_promotion_deals_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
             '''
-            root_logger.debug(fetch_dim_flight_destinations_tbl)
+            root_logger.debug(fetch_dim_flight_promotion_deals_tbl)
             root_logger.info("")
             root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
             root_logger.info("")
 
 
             # Execute SQL command to interact with Postgres database
-            cursor.execute(fetch_dim_flight_destinations_tbl)
+            cursor.execute(fetch_dim_flight_promotion_deals_tbl)
 
             # Extract header names from cursor's description
             postgres_table_headers = [header[0] for header in cursor.description]
@@ -398,8 +398,6 @@ def load_data_to_dim_destinations_table(postgres_connection):
             print(e)
 
 
-
-        
         # Write results to temp file for data validation checks 
         with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
             temp_results_file_df_to_json = temp_df.to_json(orient="records")
@@ -412,23 +410,24 @@ def load_data_to_dim_destinations_table(postgres_connection):
         
 
         # Set up SQL statements for table deletion and validation check  
-        delete_dim_flight_destinations_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_dim_flight_promotion_deals_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_dim_flight_destinations_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_flight_promotion_deals_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_dim_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
+        create_dim_flight_promotion_deals_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
                                                                         SELECT 
-                                                                                    flight_sk  as flight_id,
-                                                                                    flight_id  as flight_old_id,
-                                                                                    arrival_city ,
-                                                                                    departure_city  
+                                                                                flight_promotion_deal_sk ,
+                                                                                promotion_id,
+                                                                                promotion_name  ,
+                                                                                flight_booking_id  ,
+                                                                                applied_discount 
                                                                         FROM {active_schema_name}.{src_table_name}
         '''
  
-        check_if_dim_flight_destinations_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_flight_promotion_deals_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -436,7 +435,7 @@ def load_data_to_dim_destinations_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_dim_flight_destinations_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_dim_flight_promotion_deals_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -479,12 +478,12 @@ def load_data_to_dim_destinations_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_dim_flight_destinations_tbl_if_exists)
+        cursor.execute(delete_dim_flight_promotion_deals_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_dim_flight_destinations_tbl_is_deleted)
+        cursor.execute(check_if_dim_flight_promotion_deals_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -493,14 +492,14 @@ def load_data_to_dim_destinations_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_flight_promotion_deals_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_flight_promotion_deals_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -508,12 +507,12 @@ def load_data_to_dim_destinations_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_dim_flight_destinations_tbl)
+        cursor.execute(create_dim_flight_promotion_deals_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_dim_flight_destinations_tbl_exists)
+        cursor.execute(check_if_dim_flight_promotion_deals_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -522,14 +521,14 @@ def load_data_to_dim_destinations_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_flight_promotion_deals_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_flight_promotion_deals_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -537,7 +536,7 @@ def load_data_to_dim_destinations_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_dim_flight_destinations_tbl)
+        cursor.execute(add_data_lineage_to_dim_flight_promotion_deals_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -923,5 +922,5 @@ def load_data_to_dim_destinations_table(postgres_connection):
 
 
 
-load_data_to_dim_destinations_table(postgres_connection)
+load_data_to_dim_promotions_table(postgres_connection)
 

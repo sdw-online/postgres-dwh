@@ -101,7 +101,7 @@ else:
 # Begin the data extraction process
 root_logger.info("")
 root_logger.info("---------------------------------------------")
-root_logger.info("Beginning the semantic process...")
+root_logger.info("Beginning the dwh process...")
 
 
 postgres_connection = psycopg2.connect(
@@ -115,7 +115,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def load_data_to_dim_customers_table(postgres_connection):
+def load_data_to_dim_destinations_table(postgres_connection):
     try:
         
         # Set up constants
@@ -123,15 +123,13 @@ def load_data_to_dim_customers_table(postgres_connection):
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'dwh_db_server'
         fdw_user                        =   username
+        # fdw_user                        =   'fdw_user'
         previous_db_name                =   'semantic_db'
         previous_schema_name            =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
-
-        src_table_1                     =   'dim_customer_feedbacks_tbl' 
-        src_table_2                     =   'dim_customer_info_tbl'
-
-        table_name                      =   'dim_customers_tbl'
+        src_table_name                  =   'dim_flight_destinations_tbl'
+        table_name                      =   'dim_destinations_tbl'
         data_warehouse_layer            =   'DWH'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -300,7 +298,7 @@ def load_data_to_dim_customers_table(postgres_connection):
         # Import the foreign schema from the previous layer's source table 
         try:
             import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
-                                                LIMIT TO ({src_table_1}, {src_table_2})
+                                                LIMIT TO ({src_table_name})
                                                 FROM SERVER {foreign_server}
                                                 INTO {active_schema_name}
                                                 ;
@@ -311,63 +309,126 @@ def load_data_to_dim_customers_table(postgres_connection):
 
             
             root_logger.info("")
-            root_logger.info(f"Successfully imported the '{src_table_1}' and '{src_table_2}' tables into '{active_db_name}' database . ")
+            root_logger.info(f"Successfully imported the '{src_table_name}' table into '{active_db_name}' database . ")
             root_logger.info("")
 
  
         except psycopg2.Error as e:
             print(e)
             root_logger.error("")
-            root_logger.error(f"Unable to import the '{src_table_1}' and '{src_table_2}' tables into '{active_db_name}' database . ")
+            root_logger.error(f"Unable to import the '{src_table_name}' table into '{active_db_name}' database . ")
             root_logger.error("")
 
 
+
+
+        # ================================================== EXTRACT DATA FROM SOURCE POSTGRES TABLE ==================================================
+            
+        # Extract non-data lineage columns from raw table 
+        try:
+            data_lineage_columns = ['created_at',    
+                                    'updated_at',    
+                                    'source_system', 
+                                    'source_file',   
+                                    'load_timestamp',
+                                    'dwh_layer']
+            
+            desired_sql_columns = []
+            
+
+            get_list_of_column_names    =   f'''            SELECT      column_name 
+                                                            FROM        information_schema.columns 
+                                                            WHERE       table_name = '{src_table_name}'
+                                                            ORDER BY    ordinal_position 
+            '''
+
+            cursor.execute(get_list_of_column_names)
+            postgres_connection.commit()
+
+            list_of_column_names = cursor.fetchall()
+            column_names = [sql_result[0] for sql_result in list_of_column_names]
+            
+
+            total_desired_sql_columns_added = 0
+            for column_name in column_names:
+                if column_name not in data_lineage_columns:
+                    total_desired_sql_columns_added += 1
+                    desired_sql_columns.append(column_name)
+                    root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
+            root_logger.info('')
+            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {(len(list_of_column_names)  - total_desired_sql_columns_added )} columns not included were data lineage columns to be added later via ALTER command. ''')
+            root_logger.info('')
+            root_logger.info('')
+            # root_logger.info(f'{desired_sql_columns}')
+            
+        except psycopg2.Error as e:
+            print(e)
+
+
+
+        # Pull sales_agents_tbl data from dwh tables in Postgres database 
+        try:
+            fetch_dim_flight_destinations_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
+            '''
+            root_logger.debug(fetch_dim_flight_destinations_tbl)
+            root_logger.info("")
+            root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
+            root_logger.info("")
+
+
+            # Execute SQL command to interact with Postgres database
+            cursor.execute(fetch_dim_flight_destinations_tbl)
+
+            # Extract header names from cursor's description
+            postgres_table_headers = [header[0] for header in cursor.description]
+
+
+            # Execute script 
+            postgres_table_results = cursor.fetchall()
+            
+
+            # Use Postgres results to create data frame for sales_agents_tbl
+            sales_agents_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
+
+
+            # Create temporary data frame     
+            temp_df = sales_agents_tbl_df
+
+        except psycopg2.Error as e:
+            print(e)
+
+
+
+        
+        # Write results to temp file for data validation checks 
+        with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
+            temp_results_file_df_to_json = temp_df.to_json(orient="records")
+            temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
+
+        
 
 
         # ================================================== LOAD MDM DATA TO DWH TABLE =======================================
         
 
         # Set up SQL statements for table deletion and validation check  
-        delete_dim_customers_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
+        delete_dim_flight_destinations_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
         '''
 
-        check_if_dim_customers_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+        check_if_dim_flight_destinations_tbl_is_deleted  =   f'''   SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_dim_customers_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} as 
-                                                                SELECT
-                                                                        i.customer_sk as customer_id,
-                                                                        i.customer_id as customer_old_id,
-                                                                        i.first_name,
-                                                                        i.last_name,
-                                                                        i.full_name,
-                                                                        i.email,
-                                                                        i.age,
-                                                                        i.dob,
-                                                                        i.phone_number,
-                                                                        i.nationality,
-                                                                        i.place_of_birth,
-                                                                        i.address,
-                                                                        i.city,
-                                                                        i.state,
-                                                                        i.zip,
-                                                                        i.credit_card,
-                                                                        i.credit_card_provider,
-                                                                        i.customer_contact_preference_id,
-                                                                        i.customer_contact_preference_desc,
-                                                                        i.created_date,
-                                                                        i.last_updated_date,
-                                                                        f.feedback_id,
-                                                                        f.feedback_date,
-                                                                        f.feedback_text
-                                                                    FROM live.dim_customer_info_tbl i
-                                                                    LEFT JOIN live.dim_customer_feedbacks_tbl f ON i.customer_id = f.customer_id;
-
-    
+        create_dim_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
+                                                                        SELECT 
+                                                                                    flight_sk,
+                                                                                    flight_id,
+                                                                                    arrival_city ,
+                                                                                    departure_city  
+                                                                        FROM {active_schema_name}.{src_table_name}
         '''
-
-        check_if_dim_customers_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
+ 
+        check_if_dim_flight_destinations_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
@@ -375,7 +436,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
         # Set up SQL statements for adding data lineage and validation check 
-        add_data_lineage_to_dim_customers_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
+        add_data_lineage_to_dim_flight_destinations_tbl  =   f'''        ALTER TABLE {active_schema_name}.{table_name}
                                                                                 ADD COLUMN  created_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  updated_at                  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                                                                 ADD COLUMN  source_system               VARCHAR(255),
@@ -398,47 +459,6 @@ def load_data_to_dim_customers_table(postgres_connection):
                                                                               
         '''
         
-        check_total_row_count_before_insert_statement   =   f'''   SELECT COUNT(*) FROM {active_schema_name}.{table_name}
-        '''
-
-        # Set up SQL statements for records insert and validation check
-        insert_customers_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (
-                                                                                customer_id,                        
-                                                                                first_name,                         
-                                                                                last_name,
-                                                                                full_name,
-                                                                                email,    
-                                                                                age,      
-                                                                                dob,      
-                                                                                phone_number,                       
-                                                                                nationality,                  
-                                                                                place_of_birth,                     
-                                                                                address,  
-                                                                                city,     
-                                                                                state,    
-                                                                                zip,      
-                                                                                credit_card,
-                                                                                credit_card_provider,
-                                                                                customer_contact_preference_id,
-                                                                                customer_contact_preference_desc,  
-                                                                                created_date,
-                                                                                last_updated_date,
-                                                                                created_at,
-                                                                                updated_at,
-                                                                                source_system,
-                                                                                source_file,
-                                                                                load_timestamp,
-                                                                                dwh_layer
-                                                                            )
-                                                                            VALUES (
-                                                                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                                                                            );
-        '''
-
-        check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
-        '''
-
-
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
@@ -459,12 +479,12 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(delete_dim_customers_tbl_if_exists)
+        cursor.execute(delete_dim_flight_destinations_tbl_if_exists)
         DELETING_SCHEMA_PROCESSING_END_TIME     =   time.time()
 
         
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_START_TIME     =   time.time()
-        cursor.execute(check_if_dim_customers_tbl_is_deleted)
+        cursor.execute(check_if_dim_flight_destinations_tbl_is_deleted)
         DELETING_SCHEMA_VAL_CHECK_PROCESSING_END_TIME       =   time.time()
 
 
@@ -473,14 +493,14 @@ def load_data_to_dim_customers_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE DELETION SUCCESS: Managed to drop {table_name} table in {active_db_name}. Now advancing to recreating table... ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customers_tbl_is_deleted} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_is_deleted} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE DELETION FAILURE: Unable to delete {table_name}. This table may have objects that depend on it (use DROP TABLE ... CASCADE to resolve) or it doesn't exist. ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customers_tbl_is_deleted} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_is_deleted} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -488,12 +508,12 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
-        cursor.execute(create_dim_customers_tbl)
+        cursor.execute(create_dim_flight_destinations_tbl)
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
         CREATING_TABLE_VAL_CHECK_PROCESSING_START_TIME  =   time.time()
-        cursor.execute(check_if_dim_customers_tbl_exists)
+        cursor.execute(check_if_dim_flight_destinations_tbl_exists)
         CREATING_TABLE_VAL_CHECK_PROCESSING_END_TIME    =   time.time()
 
 
@@ -502,14 +522,14 @@ def load_data_to_dim_customers_table(postgres_connection):
             root_logger.debug(f"")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.info(f"TABLE CREATION SUCCESS: Managed to create {table_name} table in {active_db_name}.  ")
-            root_logger.info(f"SQL Query for validation check:  {check_if_dim_customers_tbl_exists} ")
+            root_logger.info(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_exists} ")
             root_logger.info(f"=============================================================================================================================================================================")
             root_logger.debug(f"")
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.error(f"TABLE CREATION FAILURE: Unable to create {table_name}... ")
-            root_logger.error(f"SQL Query for validation check:  {check_if_dim_customers_tbl_exists} ")
+            root_logger.error(f"SQL Query for validation check:  {check_if_dim_flight_destinations_tbl_exists} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
 
@@ -517,7 +537,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Add data lineage to table 
         ADDING_DATA_LINEAGE_PROCESSING_START_TIME   =   time.time()
-        cursor.execute(add_data_lineage_to_dim_customers_tbl)
+        cursor.execute(add_data_lineage_to_dim_flight_destinations_tbl)
         ADDING_DATA_LINEAGE_PROCESSING_END_TIME     =   time.time()
 
         
@@ -545,7 +565,105 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
 
-      
+    
+
+        # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
+
+        note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
+        note_2 = """      Involving the relevant stakeholders in the process of identifying sensitive data fields from the source data is a crucial step to protecting confidential information. """
+        note_3 = """      Neglecting this step could expose customers and the wider company to serious harm (e.g. cybersecurity hacks, data breaches, unauthorized access to sensitive data), so approach this task with the utmost care. """
+        
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning('================================================')
+        root_logger.warning('           SENSITIVE COLUMN IDENTIFICATION              ')
+        root_logger.warning('================================================')
+        root_logger.warning(f'')
+        root_logger.error(f'{note_1}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_2}')
+        root_logger.error(f'')
+        root_logger.error(f'{note_3}')
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+        root_logger.warning(f'Now beginning the sensitive column identification stage ...')
+        root_logger.warning(f'')
+        
+
+        # Add a flag for confirming if sensitive data fields have been highlighted  
+        sensitive_columns_selected = ['customer_id',
+                            'num_adults',
+                            'num_children',
+                            'sales_agent_id'
+                            ]
+        
+        
+
+        if len(sensitive_columns_selected) == 0:
+            SENSITIVE_COLUMNS_IDENTIFIED = False
+            root_logger.error(f"ERROR: No sensitive columns have been selected for '{table_name}' table ")
+            root_logger.warning(f'')
+        
+        elif sensitive_columns_selected[0] is None:
+            SENSITIVE_COLUMNS_IDENTIFIED = True
+            root_logger.error(f"There are no sensitive columns for the '{table_name}' table ")
+            root_logger.warning(f'')
+
+        else:
+            SENSITIVE_COLUMNS_IDENTIFIED = True
+            root_logger.warning(f'Here are the columns considered sensitive in this table ...')
+            root_logger.warning(f'')
+
+        
+        if SENSITIVE_COLUMNS_IDENTIFIED is False:
+            sql_statement_for_listing_columns_in_table = f"""        
+            SELECT column_name FROM information_schema.columns 
+            WHERE   table_name = '{table_name}'
+            ORDER BY ordinal_position 
+            """
+            cursor.execute(get_list_of_column_names)
+            list_of_column_names = cursor.fetchall()
+            column_names = [sql_result[0] for sql_result in list_of_column_names]
+            
+            root_logger.warning(f"You are required to select the sensitive columns in this table. If there are none, enter 'None' in the 'sensitive_columns_selected' object.")
+            root_logger.warning(f'')
+            root_logger.warning(f"Here are the columns to choose from:")
+            root_logger.warning(f'')
+            total_sensitive_columns = 0
+            for sensitive_column_name in column_names:
+                total_sensitive_columns += 1
+                root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
+
+
+
+            root_logger.warning(f'')
+            root_logger.warning(f'You can use this SQL query to list the columns in this table:')
+            root_logger.warning(f'              {sql_statement_for_listing_columns_in_table}                ')
+        
+        else:
+            total_sensitive_columns = 0
+            for sensitive_column_name in sensitive_columns_selected:
+                total_sensitive_columns += 1
+                root_logger.warning(f'''{total_sensitive_columns} : '{sensitive_column_name}'  ''')
+            if sensitive_columns_selected[0] is not None:
+                root_logger.warning(f'')
+                root_logger.warning(f'')
+                root_logger.warning(f'Decide on the appropriate treatment for these tables. A few options to consider include:')
+                root_logger.warning(f'''1. Masking fields               -   This involves replacing sensitive columns with alternative characters e.g.  'xxxx-xxxx', '*****', '$$$$'. ''')
+                root_logger.warning(f'''2. Encrypting fields            -   This is converting sensitive columns to cipher text (unreadable text format).        ''')
+                root_logger.warning(f'''3. Role-based access control    -   Placing a system that delegates privileges based on team members' responsibilities        ''')
+            
+            root_logger.warning(f'')
+            root_logger.warning(f'Now terminating the sensitive column identification stage ...')
+            root_logger.warning(f'Sensitive column identification stage ended. ')
+            root_logger.warning(f'')
+
+
+        root_logger.warning(f'')
+        root_logger.warning(f'')
+
+
+
 
 
         # ======================================= DATA PROFILING METRICS =======================================
@@ -594,6 +712,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
 
+
         # Display data profiling metrics
         
         root_logger.info(f'')
@@ -615,7 +734,6 @@ def load_data_to_dim_customers_table(postgres_connection):
         root_logger.info(f'')
 
 
-        
         for column_name in column_names:
             cursor.execute(f'''
                     SELECT COUNT(*)
@@ -760,8 +878,6 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
 
-        
-
 
         root_logger.info(f'')
         root_logger.info('================================================')
@@ -769,13 +885,10 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Add conditional statements for data profile metrics 
 
-
         if failed_rows_upload_count > 0:
             root_logger.error(f"ERROR: A total of {failed_rows_upload_count} records failed to upload to '{table_name}' table....")
             raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
         
-
-
         else:
             root_logger.debug("")
             root_logger.info("DATA VALIDATION SUCCESS: All general DQ checks passed! ")
@@ -810,5 +923,5 @@ def load_data_to_dim_customers_table(postgres_connection):
 
 
 
-load_data_to_dim_customers_table(postgres_connection)
+load_data_to_dim_destinations_table(postgres_connection)
 

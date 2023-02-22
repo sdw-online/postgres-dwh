@@ -420,8 +420,8 @@ def load_data_to_dim_flights_table(postgres_connection):
         # Set up SQL statements for table creation and validation check 
         create_dim_flight_bookings_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
                                                                         SELECT 
-                                                                                    flight_booking_sk as flight_booking_id, 
-                                                                                    flight_booking_id as flight_booking_old_id, 
+                                                                                    flight_booking_sk, 
+                                                                                    flight_booking_id, 
                                                                                     booking_date, 
                                                                                     checked_in, 
                                                                                     confirmation_code, 

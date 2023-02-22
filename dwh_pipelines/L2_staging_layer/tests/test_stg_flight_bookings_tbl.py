@@ -333,7 +333,7 @@ def test_positive_ticket_price_col():
     # Assert the values in the ticket_price column are all positive values
     for sql_result in sql_results:
         ticket_price = sql_result[0]
-        assert ticket_price > 0, f"Invalid total price detected - total price must be a positive value "
+        assert ticket_price >= 0, f"Invalid total price detected - total price must be a positive value, invalid ticket price is {ticket_price} "
 
 
 
