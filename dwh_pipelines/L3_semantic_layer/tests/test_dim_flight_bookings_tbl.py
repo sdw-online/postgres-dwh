@@ -186,6 +186,8 @@ def test_column_data_types():
 
     # Create a dictionary that specifies the expected data types for each column  
     expected_data_types = {
+        'flight_sk'                 :           "integer",
+        'customer_sk'                 :           "integer",
         'confirmation_code'                 :           "character varying",
         'booking_date'                      :           "date",
         'checked_in'                        :           "character varying",
