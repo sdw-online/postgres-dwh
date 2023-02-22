@@ -337,8 +337,8 @@ def load_data_to_dim_customers_table(postgres_connection):
         # Set up SQL statements for table creation and validation check 
         create_dim_customers_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name} as 
                                                                 SELECT
-                                                                        i.customer_sk as customer_id,
-                                                                        i.customer_id as customer_old_id,
+                                                                        i.customer_sk ,
+                                                                        i.customer_id ,
                                                                         i.first_name,
                                                                         i.last_name,
                                                                         i.full_name,
