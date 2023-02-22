@@ -123,8 +123,8 @@ def load_data_to_dim_customers_table(postgres_connection):
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'dwh_db_server'
         fdw_user                        =   username
-        previous_db_name                =   'semantic_db'
-        previous_schema_name            =   'prod'
+        src_db_name                =   'semantic_db'
+        src_schema_name            =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
 
@@ -254,7 +254,7 @@ def load_data_to_dim_customers_table(postgres_connection):
         try: 
             create_foreign_server = f'''    CREATE SERVER {foreign_server}
                                                 FOREIGN DATA WRAPPER {fdw_extension}
-                                                OPTIONS (host '{host}', dbname '{previous_db_name}', port '{port}')
+                                                OPTIONS (host '{host}', dbname '{src_db_name}', port '{port}')
                                                 ;
             '''
             cursor.execute(create_foreign_server)
@@ -288,7 +288,7 @@ def load_data_to_dim_customers_table(postgres_connection):
             root_logger.info("")
             root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
             root_logger.info("")
-            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{previous_db_name}' database. ")
+            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{src_db_name}' database. ")
             root_logger.info("")
             root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
             root_logger.info("")
@@ -299,7 +299,7 @@ def load_data_to_dim_customers_table(postgres_connection):
 
         # Import the foreign schema from the previous layer's source table 
         try:
-            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
+            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{src_schema_name}"
                                                 LIMIT TO ({src_table_1}, {src_table_2})
                                                 FROM SERVER {foreign_server}
                                                 INTO {active_schema_name}

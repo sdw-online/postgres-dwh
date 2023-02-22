@@ -124,8 +124,8 @@ def load_data_to_fact_sales_table(postgres_connection):
         foreign_server                  =   'dwh_db_server'
         fdw_user                        =   username
         # fdw_user                        =   'fdw_user'
-        previous_db_name                =   'semantic_db'
-        previous_schema_name            =   'prod'
+        src_db_name                =   'semantic_db'
+        src_schema_name            =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
         src_table_name                  =   'dim_flight_ticket_sales_tbl'
@@ -252,7 +252,7 @@ def load_data_to_fact_sales_table(postgres_connection):
         try: 
             create_foreign_server = f'''    CREATE SERVER {foreign_server}
                                                 FOREIGN DATA WRAPPER {fdw_extension}
-                                                OPTIONS (host '{host}', dbname '{previous_db_name}', port '{port}')
+                                                OPTIONS (host '{host}', dbname '{src_db_name}', port '{port}')
                                                 ;
             '''
             cursor.execute(create_foreign_server)
@@ -286,7 +286,7 @@ def load_data_to_fact_sales_table(postgres_connection):
             root_logger.info("")
             root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
             root_logger.info("")
-            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{previous_db_name}' database. ")
+            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{src_db_name}' database. ")
             root_logger.info("")
             root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
             root_logger.info("")
@@ -298,11 +298,10 @@ def load_data_to_fact_sales_table(postgres_connection):
 
         # Import the foreign schema from the previous layer's source table 
         try:
-            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{previous_schema_name}"
+            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{src_schema_name}"
                                                -- LIMIT TO ({src_table_name})
                                                 FROM SERVER {foreign_server}
                                                 INTO {active_schema_name}
-                                                OPTIONS (import_foreign_keys 'true')
                                                 ;
             '''
 
@@ -322,61 +321,20 @@ def load_data_to_fact_sales_table(postgres_connection):
             root_logger.error("")
 
         
-        # Add the foreign key constraints 
-        try:
-            add_foreign_key_columns = f'''          ALTER TABLE {active_schema_name}.{src_table_name}
-                                                        ADD COLUMN customer_sk INTEGER,
-                                                        ADD COLUMN sales_agent_sk INTEGER
-                                                        ;
-            '''
-
-
-            add_fk_constraint_to_table = f'''       ALTER TABLE {active_schema_name}.{src_table_name}
-                                                                        ADD CONSTRAINT   table1_customer_sk_fkey     FOREIGN KEY     (customer_sk)
-                                                                        REFERENCES          {active_schema_name}.dim_customer_info_tbl(customer_sk),
-                                                                    
-                                                                        ADD CONSTRAINT   table1_sales_agent_sk_fkey   FOREIGN KEY     (sales_agent_sk)
-                                                                        REFERENCES          {active_schema_name}.dim_sales_agents_tbl(agent_sk)
-
-            '''
-
-            add_table_joins_to_table  = f'''        UPDATE {active_schema_name}.{src_table_name} ts
-                                                                        SET customer_sk = c.customer_sk
-                                                                        FROM {active_schema_name}.dim_customer_info_tbl c
-                                                                        WHERE ts.customer_id = c.customer_id
-                                                                        ;
-
-                                                                    
-                                                                    UPDATE {active_schema_name}.{src_table_name} ts
-                                                                        SET sales_agent_sk = sa.agent_sk
-                                                                        FROM {active_schema_name}.dim_sales_agents_tbl sa
-                                                                        WHERE ts.agent_id = sa.id
-                                                                        ;                                                   
-            '''
-
-            cursor.execute(add_foreign_key_columns)
-            root_logger.debug("")
-            root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
-            root_logger.debug("")
-
-            cursor.execute(add_fk_constraint_to_table)
-            root_logger.debug("")
-            root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
-            root_logger.debug("")
-
-            cursor.execute(add_table_joins_to_table)
-            root_logger.debug("")
-            root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
-            root_logger.debug("")
-            
-    
-            postgres_connection.commit()
-        
-        except psycopg2.Error as e:
-            print(e)
-            root_logger.error("")
-            root_logger.error(f"Unable to import the foreign keys into '{src_table_name}' table and '{active_db_name}' database . ")
-            root_logger.error("")
+        # # Add the foreign key constraints 
+        # try:
+        #     grant_local_user_access_to_foreign_table = f'''GRANT USAGE ON FOREIGN TABLE {active_schema_name}.{src_table_name} TO {username};
+        #                                                     GRANT SELECT ON {active_schema_name}.{src_table_name} TO {username};
+        #     '''
+                    
+        #     cursor.execute(grant_local_user_access_to_foreign_table)
+        #     postgres_connection.commit()
+                
+        # except psycopg2.Error as e:
+        #     print(e)
+        #     root_logger.error("")
+        #     root_logger.error(f"Unable to grant '{username}' user access to SELECT on '{src_table_name}' table in '{active_db_name}' database . ")
+        #     root_logger.error("")
 
 
 
