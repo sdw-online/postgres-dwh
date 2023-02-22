@@ -142,13 +142,10 @@ def generate_travel_data():
 
 
    # Write dataframe to JSON file
-  
-#   with open(f'{DATASETS_LOCATION_PATH}/customer_info.json', 'r') as customer_info_file:
-#       customer_info_df_to_json = customer_info_df.to_json(orient="records", default_handler=str)
-#       customer_info_df_to_json = json.loads(customer_info_df_to_json)
-#       customer_info_file.write(json.dumps(customer_info_df_to_json, indent=4, sort_keys=True)) 
-   
-
+  with open(f'{DATASETS_LOCATION_PATH}/customer_info.json', 'w') as customer_info_file:
+      customer_info_df_to_json = customer_info_df.to_json(orient="records", default_handler=str)
+      customer_info_df_to_json = json.loads(customer_info_df_to_json)
+      customer_info_file.write(json.dumps(customer_info_df_to_json, indent=4, sort_keys=True)) 
     
 
  
@@ -188,20 +185,22 @@ def generate_travel_data():
 
 
 
-
-  src_file_path = os.path.join(DATASETS_LOCATION_PATH, 'customer_info.json')
+  src_file_path = os.path.join(DATASETS_LOCATION_PATH, 'flight_schedules.json')
+ 
   
   if os.path.exists(src_file_path):
-      with open(src_file_path, 'r') as json_file:
-          travel_data = [json.loads(line) for line in json_file]
+    with open(src_file_path, 'r') as json_file:
+        flight_schedules = [json.loads(line) for line in json_file]
   else:
-      travel_data = []
-  
+      flight_schedules = []
+
   with open(src_file_path, 'a') as json_file:
       for schedule in load_flight_schedules_via_generator():
-          travel_data.append(schedule)
-          json.dump(schedule, json_file)
+          flight_schedules.append(schedule)
+          json.dump(schedule, json_file, default=str, indent=5)
+          json_file.write(',')
           json_file.write('\n')
+
 
 
  
