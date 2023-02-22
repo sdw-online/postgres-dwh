@@ -123,9 +123,8 @@ def load_data_to_fact_sales_table(postgres_connection):
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'dwh_db_server'
         fdw_user                        =   username
-        # fdw_user                        =   'fdw_user'
-        src_db_name                =   'semantic_db'
-        src_schema_name            =   'prod'
+        src_db_name                     =   'semantic_db'
+        src_schema_name                 =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
         src_table_name                  =   'dim_flight_ticket_sales_tbl'
@@ -294,6 +293,85 @@ def load_data_to_fact_sales_table(postgres_connection):
         except psycopg2.Error as e:
             print(e)
 
+        # Create foreign table 
+
+        try:
+            create_foreign_table = f'''     CREATE FOREIGN TABLE {src_table_name} (
+                                                    flight_booking_sk       INTEGER,
+                                                    flight_booking_id        UUID,
+                                                    agent_first_name        VARCHAR,
+                                                    agent_id                UUID,
+                                                    agent_last_name         VARCHAR,
+                                                    customer_first_name     VARCHAR,
+                                                    customer_id             UUID,
+                                                    customer_last_name      VARCHAR,
+                                                    discount                NUMERIC(10, 2),
+                                                    promotion_id            UUID,
+                                                    promotion_name          VARCHAR,
+                                                    ticket_sales            VARCHAR,
+                                                    ticket_sales_date       DATE
+                                                )
+                                                SERVER {foreign_server}
+                                                OPTIONS (import mapping 'flight_booking_sk=flight_booking_sk,
+                                                                        flight_booking_id=flight_booking_id,
+                                                                        agent_first_name=agent_first_name,
+                                                                        agent_id=agent_id,
+                                                                        agent_last_name=agent_last_name,
+                                                                        customer_first_name=customer_first_name,
+                                                                        customer_id=customer_id,
+                                                                        customer_last_name=customer_last_name,
+                                                                        discount=discount,
+                                                                        promotion_id=promotion_id,
+                                                                        promotion_name=promotion_name,
+                                                                        ticket_sales=ticket_sales,
+                                                                        ticket_sales_date=ticket_sales_date,
+                                                                        customer_sk=customer_sk,
+                                                                        sales_agent_sk=sales_agent_sk'
+                                                                        )
+
+            '''
+
+            add_surrogate_key_columns_to_foreign_table = f'''    ALTER FOREIGN TABLE {src_table_name}
+                                                                        ADD COLUMN customer_sk INTEGER,
+                                                                        ADD COLUMN sales_agent_sk INTEGER;
+
+            '''
+
+            fill_surrogate_key_columns_with_data = f'''         UPDATE {src_table_name}
+                                                                        SET 
+                                                                            customer_sk     =   (SELECT customer_sk 
+                                                                                                 FROM {src_schema_name}.dim_customer_info_tbl 
+                                                                                                 WHERE customer_id = {src_table_name}.customer_id
+                                                                                                 ),
+                                                                            sales_agent_sk =    (SELECT sales_agent_sk 
+                                                                                                FROM {src_schema_name}.dim_sales_agents_tbl 
+                                                                                                WHERE agent_id = {src_table_name}.agent_id
+                                                                                                );
+
+            '''
+            
+            
+            
+            cursor.execute(create_foreign_table)
+            cursor.execute(add_surrogate_key_columns_to_foreign_table)
+            cursor.execute(fill_surrogate_key_columns_with_data)
+            postgres_connection.commit()
+            root_logger.error("")
+            root_logger.error(f"Successfully created the '{src_table_name}' foreign table into '{active_db_name}' database . ")
+            root_logger.error("")
+
+
+
+        except psycopg2.Error as e:
+            print(e)
+            root_logger.error("")
+            root_logger.error(f"Unable to create the '{src_table_name}' foreign table into '{active_db_name}' database . ")
+            root_logger.error("")
+
+
+
+
+
 
 
         # Import the foreign schema from the previous layer's source table 
@@ -302,6 +380,7 @@ def load_data_to_fact_sales_table(postgres_connection):
                                                -- LIMIT TO ({src_table_name})
                                                 FROM SERVER {foreign_server}
                                                 INTO {active_schema_name}
+                                                OPTIONS (import mapping '' )
                                                 ;
             '''
 
