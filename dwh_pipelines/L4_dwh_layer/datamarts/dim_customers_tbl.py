@@ -363,8 +363,6 @@ def load_data_to_dim_customers_table(postgres_connection):
                                                                         f.feedback_text
                                                                     FROM live.dim_customer_info_tbl i
                                                                     LEFT JOIN live.dim_customer_feedbacks_tbl f ON i.customer_id = f.customer_id;
-
-    
         '''
 
         check_if_dim_customers_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );

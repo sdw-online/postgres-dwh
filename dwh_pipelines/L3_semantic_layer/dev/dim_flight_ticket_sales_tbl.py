@@ -559,7 +559,7 @@ def load_data_to_dim_flight_ticket_sales_table(postgres_connection):
                                                                     WHERE ts.agent_id = sa.id
                                                                     ;                                                   
         '''
-     
+
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
