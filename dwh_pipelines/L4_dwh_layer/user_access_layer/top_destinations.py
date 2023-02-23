@@ -118,7 +118,7 @@ def query_postgres_dwh(postgres_connection):
         
         active_schema_name              =   'reporting'
         active_db_name                  =    database
-        table_name                      =   'top_destination'
+        table_name                      =   'top_destinations'
         data_warehouse_layer            =   'DWH - UAL'
         column_index                    =   0 
         total_null_values_in_table      =   0 

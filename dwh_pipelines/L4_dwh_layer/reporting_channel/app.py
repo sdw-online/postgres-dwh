@@ -5,6 +5,12 @@ import configparser
 from pathlib import Path
 import logging, coloredlogs
 import pandas as pd
+import dash 
+import dash_core_components as dcc
+import dash_html_components as html
+import plotly.express as px
+
+
 
 # ================================================ LOGGER ================================================
 
@@ -117,12 +123,15 @@ def query_postgres_dwh(postgres_connection):
         
         # Set up constants
         
-        active_schema_name              =   'reporting'
-        active_db_name                  =    database
-        table_name                      =   'top_destination'
-        data_warehouse_layer            =   'DWH - UAL'
-        column_index                    =   0 
-        total_null_values_in_table      =   0 
+        active_schema_name                  =      'reporting'
+        active_db_name                      =       database
+        sql_query_1                         =      f'SELECT * FROM {active_schema_name}.avg_ticket_prices_by_year'
+        sql_query_2                         =      f'SELECT * FROM {active_schema_name}.ticket_sales_by_age'
+        sql_query_3                         =      f'SELECT * FROM {active_schema_name}.top_destinations'
+        sql_query_4                         =      f'SELECT * FROM {active_schema_name}.total_sales_by_destination'
+        data_warehouse_layer                =      'DWH - UAL'
+        column_index                        =      0 
+        total_null_values_in_table          =      0 
         
 
 
@@ -143,65 +152,16 @@ def query_postgres_dwh(postgres_connection):
         elif postgres_connection.closed != 0:
             raise ConnectionError("CONNECTION ERROR: Unable to connect to the demo_company database...") 
         
-    
-
-        # ================================================== ENABLING CROSS-DATABASE QUERYING VIA FDW ==================================================
-
-        # Set up SQL statements for schema creation and validation check 
-        try:
-             
-            create_schema   =    f'''    CREATE SCHEMA IF NOT EXISTS {active_schema_name};
-            '''
-
-            check_if_schema_exists  =   f'''   SELECT schema_name from information_schema.schemata WHERE schema_name= '{active_schema_name}';
-            '''
-
-
-            # Create schema in Postgres
-            CREATING_SCHEMA_PROCESSING_START_TIME   =   time.time()
-            cursor.execute(create_schema)
-            root_logger.info("")
-            root_logger.info(f"Successfully created {active_schema_name} schema. ")
-            root_logger.info("")
-            CREATING_SCHEMA_PROCESSING_END_TIME     =   time.time()
-
-
-            CREATING_SCHEMA_VAL_CHECK_START_TIME    =   time.time()
-            cursor.execute(check_if_schema_exists)
-            CREATING_SCHEMA_VAL_CHECK_END_TIME      =   time.time()
-
-            
-
-            sql_result = cursor.fetchone()[0]
-            if sql_result:
-                root_logger.debug(f"")
-                root_logger.info(f"=================================================================================================")
-                root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create '{active_schema_name}' schema in '{active_db_name}' ")
-                root_logger.info(f"Schema name in Postgres: '{sql_result}' ")
-                root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
-                root_logger.info(f"=================================================================================================")
-                root_logger.debug(f"")
-
-            else:
-                root_logger.debug(f"")
-                root_logger.error(f"=================================================================================================")
-                root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for '{active_db_name}'...")
-                root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
-                root_logger.error(f"=================================================================================================")
-                root_logger.debug(f"")
-
-            postgres_connection.commit()
-
-        except psycopg2.Error as e:
-            print(e)
-
-
 
 
         # ================================================== CREATE DASHBOARD VIA PLOTLY-DASH =======================================
         
 
-        
+        avg_ticket_prices_by_year_df                =       pd.read_sql(sql_query_1, postgres_connection)
+        ticket_sales_by_age_df                      =       pd.read_sql(sql_query_2, postgres_connection)
+        top_destinations_df                         =       pd.read_sql(sql_query_3, postgres_connection)
+        total_sales_by_destination_df               =       pd.read_sql(sql_query_4, postgres_connection)
+
 
 
 
