@@ -1763,9 +1763,9 @@ def run_dwh_layer_flow():
     get_run_logger().info("SUCCESS! Completed creating aggregate table no 4 ! ")
 
 
-    render_dash_visualizations_for_aggregates()
-    root_logger.info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
-    get_run_logger().info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
+    # render_dash_visualizations_for_aggregates()
+    # root_logger.info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
+    # get_run_logger().info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
 
 
 # ============================================== FLOW RUNS ==============================================
