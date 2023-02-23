@@ -72,6 +72,86 @@ def generate_travel_data():
   NO_OF_ACCOMMODATION_BOOKINGS          =       4000
 
 
+  LOCATIONS = ['Paris', 'Rome', 'Barcelona', 'Amsterdam', 'London', 'New York', 'Sydney', 'Bali', 'Maldives', 'Tokyo',
+                  'Dubai', 'Bangkok', 'Istanbul', 'Phuket', 'Bora Bora', 'Santorini', 'Cancun', 
+                  'Maui', 'Serengeti', 'Venice', 'Prague']
+  PROMOTION_NAMES = [
+    "Winter Wanderlust Sale",
+    "Escape the Winter Blues",
+    "Spring Fling Deals",
+    "Summer Sizzlers Sale",
+    "Fall for Travel Deals",
+    "Last-Minute Getaway Sale",
+    "Weekend Escape Deals",
+    "Family Vacation Deals",
+    "Business Travel Specials",
+    "Early Bird Booking Discounts",
+    "Holiday Travel Deals",
+    "Romantic Getaway Packages",
+    "Adventure Travel Discounts",
+    "Luxury Travel Deals",
+    "Group Travel Discounts",
+    "Student Travel Specials",
+    "Senior Citizen Discounts",
+    "Military Travel Discounts",
+    "First Class Upgrade Deals",
+    "Free Companion Ticket Offers"
+]
+
+
+
+  CUSTOMER_FEEDBACKS = [    "The flight was great! The staff was friendly and accommodating.",    
+                            "The flight was on time and the seats were comfortable.",    
+                            "The food on the flight was tasty and filling.",    
+                            "The flight attendants were helpful and attentive.",    
+                            "I had a great experience with this airline. The flight was smooth and hassle-free.",    
+                            "The legroom on the flight was decent and I was able to stretch out comfortably.",    
+                            "The flight was delayed, but the staff kept us informed and made sure we were comfortable.",    
+                            "The seats were cramped and uncomfortable, but the flight was on time.",    
+                            "The food was mediocre and there weren't many options to choose from.",    
+                            "The flight attendants seemed disinterested and were not very helpful.",    
+                            "The flight was okay. It wasn't great, but it wasn't terrible either.",    
+                            "The seats were a bit cramped, but the flight was on time.",    
+                            "The food was just okay. Nothing special.",    
+                            "The flight attendants were friendly enough, but not very attentive.",    
+                            "The flight was delayed and there was no communication from the staff.",    
+                            "The seats were uncomfortable and I couldn't get any sleep on the flight.",    
+                            "The flight was a disaster. It was delayed and there were no updates from the staff.",    
+                            "The food was terrible and I couldn't even finish it.",    
+                            "The flight attendants were rude and unprofessional.",    
+                            "The flight was very bumpy and I was feeling sick the whole time.",
+                            "I had an amazing experience flying with this airline! The staff was friendly and accommodating.",
+                            "My flight was delayed by several hours, but the airline did their best to keep us informed and comfortable during the wait.",
+                            "The seats on the plane were a bit uncomfortable, but the in-flight entertainment made up for it.",
+                            "I was disappointed with the food on the flight. It didn't taste very good and there weren't many options.",
+                            "My flight was cancelled at the last minute, but the airline quickly found me another flight and provided me with compensation for the inconvenience.",
+                            "The flight attendants were rude and unhelpful. I didn't feel very welcome on the flight.",
+                            "The flight was smooth and comfortable. I slept through most of it!",
+                            "I had a great time on my flight! The views from the window were breathtaking.",
+                            "I was surprised to find out that I had to pay for my checked luggage. I wish this had been made clearer when I booked my flight.",
+                            "The airline lost my luggage and it took several days for me to get it back. This was a major inconvenience.",
+                            "The flight was on time and everything went smoothly. I have no complaints!",
+                            "I was disappointed that the flight didn't offer any vegetarian meal options.",
+                            "I had a terrible experience flying with this airline. The flight was overbooked and I had to give up my seat.",
+                            "The plane was cramped and uncomfortable. I don't think I'll be flying with this airline again.",
+                            "I had a great experience flying with this airline. The staff was attentive and the food was delicious.",
+                            "The flight attendants were very helpful and went out of their way to make sure I was comfortable.",
+                            "My flight was delayed due to bad weather, but the airline kept us updated and made sure we were comfortable during the wait.",
+                            "I was disappointed to find out that the flight didn't offer any snacks or drinks.",
+                            "The flight was fine, but I was surprised to find out that I had to pay extra for my carry-on bag.",
+                            "I had a great time on my flight. The in-flight entertainment was fantastic!",
+    
+                            ]
+
+
+
+
+
+
+
+
+
+
   # Set up environment variables 
   config = configparser.ConfigParser()
   path = os.path.abspath('dwh_pipelines/local_config.ini')
@@ -299,6 +379,8 @@ def generate_travel_data():
    # Create a Faker instance to generate fake data
   CUSTOMER_FEEDBACKS_PROCESSING_START_TIME = time.time()
   fake = Faker()
+  
+
 
 
   customer_feedbacks = []
@@ -309,7 +391,7 @@ def generate_travel_data():
         'feedback_id' : uuid.uuid4(),
         'customer_id': random.choice(customer_info_df['customer_id']),
         'flight_booking_id': random.choice(flight_bookings_df['flight_booking_id']),
-        'feedback_text': fake.text(),
+        'feedback_text': random.choice(CUSTOMER_FEEDBACKS),
         'feedback_date': fake.date_this_decade()
         }
 
@@ -399,6 +481,7 @@ def generate_travel_data():
    # Create a Faker instance to generate fake data
   FLIGHT_DESTINATION_PROCESSING_START_TIME = time.time()
   fake = Faker()
+  
 
   flight_destinations = []
   
@@ -406,8 +489,8 @@ def generate_travel_data():
     for i in range(NO_OF_FLIGHT_DESTINATIONS):
         flight_destination = {
             'flight_id' : random.choice(flight_bookings_df['flight_id']),
-            'departure_city' : fake.city(),
-            'arrival_city': fake.city() 
+            'departure_city' : random.choice(LOCATIONS),
+            'arrival_city': random.choice(LOCATIONS) 
 
         }
 
@@ -442,9 +525,9 @@ def generate_travel_data():
     for i in range(NO_OF_FLIGHT_PROMOS_AND_DEALS):
         flight_promotion_deal = {
             'promotion_id': uuid.uuid4(),
-            'promotion_name': fake.sentence(), 
+            'promotion_name': random.choice(PROMOTION_NAMES), 
             'flight_booking_id': random.choice(flight_bookings_df['flight_booking_id']),
-            'applied_discount': random.randint(10, 350)
+            'applied_discount': random.randint(1, 50)
 
         }
         yield flight_promotion_deal

@@ -194,16 +194,14 @@ def render_dash_visualizations(postgres_connection):
         root_logger.info('================================================')
 
 
-        # Commit the changes made in Postgres 
+        # Run the app  
+        app.run_server(debug=True)
         root_logger.info("Now rendering Dash app....")
 
 
     except psycopg2.Error as e:
             root_logger.info(e)
         
-        # start the app
-    if __name__ == '__main__':
-        app.run_server(debug=True)
 
 
 
