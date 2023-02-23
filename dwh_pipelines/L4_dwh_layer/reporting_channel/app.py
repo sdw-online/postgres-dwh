@@ -1,16 +1,14 @@
 import os 
-import time 
 import psycopg2
 import configparser
 from pathlib import Path
 import logging, coloredlogs
 import pandas as pd
 import dash 
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 import plotly.express as px 
 from sqlalchemy import create_engine
-
 
 
 # ================================================ LOGGER ================================================
@@ -101,7 +99,6 @@ else:
     cursor                  =   None
 
 
-
 # Begin the data extraction process
 root_logger.info("")
 root_logger.info("---------------------------------------------")
@@ -118,7 +115,6 @@ postgres_connection = psycopg2.connect(
 
 
 
-
 def render_dash_visualizations(postgres_connection):
     try:
         
@@ -126,19 +122,13 @@ def render_dash_visualizations(postgres_connection):
         
         active_schema_name                  =      'reporting'
         active_db_name                      =       database
-        sql_query_1                         =      f'SELECT * FROM {active_schema_name}.avg_ticket_prices_by_year'
-        sql_query_2                         =      f'SELECT * FROM {active_schema_name}.ticket_sales_by_age'
-        sql_query_3                         =      f'SELECT * FROM {active_schema_name}.top_destinations'
-        sql_query_4                         =      f'SELECT * FROM {active_schema_name}.total_sales_by_destination'
+        sql_query_1                         =      f'''SELECT * FROM {active_schema_name}.avg_ticket_prices_by_year ;   '''
+        sql_query_2                         =      f'''SELECT * FROM {active_schema_name}.ticket_sales_by_age   ;   '''
+        sql_query_3                         =      f'''SELECT * FROM {active_schema_name}.top_destinations ;    '''
+        sql_query_4                         =      f'''SELECT * FROM {active_schema_name}.total_sales_by_destination ;  '''
         sql_alchemy_engine                  =       create_engine(f'postgresql://{username}:{password}@{host}:{port}/{database}')
         data_warehouse_layer                =      'DWH - UAL'
         
-
-
-        # Create a cursor object to execute the PG-SQL commands 
-        cursor      =   postgres_connection.cursor()
-
-
 
         # Validate the Postgres database connection
         if postgres_connection.closed == 0:
@@ -166,10 +156,11 @@ def render_dash_visualizations(postgres_connection):
         postgres_connection.commit()
 
 
-
+        # Create Dash app 
         app = dash.Dash(__name__)
 
 
+        # Create the layout for the Dash app
         app.layout = html.Div([
             html.H1("Flight Booking Data"),
 
@@ -199,13 +190,8 @@ def render_dash_visualizations(postgres_connection):
         ])
 
 
-
-
-
-
         root_logger.info(f'')
         root_logger.info('================================================')
-
 
 
         # Commit the changes made in Postgres 
@@ -215,22 +201,9 @@ def render_dash_visualizations(postgres_connection):
     except psycopg2.Error as e:
             root_logger.info(e)
         
-    finally:
-        
-        # Close the cursor if it exists 
-        if cursor is not None:
-            cursor.close()
-            root_logger.debug("")
-            root_logger.debug("Cursor closed successfully.")
-
-        # Close the database connection to Postgres if it exists 
-        if postgres_connection is not None:
-            postgres_connection.close()
-            root_logger.debug("Session connected to Postgres database closed.")
-
-
-    
-    return app
+        # start the app
+    if __name__ == '__main__':
+        app.run_server(debug=True)
 
 
 
