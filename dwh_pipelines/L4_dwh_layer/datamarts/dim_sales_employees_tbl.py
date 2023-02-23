@@ -130,7 +130,7 @@ def load_data_to_dim_sales_employees_table(postgres_connection):
         active_db_name                  =    database
         src_table_name                  =   'dim_sales_agents_tbl'
         table_name                      =   'dim_sales_employees_tbl'
-        data_warehouse_layer            =   'DWH'
+        data_warehouse_layer            =   'DWH - DATAMART'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
         column_index                    =   0 

@@ -1,13 +1,9 @@
 import os 
-import json
 import time 
-import random
 import psycopg2
-import pandas as pd
 import configparser
 from pathlib import Path
 import logging, coloredlogs
-from datetime import datetime
 
 # ================================================ LOGGER ================================================
 
@@ -35,7 +31,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/L4_dwh_layer/live/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/L4_dwh_layer/user_access_layer/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -120,18 +116,12 @@ def query_postgres_dwh(postgres_connection):
         
         # Set up constants
         
-        src_schema_name                 =   'live'
         active_schema_name              =   'reporting'
         active_db_name                  =    database
-        src_table_name                  =   'dim_accommodation_bookings_tbl'
         table_name                      =   'avg_ticket_prices_by_year'
-        data_warehouse_layer            =   'DWH'
-        source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
-        row_counter                     =   0 
+        data_warehouse_layer            =   'DWH - UAL'
         column_index                    =   0 
         total_null_values_in_table      =   0 
-        successful_rows_upload_count    =   0 
-        failed_rows_upload_count        =   0 
         
 
 
@@ -219,24 +209,25 @@ def query_postgres_dwh(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_aggregate_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
-                                                                        SELECT 		    ROUND(AVG(f.ticket_price), 2) AS avg_ticket_price
-                                                                                        , d.arrival_city  AS arrival_city
-                                                                                        , DATE_PART('year', booking_date) AS booking_year
-                                                                        FROM 		    live.dim_flights_tbl f
-                                                                        INNER JOIN 	    live.dim_destinations_tbl d 
-                                                                        ON 			    f.flight_id = d.flight_id 
+                                                                        SELECT 
+                                                                            ROUND(AVG(f.ticket_price), 2) AS avg_ticket_price
+                                                                            , d.arrival_city  AS arrival_city
+                                                                            , DATE_PART('year', booking_date) AS booking_year
+                                                                        FROM
+                                                                            live.dim_flights_tbl f
+                                                                            INNER JOIN live.dim_destinations_tbl d 
+                                                                                ON f.flight_id = d.flight_id 
+
                                                                         GROUP BY 	    d.arrival_city
                                                                                         , DATE_PART('year', booking_date)
 
-                                                                        order by 	    d.arrival_city
-
+                                                                        ORDER BY 	    d.arrival_city
         '''
  
         check_if_aggregate_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
        
-
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
                                                                 WHERE           table_name      =   '{table_name}'
@@ -246,6 +237,7 @@ def query_postgres_dwh(postgres_connection):
         count_total_no_of_unique_records_in_table   =   f'''        SELECT COUNT(*) FROM 
                                                                             (SELECT DISTINCT * FROM {active_schema_name}.{table_name}) as unique_records   
         '''
+
         get_list_of_column_names    =   f'''                SELECT column_name FROM information_schema.columns 
                                                             WHERE   table_name = '{table_name}'
                                                             ORDER BY ordinal_position 
@@ -495,20 +487,6 @@ def query_postgres_dwh(postgres_connection):
         root_logger.info('================================================')
 
 
-        # Add conditional statements for data profile metrics 
-
-        if failed_rows_upload_count > 0:
-            root_logger.error(f"ERROR: A total of {failed_rows_upload_count} records failed to upload to '{table_name}' table....")
-            raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
-        
-        else:
-            root_logger.debug("")
-            root_logger.info("DATA VALIDATION SUCCESS: All general DQ checks passed! ")
-            root_logger.debug("")
-
-
-
-
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
@@ -530,7 +508,6 @@ def query_postgres_dwh(postgres_connection):
         # Close the database connection to Postgres if it exists 
         if postgres_connection is not None:
             postgres_connection.close()
-            # root_logger.debug("")
             root_logger.debug("Session connected to Postgres database closed.")
 
 

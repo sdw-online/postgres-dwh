@@ -130,7 +130,7 @@ def load_data_to_dim_destinations_table(postgres_connection):
         active_db_name                  =    database
         src_table_name                  =   'dim_flight_destinations_tbl'
         table_name                      =   'dim_destinations_tbl'
-        data_warehouse_layer            =   'DWH'
+        data_warehouse_layer            =   'DWH - DATAMART'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
         column_index                    =   0 
@@ -420,12 +420,12 @@ def load_data_to_dim_destinations_table(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_dim_flight_destinations_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
-                                                                        SELECT 
-                                                                                    flight_sk,
-                                                                                    flight_id,
-                                                                                    arrival_city ,
-                                                                                    departure_city  
-                                                                        FROM {active_schema_name}.{src_table_name}
+                                                                            SELECT 
+                                                                                        flight_sk,
+                                                                                        flight_id,
+                                                                                        arrival_city ,
+                                                                                        departure_city  
+                                                                            FROM {active_schema_name}.{src_table_name}
         '''
  
         check_if_dim_flight_destinations_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
