@@ -8,7 +8,7 @@ import pandas as pd
 import dash 
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.express as px
+import plotly.express as px 
 
 
 
@@ -118,7 +118,7 @@ postgres_connection = psycopg2.connect(
 
 
 
-def query_postgres_dwh(postgres_connection):
+def render_dash_visualizations(postgres_connection):
     try:
         
         # Set up constants
@@ -162,6 +162,42 @@ def query_postgres_dwh(postgres_connection):
         top_destinations_df                         =       pd.read_sql(sql_query_3, postgres_connection)
         total_sales_by_destination_df               =       pd.read_sql(sql_query_4, postgres_connection)
 
+        # Commit the changes made in Postgres 
+        postgres_connection.commit()
+
+
+
+        app = dash.Dash(__name__)
+
+
+        app.layout = html.Div([
+            html.H1("Flight Booking Data"),
+
+            html.Div([
+                dcc.Graph(
+                    figure=px.scatter(avg_ticket_prices_by_year_df, x="booking_year", y="arrival_city", size="avg_ticket_price", color="arrival_city", title="Average Ticket Prices by Destination and Year")
+                    )
+            ]),
+
+            html.Div([
+                dcc.Graph(
+                    figure=px.bar(ticket_sales_by_age_df, x="age", y="no_of_bookings", title="Number of Bookings by Age")
+                    )            
+            ]),
+
+            html.Div([
+                dcc.Graph(
+                    figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings", title="Top 10 Most Booked Destinations")
+                    )
+            ]),
+
+            html.Div([
+                dcc.Graph(
+                    figure=px.scatter(total_sales_by_destination_df, x="booking_year", y="arrival_city", size="total_sales", color="arrival_city", title="Total Sales by Destination and Year")
+                    )
+                ])
+        ])
+
 
 
 
@@ -173,9 +209,8 @@ def query_postgres_dwh(postgres_connection):
 
 
         # Commit the changes made in Postgres 
-        root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
-        root_logger.info("Saved successfully, now terminating cursor and current session....")
+        # postgres_connection.commit()
+        root_logger.info("Now rendering Dash app....")
 
 
     except psycopg2.Error as e:
@@ -195,6 +230,10 @@ def query_postgres_dwh(postgres_connection):
             root_logger.debug("Session connected to Postgres database closed.")
 
 
+    
+    return app
 
-query_postgres_dwh(postgres_connection)
+
+
+render_dash_visualizations(postgres_connection)
 
