@@ -124,7 +124,7 @@ def query_postgres_dwh(postgres_connection):
         active_schema_name              =   'reporting'
         active_db_name                  =    database
         src_table_name                  =   'dim_accommodation_bookings_tbl'
-        table_name                      =   'avg_ticket_prices_for_london'
+        table_name                      =   'avg_ticket_prices_by_year'
         data_warehouse_layer            =   'DWH'
         source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
@@ -185,8 +185,8 @@ def query_postgres_dwh(postgres_connection):
             if sql_result:
                 root_logger.debug(f"")
                 root_logger.info(f"=================================================================================================")
-                root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create {active_schema_name} schema in {active_db_name} ")
-                root_logger.info(f"Schema name in Postgres: {sql_result} ")
+                root_logger.info(f"SCHEMA CREATION SUCCESS: Managed to create '{active_schema_name}' schema in '{active_db_name}' ")
+                root_logger.info(f"Schema name in Postgres: '{sql_result}' ")
                 root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
                 root_logger.info(f"=================================================================================================")
                 root_logger.debug(f"")
@@ -194,7 +194,7 @@ def query_postgres_dwh(postgres_connection):
             else:
                 root_logger.debug(f"")
                 root_logger.error(f"=================================================================================================")
-                root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for {active_db_name}...")
+                root_logger.error(f"SCHEMA CREATION FAILURE: Unable to create schema for '{active_db_name}'...")
                 root_logger.info(f"SQL Query for validation check:  {check_if_schema_exists} ")
                 root_logger.error(f"=================================================================================================")
                 root_logger.debug(f"")
@@ -219,25 +219,17 @@ def query_postgres_dwh(postgres_connection):
 
         # Set up SQL statements for table creation and validation check 
         create_aggregate_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
-                                                                        SELECT 
-                                                                                    accommodation_sk, 
-                                                                                    id, 
-                                                                                    booking_date, 
-                                                                                    check_in_date, 
-                                                                                    check_out_date, 
-                                                                                    checked_in, 
-                                                                                    confirmation_code, 
-                                                                                    customer_id, 
-                                                                                    flight_booking_id, 
-                                                                                    location, 
-                                                                                    no_of_adults, 
-                                                                                    no_of_children,
-                                                                                    payment_method, 
-                                                                                    room_type, 
-                                                                                    sales_agent_id, 
-                                                                                    status, 
-                                                                                    total_price
-                                                                        FROM {src_schema_name}.{src_table_name}
+                                                                        SELECT 		    ROUND(AVG(f.ticket_price), 2) AS avg_ticket_price
+                                                                                        , d.arrival_city  AS arrival_city
+                                                                                        , DATE_PART('year', booking_date) AS booking_year
+                                                                        FROM 		    live.dim_flights_tbl f
+                                                                        INNER JOIN 	    live.dim_destinations_tbl d 
+                                                                        ON 			    f.flight_id = d.flight_id 
+                                                                        GROUP BY 	    d.arrival_city
+                                                                                        , DATE_PART('year', booking_date)
+
+                                                                        order by 	    d.arrival_city
+
         '''
  
         check_if_aggregate_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
