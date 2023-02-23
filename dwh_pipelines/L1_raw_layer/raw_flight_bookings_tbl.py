@@ -395,7 +395,7 @@ def load_flight_bookings_data_to_raw_table(postgres_connection):
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
-            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {schema_name}.{table_name}.... ")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create data lineage columns in {schema_name}.{table_name}.... ")
             root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")

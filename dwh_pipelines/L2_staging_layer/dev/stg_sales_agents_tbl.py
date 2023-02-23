@@ -123,7 +123,6 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'raw_db_server'
         fdw_user                        =   username
-        # fdw_user                        =   'fdw_user'
         src_db_name                     =   'raw_db'
         src_schema_name                 =   'main'
         active_schema_name              =   'dev'
@@ -444,7 +443,7 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
                                                                                     nationality                 VARCHAR NOT NULL,
                                                                                     phone                       VARCHAR NOT NULL,
                                                                                     seniority_level             VARCHAR NOT NULL,
-                                                                                    service_specialty          VARCHAR NOT NULL,
+                                                                                    service_speciality           VARCHAR NOT NULL,
                                                                                     years_experience            VARCHAR NOT NULL
                                                                         );
         '''
@@ -471,6 +470,7 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = '{table_name}' 
+                                                                        AND table_schema = '{active_schema_name}'
                                                                         AND     (column_name    = 'created_at'
                                                                         OR      column_name     = 'updated_at' 
                                                                         OR      column_name     = 'source_system' 
@@ -495,7 +495,7 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
                                                                                 nationality,
                                                                                 phone,
                                                                                 seniority_level,
-                                                                                service_specialty,
+                                                                                service_speciality,
                                                                                 years_experience,
                                                                                 created_at,
                                                                                 updated_at,
@@ -612,7 +612,7 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
-            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {active_schema_name}.{table_name}.... ")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create data lineage columns in {active_schema_name}.{table_name}.... ")
             root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
@@ -639,7 +639,7 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
                 row['nationality'],
                 row['phone'],
                 row['seniority_level'],
-                row['service_specialty'],
+                row['service_speciality'],
                 row['years_experience'],   
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
@@ -714,7 +714,7 @@ def load_data_to_stg_sales_agents_table(postgres_connection):
                                     'location',
                                     'nationality',
                                     'seniority_level',
-                                    'service_specialty',
+                                    'service_speciality',
                                     'commission',
                                     'years_experience'
                             ]

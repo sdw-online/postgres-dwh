@@ -436,7 +436,7 @@ def generate_travel_data():
         email = f"{first_name.lower()}.{last_name.lower()}@" + random.choice(['gmail.com', 'outlook.com', 'msn.com', 'aoi.net', 'microsoft.com' ])
         phone = fake.phone_number()
         location = fake.city()
-        service_specialty = random.choice(['Air', 'Land', 'Sea'])
+        service_speciality = random.choice(['Air', 'Land', 'Sea'])
         years_experience = random.randint(1, 10)
         commission = random.uniform(0.1, 0.3)
         nationality = fake.country()
@@ -449,7 +449,7 @@ def generate_travel_data():
             'email': email,
             'phone': phone,
             'location': location,
-            'service_specialty': service_specialty,
+            'service_speciality': service_speciality,
             'years_experience': years_experience,
             'commission': commission,
             'nationality': nationality,

@@ -196,7 +196,7 @@ def load_sales_agents_data_to_raw_table(postgres_connection):
                                                                             location                        VARCHAR(255) NOT NULL,
                                                                             nationality                     VARCHAR(255) NOT NULL,
                                                                             seniority_level                 VARCHAR(255) NOT NULL,
-                                                                            service_specialty              VARCHAR(255) NOT NULL,
+                                                                            service_speciality              VARCHAR(255) NOT NULL,
                                                                             commission                      NUMERIC(18, 6) NOT NULL,
                                                                             years_experience                INTEGER NOT NULL
                                                                         );
@@ -249,7 +249,7 @@ def load_sales_agents_data_to_raw_table(postgres_connection):
                                                                                 location,
                                                                                 nationality,
                                                                                 seniority_level,
-                                                                                service_specialty,
+                                                                                service_speciality,
                                                                                 commission,
                                                                                 years_experience,
                                                                                 created_at,
@@ -401,7 +401,7 @@ def load_sales_agents_data_to_raw_table(postgres_connection):
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
-            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {schema_name}.{table_name}.... ")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create data lineage columns in {schema_name}.{table_name}.... ")
             root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")
@@ -426,7 +426,7 @@ def load_sales_agents_data_to_raw_table(postgres_connection):
                 sales_agents['location'],
                 sales_agents['nationality'],
                 sales_agents['seniority_level'],
-                sales_agents['service_specialty'],
+                sales_agents['service_speciality'],
                 sales_agents['commission'],
                 sales_agents['years_experience'],
                 CURRENT_TIMESTAMP,
@@ -502,7 +502,7 @@ def load_sales_agents_data_to_raw_table(postgres_connection):
                                     'location',
                                     'nationality',
                                     'seniority_level',
-                                    'service_specialty',
+                                    'service_speciality',
                                     'commission',
                                     'years_experience'
                             ]

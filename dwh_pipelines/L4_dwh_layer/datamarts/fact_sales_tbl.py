@@ -505,6 +505,7 @@ def load_data_to_fact_sales_table(postgres_connection):
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = '{table_name}' 
+                                                                        AND table_schema = '{active_schema_name}'
                                                                         AND     (column_name    = 'created_at'
                                                                         OR      column_name     = 'updated_at' 
                                                                         OR      column_name     = 'source_system' 
@@ -613,7 +614,7 @@ def load_data_to_fact_sales_table(postgres_connection):
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
-            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {active_schema_name}.{table_name}.... ")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create data lineage columns in {active_schema_name}.{table_name}.... ")
             root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")

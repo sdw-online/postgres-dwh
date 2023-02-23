@@ -1776,27 +1776,27 @@ def run_dwh_layer_flow():
 if __name__=="__main__":
     
 
-    # L0 - Generate data
-    run_data_generation_flow()
+    # # L0 - Generate data
+    # run_data_generation_flow()
 
 
-    # L1 - Extract source data into raw tables 
-    run_raw_layer_flow()
+    # # L1 - Extract source data into raw tables 
+    # run_raw_layer_flow()
     
 
-    # L2 - Load raw data into staging tables
+    # # L2 - Load raw data into staging tables
     run_staging_layer_flow()
     run_dq_tests_for_staging_layer_flow()
     
-    run_stg_prod_env_creation_flow()
+    # run_stg_prod_env_creation_flow()
 
 
-    # L3 - Load staging data into MDM tables
-    run_semantic_layer_flow()
-    run_dq_tests_for_semantic_layer_flow()
+    # # L3 - Load staging data into MDM tables
+    # run_semantic_layer_flow()
+    # run_dq_tests_for_semantic_layer_flow()
     
-    run_semantic_prod_env_creation_flow()
+    # run_semantic_prod_env_creation_flow()
 
 
-    # L4 - Load MDM data into DWH tables
-    run_dwh_layer_flow()
+    # # L4 - Load MDM data into DWH tables
+    # run_dwh_layer_flow()
