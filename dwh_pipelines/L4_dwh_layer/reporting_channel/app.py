@@ -9,6 +9,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px 
+from sqlalchemy import create_engine
 
 
 
@@ -129,9 +130,8 @@ def render_dash_visualizations(postgres_connection):
         sql_query_2                         =      f'SELECT * FROM {active_schema_name}.ticket_sales_by_age'
         sql_query_3                         =      f'SELECT * FROM {active_schema_name}.top_destinations'
         sql_query_4                         =      f'SELECT * FROM {active_schema_name}.total_sales_by_destination'
+        sql_alchemy_engine                  =       create_engine(f'postgresql://{username}:{password}@{host}:{port}/{database}')
         data_warehouse_layer                =      'DWH - UAL'
-        column_index                        =      0 
-        total_null_values_in_table          =      0 
         
 
 
@@ -157,10 +157,10 @@ def render_dash_visualizations(postgres_connection):
         # ================================================== CREATE DASHBOARD VIA PLOTLY-DASH =======================================
         
 
-        avg_ticket_prices_by_year_df                =       pd.read_sql(sql_query_1, postgres_connection)
-        ticket_sales_by_age_df                      =       pd.read_sql(sql_query_2, postgres_connection)
-        top_destinations_df                         =       pd.read_sql(sql_query_3, postgres_connection)
-        total_sales_by_destination_df               =       pd.read_sql(sql_query_4, postgres_connection)
+        avg_ticket_prices_by_year_df                =       pd.read_sql(sql_query_1, con=sql_alchemy_engine)
+        ticket_sales_by_age_df                      =       pd.read_sql(sql_query_2, con=sql_alchemy_engine)
+        top_destinations_df                         =       pd.read_sql(sql_query_3, con=sql_alchemy_engine)
+        total_sales_by_destination_df               =       pd.read_sql(sql_query_4, con=sql_alchemy_engine)
 
         # Commit the changes made in Postgres 
         postgres_connection.commit()
@@ -209,7 +209,6 @@ def render_dash_visualizations(postgres_connection):
 
 
         # Commit the changes made in Postgres 
-        # postgres_connection.commit()
         root_logger.info("Now rendering Dash app....")
 
 
