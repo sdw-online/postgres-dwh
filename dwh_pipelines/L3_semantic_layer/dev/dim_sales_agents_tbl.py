@@ -124,8 +124,8 @@ def load_data_to_dim_sales_agents_table(postgres_connection):
         foreign_server                  =   'stg_db_server'
         fdw_user                        =   username
         # fdw_user                        =   'fdw_user'
-        src_db_name                =   'staging_db'
-        src_schema_name            =   'prod'
+        src_db_name                     =   'staging_db'
+        src_schema_name                 =   'prod'
         active_schema_name              =   'dev'
         active_db_name                  =    database
         src_table_name                  =   'stg_sales_agents_tbl'
@@ -461,7 +461,7 @@ def load_data_to_dim_sales_agents_table(postgres_connection):
                                                                                     nationality                 VARCHAR NOT NULL,
                                                                                     phone                       VARCHAR NOT NULL,
                                                                                     seniority_level             VARCHAR NOT NULL,
-                                                                                    service_speciality          VARCHAR NOT NULL,
+                                                                                    service_specialty          VARCHAR NOT NULL,
                                                                                     years_experience            VARCHAR NOT NULL
                                                                                     );
         '''
@@ -512,7 +512,7 @@ def load_data_to_dim_sales_agents_table(postgres_connection):
                                                                                 nationality,
                                                                                 phone,
                                                                                 seniority_level,
-                                                                                service_speciality,
+                                                                                service_specialty,
                                                                                 years_experience,
                                                                                 created_at,
                                                                                 updated_at,
@@ -656,7 +656,7 @@ def load_data_to_dim_sales_agents_table(postgres_connection):
                 row['nationality'],
                 row['phone'],
                 row['seniority_level'],
-                row['service_speciality'],
+                row['service_specialty'],
                 row['years_experience'],   
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,

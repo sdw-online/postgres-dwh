@@ -124,8 +124,8 @@ def load_data_to_dim_promotions_table(postgres_connection):
         foreign_server                  =   'dwh_db_server'
         fdw_user                        =   username
         # fdw_user                        =   'fdw_user'
-        src_db_name                =   'semantic_db'
-        src_schema_name            =   'prod'
+        src_db_name                     =   'semantic_db'
+        src_schema_name                 =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
         src_table_name                  =   'dim_flight_promotion_deals_tbl'

@@ -124,8 +124,8 @@ def load_data_to_dim_sales_employees_table(postgres_connection):
         foreign_server                  =   'dwh_db_server'
         fdw_user                        =   username
         # fdw_user                        =   'fdw_user'
-        src_db_name                =   'semantic_db'
-        src_schema_name            =   'prod'
+        src_db_name                     =   'semantic_db'
+        src_schema_name                 =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
         src_table_name                  =   'dim_sales_agents_tbl'
@@ -430,7 +430,7 @@ def load_data_to_dim_sales_employees_table(postgres_connection):
                                                                                     nationality,
                                                                                     phone,
                                                                                     seniority_level,
-                                                                                    service_speciality,
+                                                                                    service_specialty,
                                                                                     years_experience   
                                                                         FROM {active_schema_name}.{src_table_name}
         '''

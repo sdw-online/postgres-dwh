@@ -123,8 +123,8 @@ def load_data_to_dim_customers_table(postgres_connection):
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'dwh_db_server'
         fdw_user                        =   username
-        src_db_name                =   'semantic_db'
-        src_schema_name            =   'prod'
+        src_db_name                     =   'semantic_db'
+        src_schema_name                 =   'prod'
         active_schema_name              =   'live'
         active_db_name                  =    database
 

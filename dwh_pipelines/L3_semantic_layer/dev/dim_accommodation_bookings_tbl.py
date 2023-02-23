@@ -124,8 +124,8 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
         foreign_server                  =   'stg_db_server'
         fdw_user                        =   username
         # fdw_user                        =   'fdw_user'
-        src_db_name                =   'staging_db'
-        src_schema_name            =   'prod'
+        src_db_name                     =   'staging_db'
+        src_schema_name                 =   'prod'
         active_schema_name              =   'dev'
         active_db_name                  =    database
         src_table_name                  =   'stg_accommodation_bookings_tbl'

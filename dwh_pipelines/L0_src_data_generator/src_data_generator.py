@@ -256,8 +256,8 @@ def generate_travel_data():
     for i in range(NO_OF_FLIGHT_SCHEDULES):
         flight_schedule = {
         'flight_id' : uuid.uuid4(),
-        'departure_city' : fake.city(),
-        'arrival_city' : fake.city(),
+        'departure_city' : random.choice(LOCATIONS),
+        'arrival_city' : random.choice(LOCATIONS),
         'departure_time' : fake.time(),
         'arrival_time' : fake.time(),
         'flight_date' : fake.date_this_decade()
@@ -436,7 +436,7 @@ def generate_travel_data():
         email = f"{first_name.lower()}.{last_name.lower()}@" + random.choice(['gmail.com', 'outlook.com', 'msn.com', 'aoi.net', 'microsoft.com' ])
         phone = fake.phone_number()
         location = fake.city()
-        service_speciality = random.choice(['Air', 'Land', 'Sea'])
+        service_specialty = random.choice(['Air', 'Land', 'Sea'])
         years_experience = random.randint(1, 10)
         commission = random.uniform(0.1, 0.3)
         nationality = fake.country()
@@ -449,7 +449,7 @@ def generate_travel_data():
             'email': email,
             'phone': phone,
             'location': location,
-            'service_speciality': service_speciality,
+            'service_specialty': service_specialty,
             'years_experience': years_experience,
             'commission': commission,
             'nationality': nationality,
@@ -616,7 +616,7 @@ def generate_travel_data():
     for i in range(NO_OF_ACCOMMODATION_BOOKINGS):
         accommodation_booking = {
             'id': uuid.uuid4(),
-            'location' : fake.city(),
+            'location' : random.choice(LOCATIONS),
             'room_type' : random.choice(["Single", "Double", "Family", "Luxury"]),
             'check_in_date' : check_in_date,
             'check_out_date' : check_in_date + pd.Timedelta(days=random.randint(1, 14)),

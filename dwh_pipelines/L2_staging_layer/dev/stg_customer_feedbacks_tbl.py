@@ -123,9 +123,8 @@ def load_data_to_stg_customer_feedbacks_table(postgres_connection):
         fdw_extension                   =   'postgres_fdw'
         foreign_server                  =   'raw_db_server'
         fdw_user                        =   username
-        # fdw_user                        =   'fdw_user'
-        src_db_name                =   'raw_db'
-        src_schema_name            =   'main'
+        src_db_name                     =   'raw_db'
+        src_schema_name                 =   'main'
         active_schema_name              =   'dev'
         active_db_name                  =    database
         src_table_name                  =   'raw_customer_feedbacks_tbl'
