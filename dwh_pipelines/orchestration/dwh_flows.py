@@ -1191,6 +1191,82 @@ def load_data_to_dim_schedules_table():
 
 
 
+# Add user access layer to the process
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_1():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.avg_ticket_prices_by_year      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.avg_ticket_prices_by_year'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_2():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.ticket_sales_by_age      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.ticket_sales_by_age'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_3():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.top_destinations      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.top_destinations'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_4():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_destination      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_destination'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+# Add reporting channel to the process 
+
+
+@task
+def render_dash_visualizations_for_aggregates():
+    from dwh_pipelines.L4_dwh_layer.reporting_channel.app      import  render_dash_visualizations
+    module_name = 'dwh_pipelines.L4_dwh_layer.reporting_channel.app'
+    imported_function = 'render_dash_visualizations'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
 
 
 
@@ -1663,6 +1739,33 @@ def run_dwh_layer_flow():
     get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_schedules_table'! ")
 
 
+
+
+    query_postgres_dwh_for_aggregate_tbl_1()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 1 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 1 ! ")
+
+
+
+    query_postgres_dwh_for_aggregate_tbl_2()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 2 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 2 ! ")
+
+
+    query_postgres_dwh_for_aggregate_tbl_3()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 3 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 3 ! ")
+
+
+
+    query_postgres_dwh_for_aggregate_tbl_4()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 4 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 4 ! ")
+
+
+    render_dash_visualizations_for_aggregates()
+    root_logger.info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
+    get_run_logger().info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
 
 
 # ============================================== FLOW RUNS ==============================================

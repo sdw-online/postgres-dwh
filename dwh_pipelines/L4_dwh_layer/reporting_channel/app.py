@@ -1,12 +1,12 @@
 import os 
+import dash 
 import psycopg2
 import configparser
-from pathlib import Path
-import logging, coloredlogs
 import pandas as pd
-import dash 
 from dash import dcc
 from dash import html
+from pathlib import Path
+import logging, coloredlogs
 import plotly.express as px 
 from sqlalchemy import create_engine
 
@@ -202,8 +202,6 @@ def render_dash_visualizations(postgres_connection):
     except psycopg2.Error as e:
             root_logger.info(e)
         
-
-
 
 render_dash_visualizations(postgres_connection)
 
