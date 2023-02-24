@@ -517,6 +517,7 @@ def load_data_to_dim_sales_employees_table(postgres_connection):
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
         cursor.execute(create_dim_sales_agents_tbl)
+        postgres_connection.commit()
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         

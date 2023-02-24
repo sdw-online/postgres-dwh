@@ -1,5 +1,6 @@
 import os 
 import psycopg2
+from psycopg2 import errors
 import configparser
 from pathlib import Path
 import logging, coloredlogs
@@ -129,80 +130,143 @@ def set_up_access_controls(postgres_connection):
                                                                           ]
         
         raw_main_schema                                         =           'main'
+        
         staging_dev_schema                                      =           'dev'
         staging_prod_schema                                     =           'prod'
-            
+
         semantic_dev_schema                                     =           'dev'
         semantic_prod_schema                                    =           'prod'
-            
+
         dwh_reporting_schema                                    =           'reporting'
         dwh_live_schema                                         =           'live'
+
+        db_schemas = {
+            "raw_db"            :   [raw_main_schema],
+            "staging_db"        :   [staging_dev_schema, staging_prod_schema],
+            "semantic_db"       :   [semantic_dev_schema, semantic_prod_schema],
+            "dwh_db"            :   [dwh_live_schema, dwh_reporting_schema],
+
+        }
+        role_databases = {
+
+            "junior_data_analyst"       : [dwh_db],
+            "senior_data_analyst"       : [dwh_db],
+            "junior_data_engineer"      : [raw_db, staging_db, semantic_db, dwh_db],
+            "senior_data_engineer"      : [raw_db, staging_db, semantic_db, dwh_db],
+            "junior_data_scientist"     : [staging_db, semantic_db, dwh_db],
+            "senior_data_scientist"     : [staging_db, semantic_db, dwh_db],
+
+        }
 
 
         
         # For granting access to the DWH databases 
+
+        
+        ## A. Data analysts
         grant_jda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_analyst; '''
         grant_sda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_analyst; '''
 
-        grant_jde_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {raw_db}, {staging_db}, {semantic_db}, {dwh_db} TO junior_data_engineer; '''
-        grant_sde_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {raw_db}, {staging_db}, {semantic_db}, {dwh_db} TO senior_data_engineer; '''
 
-        grant_jds_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {staging_db}, {semantic_db}, {dwh_db} TO junior_data_scientist; '''
-        grant_sds_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {staging_db}, {semantic_db}, {dwh_db} TO senior_data_scientist; '''
+        ## B. Data engineers
+        grant_jde_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {raw_db} TO junior_data_engineer; '''
+        grant_jde_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO junior_data_engineer; '''
+        grant_jde_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO junior_data_engineer; '''
+        grant_jde_access_to_database_sql_query_4                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_engineer; '''
+        
+        grant_sde_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {raw_db} TO senior_data_engineer; '''
+        grant_sde_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO senior_data_engineer; '''
+        grant_sde_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO senior_data_engineer; '''
+        grant_sde_access_to_database_sql_query_4                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_engineer; '''
+
+
+        ## C. Data scientists 
+        grant_jds_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO junior_data_scientist; '''
+        grant_jds_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO junior_data_scientist; '''
+        grant_jds_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_scientist; '''
+
+        grant_sds_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO senior_data_scientist; '''
+        grant_sds_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO senior_data_scientist; '''
+        grant_sds_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_scientist; '''
+
 
 
 
         # For granting access to viewing metadata on objects within the specified schema 
 
         ## A. Data analysts
-        grant_jda_access_to_schema_info_sql_query               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_analyst    '''
-        grant_sda_access_to_schema_info_sql_query               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_analyst    '''
+        grant_jda_access_to_schema_info_sql_query               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_analyst   ; '''
+        grant_sda_access_to_schema_info_sql_query               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_analyst   ; '''
 
 
         ## B. Data engineers
-        grant_jde_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {raw_main_schema} TO junior_data_engineer          '''
-        grant_jde_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO junior_data_engineer       '''
-        grant_jde_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO junior_data_engineer      '''
-        grant_jde_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO junior_data_engineer      '''
-        grant_jde_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO junior_data_engineer     '''
-        grant_jde_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO junior_data_engineer          '''
-        grant_jde_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_engineer     '''
+        grant_jde_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {raw_main_schema} TO junior_data_engineer        ;  '''
+        grant_jde_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO junior_data_engineer     ;  '''
+        grant_jde_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO junior_data_engineer     ; '''
+        grant_jde_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO junior_data_engineer     ; '''
+        grant_jde_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO junior_data_engineer    ; '''
+        grant_jde_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO junior_data_engineer         ; '''
+        grant_jde_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_engineer    ; '''
 
 
-        grant_sde_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {raw_main_schema} TO senior_data_engineer          '''
-        grant_sde_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO senior_data_engineer       '''
-        grant_sde_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO senior_data_engineer      '''
-        grant_sde_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO senior_data_engineer      '''
-        grant_sde_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO senior_data_engineer     '''
-        grant_sde_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO senior_data_engineer          '''
-        grant_sde_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_engineer     '''
+        grant_sde_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {raw_main_schema} TO senior_data_engineer         ; '''
+        grant_sde_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO senior_data_engineer     ;  '''
+        grant_sde_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO senior_data_engineer    ;  '''
+        grant_sde_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO senior_data_engineer    ;  '''
+        grant_sde_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO senior_data_engineer   ;  '''
+        grant_sde_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO senior_data_engineer        ;  '''
+        grant_sde_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_engineer   ;  '''
 
 
 
         ## C. Data scientists 
-        grant_jds_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO junior_data_scientist       '''
-        grant_jds_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO junior_data_scientist      '''
-        grant_jds_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO junior_data_scientist      '''
-        grant_jds_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO junior_data_scientist     '''
-        grant_jds_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO junior_data_scientist          '''
-        grant_jds_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_scientist     '''
+        grant_jds_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO junior_data_scientist     ;  '''
+        grant_jds_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO junior_data_scientist    ;  '''
+        grant_jds_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO junior_data_scientist    ;  '''
+        grant_jds_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO junior_data_scientist  ;   '''
+        grant_jds_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO junior_data_scientist        ;  '''
+        grant_jds_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_scientist   ;  '''
 
 
 
-        grant_sds_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO senior_data_scientist       '''
-        grant_sds_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO senior_data_scientist      '''
-        grant_sds_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO senior_data_scientist      '''
-        grant_sds_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO senior_data_scientist     '''
-        grant_sds_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO senior_data_scientist          '''
-        grant_sds_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_scientist     '''
+        grant_sds_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO senior_data_scientist      ; '''
+        grant_sds_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO senior_data_scientist    ;  '''
+        grant_sds_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO senior_data_scientist    ;  '''
+        grant_sds_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO senior_data_scientist    ; '''
+        grant_sds_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO senior_data_scientist         ; '''
+        grant_sds_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_scientist   ;  '''
 
 
 
 
-        # For removing access from the DWH databases 
-        revoke_jda_access_to_database_sql_query                  =           f''' REVOKE ALL PRIVILEGES ON DATABASE {dwh_db} FROM junior_data_analyst; '''
+        # For granting table ownership to specific roles
+        table_1                             =           'avg_ticket_prices_by_year'
+        table_2                             =           'ticket_sales_by_age'
+        table_3                             =           'top_destination'
+        table_4                             =           'total_sales_by_destination'
+        grant_ownership_rights_to_sde       =           f''' ALTER TABLE {dwh_reporting_schema}.{table_1} OWNER TO senior_data_analyst ; '''
         
     
+
+
+        # For granting privileges to roles
+
+        grant_privileges_for_jda_sql_query = f'GRANT SELECT ON ALL TABLES IN SCHEMA {dwh_reporting_schema} TO junior_data_analyst'
+        grant_privileges_for_sda_sql_query = f'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA {dwh_reporting_schema} TO senior_data_analyst'
+
+        
+
+        # For creating row security policies 
+        table_with_restricted_field_1   =   'total_sales_by_destination'
+        restricted_field                =   'total_sales'
+
+        set_row_security_policies_for_jda = f'''    CREATE POLICY restrict_jda_policy ON {dwh_reporting_schema}.{table_with_restricted_field_1}
+                                                    FOR SELECT 
+                                                    TO junior_data_analyst
+                                                    USING ({restricted_field} != 0 );
+        '''
+
+
 
         # Validate the Postgres database connection
         if postgres_connection.closed == 0:
@@ -226,39 +290,63 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
             root_logger.info(f'')
              
-            for data_role in custom_roles: 
-               checking_if_roles_exist_sql_query                   =       f'''SELECT 1 FROM pg_roles WHERE rolname = '{data_role}' ;'''
-               cursor.execute(checking_if_roles_exist_sql_query)
-               postgres_connection.commit()
+            for data_role in role_databases:
+                checking_if_roles_exist_sql_query                   =       f'''SELECT 1 FROM pg_roles WHERE rolname = '{data_role}' ;'''
+                cursor.execute(checking_if_roles_exist_sql_query)
+                postgres_connection.commit()
 
-               role_exists = cursor.fetchone()
+                role_exists = cursor.fetchone()
 
-               if role_exists:
-                   root_logger.warning(f'Role "{data_role}" already exists ... Now dropping "{data_role}" role...')
+                if role_exists:
+                    for data_role, databases in role_databases.items():
+                        for db in databases:
+                            if db in db_schemas:
+                                schemas = db_schemas[db]
+                                for schema in schemas:
+                                    try:
+                                        revoke_all_privileges_from_database = f'''   REVOKE ALL PRIVILEGES ON DATABASE {db} FROM {data_role} ;  '''
+                                        cursor.execute(revoke_all_privileges_from_database)
+                                        postgres_connection.commit()
+                                        root_logger.debug(f''' Revoking all privileges for all tables in '{db}' database for '{data_role}' role... ''')
 
-                   drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
-                   cursor.execute(drop_role_sql_query)
-                   postgres_connection.commit()
-                   root_logger.info(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
 
-                   creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
-                   cursor.execute(creating_roles_sql_query)
-                   postgres_connection.commit()
-                   root_logger.info(f'''Successfully created '{data_role}' role''')
+                                        revoke_all_privileges_from_all_tables = f''' REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} from {data_role} ;'''
+                                        cursor.execute(revoke_all_privileges_from_all_tables)
 
-                   root_logger.info(f'===========================================')
-                   root_logger.info(f'')
-                   root_logger.info(f'')
+                                        revoke_all_privileges_from_schema =     f''' REVOKE ALL PRIVILEGES ON SCHEMA {schema} FROM {data_role}  ; '''
+                                        cursor.execute(revoke_all_privileges_from_schema)
 
-               else:
-                   creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
-                   cursor.execute(creating_roles_sql_query)
-                   postgres_connection.commit()
+                                        root_logger.debug(f''' Revoking all privileges for all tables in '{schema}' schema for '{data_role}' role... ''')
+                                    
+                                        drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
+                                        cursor.execute(drop_role_sql_query)
+                                        postgres_connection.commit()
+                                        root_logger.info(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
 
-                   root_logger.info(f'''Successfully created '{data_role}' role''')
-                   root_logger.info(f'===========================================')
-                   root_logger.info(f'')
-                   root_logger.info(f'')
+                                        creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
+                                        cursor.execute(creating_roles_sql_query)
+                                        postgres_connection.commit()
+                                        root_logger.info(f'''Successfully created '{data_role}' role''')
+                                            
+                                        root_logger.info(f'===========================================')
+                                        root_logger.info(f'')
+                                        root_logger.info(f'')
+
+                                    except psycopg2.Error as e:
+                                        postgres_connection.rollback()
+                                        continue
+                            else:
+                                root_logger.error(f"Database '{db}' not found in 'db_schema' dictionary ")
+
+                else:
+                    creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
+                    cursor.execute(creating_roles_sql_query)
+                    postgres_connection.commit()
+
+                    root_logger.info(f'''Successfully created '{data_role}' role''')
+                    root_logger.info(f'===========================================')
+                    root_logger.info(f'')
+                    root_logger.info(f'')
 
 
         except psycopg2.Error as e:
@@ -267,50 +355,182 @@ def set_up_access_controls(postgres_connection):
 
 
             
-        # ================================================== GRANT DATABASE ACCESS =======================================
+        # ================================================== GRANT DATABASE AND INFO SCHEMA ACCESS =======================================
 
         try:
-            root_logger.info(f'=========================================== GRANT DATABASE ACCESS =======================================')
+            root_logger.info(f'=========================================== GRANT DATABASE AND INFO SCHEMA ACCESS =======================================')
             root_logger.info(f'======================================================================================================')
             root_logger.info(f'')
             root_logger.info(f'')
 
 
+            ## A. Data analysts
             cursor.execute(grant_jda_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'junior_data_analyst' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'''Granted 'junior_data_analyst' role access to connecting to '{dwh_db}' database ''')
+            cursor.execute(grant_jda_access_to_schema_info_sql_query)
+            root_logger.info(f'''Granted 'junior_data_analyst' role access to viewing the information on '{dwh_reporting_schema}' schema's objects ''')
             root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
             root_logger.info(f'')
             root_logger.info(f'')
 
             cursor.execute(grant_sda_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'senior_data_analyst' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'''Granted 'senior_data_analyst' role access to connecting to '{dwh_db}' database ''')
+            cursor.execute(grant_sda_access_to_schema_info_sql_query)
+            root_logger.info(f'''Granted 'senior_data_analyst' role access to viewing the information on '{dwh_reporting_schema}' schema's objects ''')
             root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
             root_logger.info(f'')
             root_logger.info(f'')
 
-            cursor.execute(grant_jde_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting with the appropriate databases ''')
-            root_logger.info(f'===========================================')
-            root_logger.info(f'')
-            root_logger.info(f'')
 
-            cursor.execute(grant_sde_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting with the appropriate databases ''')
-            root_logger.info(f'===========================================')
-            root_logger.info(f'')
-            root_logger.info(f'')
 
-            cursor.execute(grant_jds_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting with the appropriate databases ''')
-            root_logger.info(f'===========================================')
-            root_logger.info(f'')
-            root_logger.info(f'')
+            # ## B. Data engineers
+            # cursor.execute(grant_jde_access_to_database_sql_query_1)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{raw_db}' database ''')
+            # cursor.execute(grant_jde_access_to_schema_info_sql_query_1)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to viewing the information on '{raw_main_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
 
-            cursor.execute(grant_sds_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting with the appropriate databases ''')
-            root_logger.info(f'===========================================')
-            root_logger.info(f'')
-            root_logger.info(f'')
+            # cursor.execute(grant_jde_access_to_database_sql_query_2)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{staging_db}' database ''')
+            # cursor.execute(grant_jde_access_to_schema_info_sql_query_2)
+            # cursor.execute(grant_jde_access_to_schema_info_sql_query_3)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to viewing the information on '{staging_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to viewing the information on '{staging_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_jde_access_to_database_sql_query_3)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{semantic_db}' database ''')
+            # cursor.execute(grant_jde_access_to_schema_info_sql_query_4)
+            # cursor.execute(grant_jde_access_to_schema_info_sql_query_5)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to viewing the information on '{semantic_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to viewing the information on '{semantic_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_jde_access_to_database_sql_query_4)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{dwh_db}' database ''')
+            # cursor.execute(grant_jde_access_to_schema_info_sql_query_6)
+            # cursor.execute(grant_jde_access_to_schema_info_sql_query_7)
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to viewing the information on '{dwh_live_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'junior_data_engineer' role access to viewing the information on '{dwh_reporting_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            
+            # cursor.execute(grant_sde_access_to_database_sql_query_1)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{raw_db}' database ''')
+            # cursor.execute(grant_sde_access_to_schema_info_sql_query_1)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to viewing the information on '{raw_main_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_sde_access_to_database_sql_query_2)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{staging_db}' database ''')
+            # cursor.execute(grant_sde_access_to_schema_info_sql_query_2)
+            # cursor.execute(grant_sde_access_to_schema_info_sql_query_3)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to viewing the information on '{staging_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to viewing the information on '{staging_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_sde_access_to_database_sql_query_3)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{semantic_db}' database ''')
+            # cursor.execute(grant_sde_access_to_schema_info_sql_query_4)
+            # cursor.execute(grant_sde_access_to_schema_info_sql_query_5)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to viewing the information on '{semantic_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to viewing the information on '{semantic_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_sde_access_to_database_sql_query_4)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{dwh_db}' database ''')
+            # cursor.execute(grant_sde_access_to_schema_info_sql_query_6)
+            # cursor.execute(grant_sde_access_to_schema_info_sql_query_7)
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to viewing the information on '{dwh_live_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'senior_data_engineer' role access to viewing the information on '{dwh_reporting_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+
+
+
+
+
+            # ## C. Data scientists 
+            # cursor.execute(grant_jds_access_to_database_sql_query_1)
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting to '{raw_db}' database ''')
+            # cursor.execute(grant_jds_access_to_schema_info_sql_query_1)
+            # cursor.execute(grant_jds_access_to_schema_info_sql_query_2)
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to viewing the information on '{raw_main_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_jds_access_to_database_sql_query_2)
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting to '{staging_db}' database ''')
+            # cursor.execute(grant_jds_access_to_schema_info_sql_query_3)
+            # cursor.execute(grant_jds_access_to_schema_info_sql_query_4)
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to viewing the information on '{staging_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to viewing the information on '{staging_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_jds_access_to_database_sql_query_3)
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting to '{semantic_db}' database ''')
+            # cursor.execute(grant_jds_access_to_schema_info_sql_query_5)
+            # cursor.execute(grant_jds_access_to_schema_info_sql_query_6)
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to viewing the information on '{semantic_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'junior_data_scientist' role access to viewing the information on '{semantic_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+
+
+
+            # cursor.execute(grant_sds_access_to_database_sql_query_1)
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting to '{raw_db}' database ''')
+            # cursor.execute(grant_sds_access_to_schema_info_sql_query_1)
+            # cursor.execute(grant_sds_access_to_schema_info_sql_query_2)
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to viewing the information on '{raw_main_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_sds_access_to_database_sql_query_2)
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting to '{staging_db}' database ''')
+            # cursor.execute(grant_sds_access_to_schema_info_sql_query_3)
+            # cursor.execute(grant_sds_access_to_schema_info_sql_query_4)
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to viewing the information on '{staging_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to viewing the information on '{staging_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
+
+            # cursor.execute(grant_sds_access_to_database_sql_query_3)
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting to '{semantic_db}' database ''')
+            # cursor.execute(grant_sds_access_to_schema_info_sql_query_5)
+            # cursor.execute(grant_sds_access_to_schema_info_sql_query_6)
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to viewing the information on '{semantic_dev_schema}' schema's objects ''')
+            # root_logger.info(f'''Granted 'senior_data_scientist' role access to viewing the information on '{semantic_prod_schema}' schema's objects ''')
+            # root_logger.info(f'===========================================')
+            # root_logger.info(f'')
+            # root_logger.info(f'')
 
 
         
@@ -319,7 +539,29 @@ def set_up_access_controls(postgres_connection):
 
 
         
-        # ================================================== GRANT ACCESS TO INFORMATION_SCHEMA DATA =======================================
+        # ================================================== GRANT TABLE OWNERSHIP RIGHTS TO ROLES =======================================
+
+        try:
+            root_logger.info(f'=========================================== GRANT TABLE OWNERSHIP RIGHTS TO ROLES =======================================')
+            root_logger.info(f'======================================================================================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_ownership_rights_to_sde)
+            postgres_connection.commit()
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_1}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_2}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_3}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_4}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+        
+        except psycopg2.Error as e:
+            root_logger.error(e)
 
 
 
@@ -328,8 +570,54 @@ def set_up_access_controls(postgres_connection):
 
         # ================================================== GRANT PRIVILEGES TO ROLES =======================================
 
+        try:
+            root_logger.info(f'=========================================== GRANT PRIVILEGES TO ROLES =======================================')
+            root_logger.info(f'======================================================================================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_privileges_for_jda_sql_query)
+            postgres_connection.commit()
+            root_logger.info(f'''Successfully granted privileges to 'junior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+            cursor.execute(grant_privileges_for_sda_sql_query)
+            postgres_connection.commit()
+            root_logger.info(f'''Successfully granted privileges to 'senior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+        except psycopg2.Error as e:
+            root_logger.error(e)
 
 
+        # ================================================== SET ROW SECURITY POLICIES =======================================
+
+
+        try:
+            root_logger.info(f'=========================================== SET ROW SECURITY POLICIES =======================================')
+            root_logger.info(f'======================================================================================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(set_row_security_policies_for_jda)
+            postgres_connection.commit()
+            root_logger.info(f'''Successfully created row security policy for '{table_with_restricted_field_1}' table to regulate the data the 'junior_data_analyst' role views in the '{restricted_field}' field .  ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+        except psycopg2.Error as e:
+            root_logger.error(e)
 
 
     except psycopg2.Error as e:
@@ -369,5 +657,24 @@ DROP ROLE junior_data_scientist;
 DROP ROLE senior_data_scientist;
 
 
+
+# SECURITY ROLES TEST
+
+-- Check table ownership
+SELECT tableowner FROM pg_tables WHERE schemaname = 'reporting' AND tablename = 'avg_ticket_prices_by_year';
+
+
+
+-- Check if delegated privileges work for 'junior_data_analyst'
+SET ROLE junior_data_analyst;
+SELECT * FROM reporting.avg_ticket_prices_by_year; 
+
+
+SET ROLE senior_data_analyst;
+SELECT * FROM reporting.avg_ticket_prices_by_year; 
+
+
+-- Check if row security policy is set up correctly
+SELECT * FROM pg_policy WHERE polname = 'restrict_jda_policy'
 
 '''

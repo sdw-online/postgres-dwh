@@ -565,6 +565,7 @@ def load_data_to_fact_sales_table(postgres_connection):
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
         cursor.execute(create_dim_flight_ticket_sales_tbl)
+        postgres_connection.commit()
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         
