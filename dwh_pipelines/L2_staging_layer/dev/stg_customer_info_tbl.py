@@ -111,7 +111,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 
@@ -203,7 +203,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                 root_logger.error(f"=================================================================================================")
                 root_logger.debug(f"")
 
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
         except Exception as e:
             print(e)
@@ -216,7 +216,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                                                 ;   
             '''
             cursor.execute(drop_postgres_fdw_extension)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -236,7 +236,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
             '''
             
             cursor.execute(import_postgres_fdw)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -255,7 +255,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
                                                 ;
             '''
             cursor.execute(create_foreign_server)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -275,7 +275,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
             '''
 
             cursor.execute(map_fdw_user_to_local_user)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -304,7 +304,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
             '''
 
             cursor.execute(import_foreign_schema)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
             
             root_logger.info("")
@@ -342,7 +342,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
             '''
 
             cursor.execute(get_list_of_column_names)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
             list_of_column_names = cursor.fetchall()
             column_names = [sql_result[0] for sql_result in list_of_column_names]
@@ -1175,7 +1175,7 @@ def load_data_to_stg_customer_info_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 

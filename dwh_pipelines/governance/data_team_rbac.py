@@ -107,7 +107,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 def set_up_access_controls(postgres_connection):
@@ -293,7 +293,7 @@ def set_up_access_controls(postgres_connection):
             for data_role in role_databases:
                 checking_if_roles_exist_sql_query                   =       f'''SELECT 1 FROM pg_roles WHERE rolname = '{data_role}' ;'''
                 cursor.execute(checking_if_roles_exist_sql_query)
-                postgres_connection.commit()
+                # postgres_connection.commit()
 
                 role_exists = cursor.fetchone()
 
@@ -306,7 +306,7 @@ def set_up_access_controls(postgres_connection):
                                     try:
                                         revoke_all_privileges_from_database = f'''   REVOKE ALL PRIVILEGES ON DATABASE {db} FROM {data_role} ;  '''
                                         cursor.execute(revoke_all_privileges_from_database)
-                                        postgres_connection.commit()
+                                        # postgres_connection.commit()
                                         root_logger.debug(f''' Revoking all privileges for all tables in '{db}' database for '{data_role}' role... ''')
 
 
@@ -320,12 +320,12 @@ def set_up_access_controls(postgres_connection):
                                     
                                         drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
                                         cursor.execute(drop_role_sql_query)
-                                        postgres_connection.commit()
+                                        # postgres_connection.commit()
                                         root_logger.info(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
 
                                         creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
                                         cursor.execute(creating_roles_sql_query)
-                                        postgres_connection.commit()
+                                        # postgres_connection.commit()
                                         root_logger.info(f'''Successfully created '{data_role}' role''')
                                             
                                         root_logger.info(f'===========================================')
@@ -341,7 +341,7 @@ def set_up_access_controls(postgres_connection):
                 else:
                     creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
                     cursor.execute(creating_roles_sql_query)
-                    postgres_connection.commit()
+                    # postgres_connection.commit()
 
                     root_logger.info(f'''Successfully created '{data_role}' role''')
                     root_logger.info(f'===========================================')
@@ -548,7 +548,7 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
             cursor.execute(grant_ownership_rights_to_sde)
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_1}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
             root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_2}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
             root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_3}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
@@ -577,7 +577,7 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
             cursor.execute(grant_privileges_for_jda_sql_query)
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.info(f'''Successfully granted privileges to 'junior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
@@ -586,7 +586,7 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
         
             cursor.execute(grant_privileges_for_sda_sql_query)
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.info(f'''Successfully granted privileges to 'senior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
@@ -608,7 +608,7 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
             cursor.execute(set_row_security_policies_for_jda)
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.info(f'''Successfully created row security policy for '{table_with_restricted_field_1}' table to regulate the data the 'junior_data_analyst' role views in the '{restricted_field}' field .  ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')

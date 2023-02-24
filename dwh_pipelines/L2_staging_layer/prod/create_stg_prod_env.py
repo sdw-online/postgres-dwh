@@ -83,7 +83,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 
@@ -158,7 +158,7 @@ def create_prod_environment_for_staging():
                 root_logger.error(f"=================================================================================================")
                 root_logger.debug(f"")
 
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
         except Exception as e:
             print(e)
@@ -191,7 +191,7 @@ def create_prod_environment_for_staging():
                 root_logger.info(f"")
             
         
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.debug(f"")
             root_logger.debug(f"Successfully created '{prod_schema_name}' environment. ")
             root_logger.debug(f"")

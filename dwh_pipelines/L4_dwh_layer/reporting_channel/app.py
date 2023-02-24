@@ -112,7 +112,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 def render_dash_visualizations(postgres_connection):
@@ -153,7 +153,7 @@ def render_dash_visualizations(postgres_connection):
         total_sales_by_destination_df               =       pd.read_sql(sql_query_4, con=sql_alchemy_engine)
 
         # Commit the changes made in Postgres 
-        postgres_connection.commit()
+        # postgres_connection.commit()
 
 
         # Create Dash app 

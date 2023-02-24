@@ -128,7 +128,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 def load_ticket_prices_data_to_raw_table(postgres_connection):
     try:
@@ -875,7 +875,7 @@ def load_ticket_prices_data_to_raw_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 
