@@ -112,7 +112,7 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
     
     try:
         accommodation_bookings_data = json.load(accommodation_bookings_file)
-        accommodation_bookings_data = accommodation_bookings_data[0:100]
+        # accommodation_bookings_data = accommodation_bookings_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(accommodation_bookings_data)}'")
 

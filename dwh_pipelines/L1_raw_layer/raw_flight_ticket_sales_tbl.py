@@ -112,7 +112,7 @@ with open(flight_ticket_sales_path, 'r') as flight_ticket_sales_file:
     
     try:
         flight_ticket_sales_data = json.load(flight_ticket_sales_file)
-        flight_ticket_sales_data = flight_ticket_sales_data[0:100]
+        # flight_ticket_sales_data = flight_ticket_sales_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(flight_ticket_sales_data)}'")
 

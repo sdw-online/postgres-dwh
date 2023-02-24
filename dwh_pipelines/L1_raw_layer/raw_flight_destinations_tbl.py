@@ -112,7 +112,7 @@ with open(flight_destinations_path, 'r') as flight_destinations_file:
     
     try:
         flight_destinations_data = json.load(flight_destinations_file)
-        flight_destinations_data = flight_destinations_data[0:100]
+        # flight_destinations_data = flight_destinations_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(flight_destinations_data)}'")
 

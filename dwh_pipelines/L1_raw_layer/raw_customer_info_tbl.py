@@ -112,7 +112,7 @@ with open(customer_info_path, 'r') as customer_info_file:
     
     try:
         customer_info_data = json.load(customer_info_file)
-        customer_info_data = customer_info_data[0:100]
+        # customer_info_data = customer_info_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(customer_info_data)}'")
 
