@@ -1,14 +1,8 @@
 import os 
-import dash 
 import psycopg2
 import configparser
-import pandas as pd
-from dash import dcc
-from dash import html
 from pathlib import Path
 import logging, coloredlogs
-import plotly.express as px 
-from sqlalchemy import create_engine
 
 
 # ================================================ LOGGER ================================================
@@ -37,7 +31,7 @@ console_handler_log_formatter   =   coloredlogs.ColoredFormatter(fmt    =   '%(m
 
 # Set up file handler object for logging events to file
 current_filepath    =   Path(__file__).stem
-file_handler        =   logging.FileHandler('logs/L4_dwh_layer/user_access_layer/' + current_filepath + '.log', mode='w')
+file_handler        =   logging.FileHandler('logs/governance/' + current_filepath + '.log', mode='w')
 file_handler.setFormatter(file_handler_log_formatter)
 
 
@@ -115,25 +109,38 @@ postgres_connection = psycopg2.connect(
 
 
 
-def create_custom_roles(postgres_connection):
+def set_up_access_controls(postgres_connection):
     try:
         
         # Set up constants
         
-        cursor                  =       postgres_connection.cursor()
-        active_db_name          =       database
-        custom_roles            =       ['junior_data_analyst',
-                                       'senior_data_analyst',  
-                                       'junior_data_engineer',   
-                                       'senior_data_engineer', 
-                                       'junior_data_scientist',
-                                       'senior_data_scientist'
-                                       ]
-        
-        
-        ROLES_EXISTS = True
-        
+        cursor                                                  =          postgres_connection.cursor()
+        active_db_name                                          =          database
+        raw_db                                                  =          config['travel_data_filepath']['RAW_DB']
+        staging_db                                              =          config['travel_data_filepath']['STAGING_DB']
+        semantic_db                                             =          config['travel_data_filepath']['SEMANTIC_DB']
+        dwh_db                                                  =          config['travel_data_filepath']['DWH_DB']
+        custom_roles                                            =          ['junior_data_analyst',
+                                                                          'senior_data_analyst',  
+                                                                          'junior_data_engineer',   
+                                                                          'senior_data_engineer', 
+                                                                          'junior_data_scientist',
+                                                                          'senior_data_scientist'
+                                                                          ]
+        grant_jda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_analyst; '''
+        grant_sda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_analyst; '''
 
+        grant_jde_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {raw_db}, {staging_db}, {semantic_db}, {dwh_db} TO junior_data_engineer; '''
+        grant_sde_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {raw_db}, {staging_db}, {semantic_db}, {dwh_db} TO senior_data_engineer; '''
+
+        grant_jds_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {staging_db}, {semantic_db}, {dwh_db} TO junior_data_scientist; '''
+        grant_sds_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {staging_db}, {semantic_db}, {dwh_db} TO senior_data_scientist; '''
+
+
+
+        revoke_jda_access_to_database_sql_query                  =           f''' REVOKE ALL PRIVILEGES ON DATABASE {dwh_db} FROM junior_data_analyst; '''
+        
+    
 
         # Validate the Postgres database connection
         if postgres_connection.closed == 0:
@@ -151,65 +158,141 @@ def create_custom_roles(postgres_connection):
 
         # ================================================== CREATE CUSTOM ROLES =======================================
 
-
         try:
+            root_logger.info(f'=========================================== CREATE CUSTOM ROLES =======================================')
+            root_logger.info(f'======================================================================================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
              
-             for data_role in custom_roles: 
-                checking_if_roles_exist_sql_query                   =       f'''SELECT 1 FROM pg_roles WHERE rolname = '{data_role}' ;'''
-                cursor.execute(checking_if_roles_exist_sql_query)
-                postgres_connection.commit()
+            for data_role in custom_roles: 
+               checking_if_roles_exist_sql_query                   =       f'''SELECT 1 FROM pg_roles WHERE rolname = '{data_role}' ;'''
+               cursor.execute(checking_if_roles_exist_sql_query)
+               postgres_connection.commit()
 
-                role_exists = cursor.fetchone()
+               role_exists = cursor.fetchone()
 
-                if role_exists:
-                    root_logger.warning(f'Role "{data_role}" already exists ... Now dropping "{data_role}" role...')
+               if role_exists:
+                   root_logger.warning(f'Role "{data_role}" already exists ... Now dropping "{data_role}" role...')
 
-                    drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
-                    cursor.execute(drop_role_sql_query)
-                    postgres_connection.commit()
-                    root_logger.warning(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
+                   drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
+                   cursor.execute(drop_role_sql_query)
+                   postgres_connection.commit()
+                   root_logger.warning(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
 
-                    creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
-                    cursor.execute(creating_roles_sql_query)
-                    postgres_connection.commit()
+                   creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
+                   cursor.execute(creating_roles_sql_query)
+                   postgres_connection.commit()
+                   root_logger.info(f'''Successfully created '{data_role}' role''')
 
-                    root_logger.info(f'''Successfully created '{data_role}' role''')
-                    root_logger.info(f'===========================================')
-                    root_logger.info(f'')
-                    root_logger.info(f'')
+                   root_logger.info(f'===========================================')
+                   root_logger.info(f'')
+                   root_logger.info(f'')
 
-                else:
-                    cursor.execute(creating_roles_sql_query)
-                    postgres_connection.commit()
+               else:
+                   creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
+                   cursor.execute(creating_roles_sql_query)
+                   postgres_connection.commit()
 
-                    root_logger.info(f'''Successfully created '{data_role}' role''')
-                    root_logger.info(f'===========================================')
-                    root_logger.info(f'')
-                    root_logger.info(f'')
-                     
+                   root_logger.info(f'''Successfully created '{data_role}' role''')
+                   root_logger.info(f'===========================================')
+                   root_logger.info(f'')
+                   root_logger.info(f'')
 
 
         except psycopg2.Error as e:
             root_logger.error(e)
              
 
-        
-        # for data_role in custom_roles:
-        #         try:
-        #             cursor.execute(creating_roles_sql_query)
-        #             postgres_connection.commit()
 
-        #             root_logger.info(f'''Successfully created '{data_role}' role''')
-                    
-        #         except:
-        #             root_logger.warning(f'Role "{data_role}" already exists ...')
-        #             root_logger.warning(f'===========================================')
-        #             root_logger.warning(f'')
-        #             root_logger.warning(f'')
+            
+        # ================================================== GRANT DATABASE ACCESS =======================================
+
+        try:
+            root_logger.info(f'=========================================== GRANT DATABASE ACCESS =======================================')
+            root_logger.info(f'======================================================================================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+            cursor.execute(grant_jda_access_to_database_sql_query)
+            root_logger.info(f'''Granted 'junior_data_analyst' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sda_access_to_database_sql_query)
+            root_logger.info(f'''Granted 'senior_data_analyst' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_jde_access_to_database_sql_query)
+            root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sde_access_to_database_sql_query)
+            root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_jds_access_to_database_sql_query)
+            root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sds_access_to_database_sql_query)
+            root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+        except psycopg2.Error as e:
+            root_logger.error(e)
+
+
+
 
     except psycopg2.Error as e:
             root_logger.error(e)
         
 
-create_custom_roles(postgres_connection)
+set_up_access_controls(postgres_connection)
 
+
+
+
+
+# Miscellaneous scripts
+
+'''
+
+-- For creating the roles
+CREATE ROLE junior_data_analyst NOLOGIN ;
+CREATE ROLE senior_data_analyst NOLOGIN ;
+
+CREATE ROLE junior_data_engineer NOLOGIN ;
+CREATE ROLE senior_data_engineer NOLOGIN ;
+
+CREATE ROLE junior_data_scientist NOLOGIN ;
+CREATE ROLE senior_data_scientist NOLOGIN ;
+
+
+
+-- For deleting the roles 
+DROP ROLE junior_data_analyst;
+DROP ROLE senior_data_analyst;
+
+DROP ROLE junior_data_engineer;
+DROP ROLE senior_data_engineer;
+
+DROP ROLE junior_data_scientist;
+DROP ROLE senior_data_scientist;
+
+
+
+'''
