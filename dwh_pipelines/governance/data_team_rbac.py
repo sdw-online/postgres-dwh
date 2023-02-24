@@ -248,6 +248,16 @@ def set_up_access_controls(postgres_connection):
         
     
 
+
+        # For granting privileges to roles
+
+        grant_privileges_for_jda_sql_query = f'GRANT SELECT ON ALL TABLES IN SCHEMA {dwh_reporting_schema} TO junior_data_analyst'
+        grant_privileges_for_sda_sql_query = f'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA {dwh_reporting_schema} TO senior_data_analyst'
+
+        
+
+
+
         # Validate the Postgres database connection
         if postgres_connection.closed == 0:
             root_logger.debug(f"")
@@ -524,10 +534,10 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
             cursor.execute(grant_ownership_rights_to_sde)
-            root_logger.info(f'''Granted 'senior_data_analyst' ownership of '{table_1}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
-            root_logger.info(f'''Granted 'senior_data_analyst' ownership of '{table_2}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
-            root_logger.info(f'''Granted 'senior_data_analyst' ownership of '{table_3}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
-            root_logger.info(f'''Granted 'senior_data_analyst' ownership of '{table_4}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_1}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_2}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_3}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
+            root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_4}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
@@ -543,7 +553,26 @@ def set_up_access_controls(postgres_connection):
 
         # ================================================== GRANT PRIVILEGES TO ROLES =======================================
 
+        try:
+            root_logger.info(f'=========================================== GRANT PRIVILEGES TO ROLES =======================================')
+            root_logger.info(f'======================================================================================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
 
+            cursor.execute(grant_privileges_for_jda_sql_query)
+            root_logger.info(f'''Successfully granted privileges to 'junior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+            cursor.execute(grant_privileges_for_sda_sql_query)
+            root_logger.info(f'''Successfully granted privileges to 'senior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+        except psycopg2.Error as e:
+            root_logger.error(e)
 
 
 
