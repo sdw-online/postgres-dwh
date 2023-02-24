@@ -138,14 +138,14 @@ def set_up_access_controls(postgres_connection):
         dwh_reporting_schema                                    =           'reporting'
         dwh_live_schema                                         =           'live'
 
-        schema_by_access = {
+        db_schemas = {
             "raw_db"            :   ["main"],
             "staging_db"        :   ["dev", "prod"],
             "semantic_db"       :   ["dev", "prod"],
             "dwh_db"            :   ["live", "reporting"],
 
         }
-        db_access_roles = {
+        role_databases = {
 
             "junior_data_analyst"       : [dwh_db],
             "senior_data_analyst"       : [dwh_db],
@@ -264,7 +264,7 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
             root_logger.info(f'')
              
-            for data_role in custom_roles: 
+            for data_role in role_databases: 
                checking_if_roles_exist_sql_query                   =       f'''SELECT 1 FROM pg_roles WHERE rolname = '{data_role}' ;'''
                cursor.execute(checking_if_roles_exist_sql_query)
                postgres_connection.commit()
@@ -274,21 +274,35 @@ def set_up_access_controls(postgres_connection):
                if role_exists:
                    root_logger.warning(f'Role "{data_role}" already exists ... Now dropping "{data_role}" role...')
 
-                   drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
-                   cursor.execute(drop_role_sql_query)
-                   postgres_connection.commit()
-                   root_logger.info(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
+                   for db in role_databases[data_role]:
+                       for schema in db_schemas[db]:
+                           revoke_all_privileges_from_all_tables = f''' REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} from {data_role} ;'''
+                           revoke_all_privileges_from_schema =     f''' REVOKE ALL PRIVILEGES ON SCHEMA {schema} FROM {data_role}  ; '''
+                           root_logger.debug(f''' Revoking all privileges for all tables in '{schema}' schema for '{data_role}' role... ''')
 
-                   creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
-                   cursor.execute(creating_roles_sql_query)
-                   postgres_connection.commit()
-                   root_logger.info(f'''Successfully created '{data_role}' role''')
-                #    if data_role == 'junior_data_analyst':
-                       
+                           cursor.execute(revoke_all_privileges_from_all_tables)
+                           postgres_connection.commit()
+                           cursor.execute(revoke_all_privileges_from_schema)
+                           postgres_connection.commit()
 
-                   root_logger.info(f'===========================================')
-                   root_logger.info(f'')
-                   root_logger.info(f'')
+                           if schema == 'reporting' and db == dwh_db:
+                               revoke_all_privileges_from_database = f'''   REVOKE ALL PRIVILEGES ON DATABASE {db} FROM {data_role} ;  '''
+                               cursor.execute(revoke_all_privileges_from_database)
+                               postgres_connection.commit()
+                               root_logger.debug(f''' Revoking all privileges for all tables in '{db}' database for '{data_role}' role... ''')
+
+                               drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
+                               cursor.execute(drop_role_sql_query)
+                               postgres_connection.commit()
+                               root_logger.info(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
+                               creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
+                               cursor.execute(creating_roles_sql_query)
+                               postgres_connection.commit()
+                               root_logger.info(f'''Successfully created '{data_role}' role''')
+                                
+                               root_logger.info(f'===========================================')
+                               root_logger.info(f'')
+                               root_logger.info(f'')
 
                else:
                    creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
@@ -307,10 +321,10 @@ def set_up_access_controls(postgres_connection):
 
 
             
-        # ================================================== GRANT DATABASE ACCESS =======================================
+        # ================================================== GRANT DATABASE AND INFO SCHEMA ACCESS =======================================
 
         try:
-            root_logger.info(f'=========================================== GRANT DATABASE ACCESS =======================================')
+            root_logger.info(f'=========================================== GRANT DATABASE AND INFO SCHEMA ACCESS =======================================')
             root_logger.info(f'======================================================================================================')
             root_logger.info(f'')
             root_logger.info(f'')
@@ -319,12 +333,16 @@ def set_up_access_controls(postgres_connection):
             ## A. Data analysts
             cursor.execute(grant_jda_access_to_database_sql_query)
             root_logger.info(f'''Granted 'junior_data_analyst' role access to connecting to '{dwh_db}' database ''')
+            cursor.execute(grant_jda_access_to_schema_info_sql_query)
+            root_logger.info(f'''Granted 'junior_data_analyst' role access to viewing the information on '{dwh_reporting_schema}' schema's objects ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
 
             cursor.execute(grant_sda_access_to_database_sql_query)
             root_logger.info(f'''Granted 'senior_data_analyst' role access to connecting to '{dwh_db}' database ''')
+            cursor.execute(grant_sda_access_to_schema_info_sql_query)
+            root_logger.info(f'''Granted 'senior_data_analyst' role access to viewing the information on '{dwh_reporting_schema}' schema's objects ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
