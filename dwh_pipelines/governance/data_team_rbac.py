@@ -273,28 +273,26 @@ def set_up_access_controls(postgres_connection):
                 role_exists = cursor.fetchone()
 
                 if role_exists:
-                    try:
-                        root_logger.warning(f'Role "{data_role}" already exists ... Now dropping "{data_role}" role...')
-
-                        if data_role == 'junior_data_analyst' or 'senior_data_analyst':
-
-                            for db in role_databases[data_role]:
-                                for schema in db_schemas[db]:
-                                    revoke_all_privileges_from_all_tables = f''' REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} from {data_role} ;'''
-                                    revoke_all_privileges_from_schema =     f''' REVOKE ALL PRIVILEGES ON SCHEMA {schema} FROM {data_role}  ; '''
-                                    root_logger.debug(f''' Revoking all privileges for all tables in '{schema}' schema for '{data_role}' role... ''')
-
-                                    cursor.execute(revoke_all_privileges_from_all_tables)
-                                    postgres_connection.commit()
-                                    cursor.execute(revoke_all_privileges_from_schema)
-                                    postgres_connection.commit()
-
-                                    if schema == 'reporting':
+                    for data_role, databases in role_databases.items():
+                        for db in databases:
+                            if db in db_schemas:
+                                schemas = db_schemas[db]
+                                for schema in schemas:
+                                    try:
                                         revoke_all_privileges_from_database = f'''   REVOKE ALL PRIVILEGES ON DATABASE {db} FROM {data_role} ;  '''
                                         cursor.execute(revoke_all_privileges_from_database)
                                         postgres_connection.commit()
                                         root_logger.debug(f''' Revoking all privileges for all tables in '{db}' database for '{data_role}' role... ''')
 
+
+                                        revoke_all_privileges_from_all_tables = f''' REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} from {data_role} ;'''
+                                        cursor.execute(revoke_all_privileges_from_all_tables)
+
+                                        revoke_all_privileges_from_schema =     f''' REVOKE ALL PRIVILEGES ON SCHEMA {schema} FROM {data_role}  ; '''
+                                        cursor.execute(revoke_all_privileges_from_schema)
+
+                                        root_logger.debug(f''' Revoking all privileges for all tables in '{schema}' schema for '{data_role}' role... ''')
+                                    
                                         drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
                                         cursor.execute(drop_role_sql_query)
                                         postgres_connection.commit()
@@ -309,43 +307,15 @@ def set_up_access_controls(postgres_connection):
                                         root_logger.info(f'')
                                         root_logger.info(f'')
 
-                                
-                        if data_role == 'junior_data_engineer' or 'senior_data_engineer':
+                                    except psycopg2.Error as e:
+                                        postgres_connection.rollback()
+                                        # root_logger.error(e)
+                                        continue
+                            else:
+                                root_logger.error(f"Database '{db}' not found in 'db_schema' dictionary ")
 
-                            for db in role_databases[data_role]:
-                                for schema in db_schemas[db]:
-                                    revoke_all_privileges_from_all_tables = f''' REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} from {data_role} ;'''
-                                    revoke_all_privileges_from_schema =     f''' REVOKE ALL PRIVILEGES ON SCHEMA {schema} FROM {data_role}  ; '''
-                                    root_logger.debug(f''' Revoking all privileges for all tables in '{schema}' schema for '{data_role}' role... ''')
 
-                                    cursor.execute(revoke_all_privileges_from_all_tables)
-                                    postgres_connection.commit()
-                                    cursor.execute(revoke_all_privileges_from_schema)
-                                    postgres_connection.commit()
 
-                                    
-                                    revoke_all_privileges_from_database = f'''   REVOKE ALL PRIVILEGES ON DATABASE {db} FROM {data_role} ;  '''
-                                    cursor.execute(revoke_all_privileges_from_database)
-                                    postgres_connection.commit()
-                                    root_logger.debug(f''' Revoking all privileges for all tables in '{db}' database for '{data_role}' role... ''')
-
-                                    drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
-                                    cursor.execute(drop_role_sql_query)
-                                    postgres_connection.commit()
-                                    root_logger.info(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
-
-                                    creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
-                                    cursor.execute(creating_roles_sql_query)
-                                    postgres_connection.commit()
-                                    root_logger.info(f'''Successfully created '{data_role}' role''')
-                                        
-                                    root_logger.info(f'===========================================')
-                                    root_logger.info(f'')
-                                    root_logger.info(f'')
-                    except psycopg2.errors.InvalidSchemaName as e:
-                        root_logger.error(e)
-                        # root_logger.error(f"Schema '{schema}' not found in database, skipping this one... ")
-                        continue
                             
 
                            
