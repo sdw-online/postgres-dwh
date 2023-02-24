@@ -256,6 +256,16 @@ def set_up_access_controls(postgres_connection):
 
         
 
+        # For creating row security policies 
+        table_with_restricted_field_1   =   'total_sales_by_destination'
+        restricted_field                =   'total_sales'
+
+        set_row_security_policies_for_jda = f'''    CREATE POLICY restrict_jda_policy ON {dwh_reporting_schema}.{table_with_restricted_field_1}
+                                                    FOR SELECT 
+                                                    TO junior_data_analyst
+                                                    USING ({restricted_field} != 0 );
+        '''
+
 
 
         # Validate the Postgres database connection
@@ -362,12 +372,16 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
 
             cursor.execute(grant_sda_access_to_database_sql_query)
             root_logger.info(f'''Granted 'senior_data_analyst' role access to connecting to '{dwh_db}' database ''')
             cursor.execute(grant_sda_access_to_schema_info_sql_query)
             root_logger.info(f'''Granted 'senior_data_analyst' role access to viewing the information on '{dwh_reporting_schema}' schema's objects ''')
             root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
             root_logger.info(f'')
             root_logger.info(f'')
 
@@ -534,11 +548,14 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
             cursor.execute(grant_ownership_rights_to_sde)
+            postgres_connection.commit()
             root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_1}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
             root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_2}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
             root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_3}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
             root_logger.info(f'''Successfully granted 'senior_data_analyst' ownership of '{table_4}' table in '{dwh_db}.{dwh_reporting_schema}' schema  ''')
             root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
             root_logger.info(f'')
             root_logger.info(f'')
         
@@ -560,20 +577,47 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
             cursor.execute(grant_privileges_for_jda_sql_query)
+            postgres_connection.commit()
             root_logger.info(f'''Successfully granted privileges to 'junior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
         
             cursor.execute(grant_privileges_for_sda_sql_query)
+            postgres_connection.commit()
             root_logger.info(f'''Successfully granted privileges to 'senior_data_analyst' on all tables in '{dwh_db}.{dwh_reporting_schema}' schema.  ''')
             root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
             root_logger.info(f'')
             root_logger.info(f'')
         
         except psycopg2.Error as e:
             root_logger.error(e)
 
+
+        # ================================================== SET ROW SECURITY POLICIES =======================================
+
+
+        try:
+            root_logger.info(f'=========================================== SET ROW SECURITY POLICIES =======================================')
+            root_logger.info(f'======================================================================================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(set_row_security_policies_for_jda)
+            postgres_connection.commit()
+            root_logger.info(f'''Successfully created row security policy for '{table_with_restricted_field_1}' table to regulate the data the 'junior_data_analyst' role views in the '{restricted_field}' field .  ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        
+        except psycopg2.Error as e:
+            root_logger.error(e)
 
 
     except psycopg2.Error as e:
@@ -613,5 +657,24 @@ DROP ROLE junior_data_scientist;
 DROP ROLE senior_data_scientist;
 
 
+
+# SECURITY ROLES TEST
+
+-- Check table ownership
+SELECT tableowner FROM pg_tables WHERE schemaname = 'reporting' AND tablename = 'avg_ticket_prices_by_year';
+
+
+
+-- Check if delegated privileges work for 'junior_data_analyst'
+SET ROLE junior_data_analyst;
+SELECT * FROM reporting.avg_ticket_prices_by_year; 
+
+
+SET ROLE senior_data_analyst;
+SELECT * FROM reporting.avg_ticket_prices_by_year; 
+
+
+-- Check if row security policy is set up correctly
+SELECT * FROM pg_policy WHERE polname = 'restrict_jda_policy'
 
 '''
