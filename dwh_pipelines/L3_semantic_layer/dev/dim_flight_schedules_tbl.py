@@ -124,8 +124,8 @@ def load_data_to_dim_flight_schedules_table(postgres_connection):
         foreign_server                  =   'stg_db_server'
         fdw_user                        =   username
         # fdw_user                        =   'fdw_user'
-        src_db_name                =   'staging_db'
-        src_schema_name            =   'prod'
+        src_db_name                     =   'staging_db'
+        src_schema_name                 =   'prod'
         active_schema_name              =   'dev'
         active_db_name                  =    database
         src_table_name                  =   'stg_flight_schedules_tbl'
@@ -484,6 +484,7 @@ def load_data_to_dim_flight_schedules_table(postgres_connection):
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
                                                                     WHERE   table_name      = '{table_name}' 
+                                                                        AND table_schema = '{active_schema_name}'
                                                                         AND     (column_name    = 'created_at'
                                                                         OR      column_name     = 'updated_at' 
                                                                         OR      column_name     = 'source_system' 
@@ -621,7 +622,7 @@ def load_data_to_dim_flight_schedules_table(postgres_connection):
         else:
             root_logger.debug(f"")
             root_logger.error(f"==========================================================================================================================================================================")
-            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create create data lineage columns in {active_schema_name}.{table_name}.... ")
+            root_logger.error(f"DATA LINEAGE FIELDS CREATION FAILURE: Unable to create data lineage columns in {active_schema_name}.{table_name}.... ")
             root_logger.error(f"SQL Query for validation check:  {check_if_data_lineage_fields_are_added_to_tbl} ")
             root_logger.error(f"==========================================================================================================================================================================")
             root_logger.debug(f"")

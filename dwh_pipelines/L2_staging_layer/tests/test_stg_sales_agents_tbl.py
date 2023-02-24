@@ -195,7 +195,7 @@ def test_column_data_types():
         'nationality'                   :           "character varying",
         'phone'                         :           "character varying",
         'seniority_level'               :           "character varying",
-        'service_speciality'            :           "character varying",
+        'service_speciality'             :           "character varying",
         'years_experience'              :           "character varying",
         "created_at"                    :           "timestamp with time zone",
         "updated_at"                    :           "timestamp with time zone",

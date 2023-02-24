@@ -1050,8 +1050,8 @@ def create_prod_environment_for_semantic_layer():
 
 @task
 def load_data_to_fact_accommodations_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.fact_accommodations_tbl      import  load_data_to_fact_accommodations_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.fact_accommodations_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.fact_accommodations_tbl      import  load_data_to_fact_accommodations_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.fact_accommodations_tbl'
     imported_function = 'load_data_to_fact_accommodations_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1062,8 +1062,8 @@ def load_data_to_fact_accommodations_table():
 
 @task
 def load_data_to_fact_sales_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.fact_sales_tbl      import  load_data_to_fact_sales_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.fact_sales_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.fact_sales_tbl      import  load_data_to_fact_sales_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.fact_sales_tbl'
     imported_function = 'load_data_to_fact_sales_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1076,8 +1076,8 @@ def load_data_to_fact_sales_table():
 
 @task
 def load_data_to_dim_customers_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_customers_tbl      import  load_data_to_dim_customers_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_customers_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_customers_tbl      import  load_data_to_dim_customers_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_customers_tbl'
     imported_function = 'load_data_to_dim_customers_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1090,8 +1090,8 @@ def load_data_to_dim_customers_table():
 
 @task
 def load_data_to_dim_date_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_date_tbl      import  load_data_to_dim_date_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_date_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_date_tbl      import  load_data_to_dim_date_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_date_tbl'
     imported_function = 'load_data_to_dim_date_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1105,8 +1105,8 @@ def load_data_to_dim_date_table():
 
 @task
 def load_data_to_dim_destinations_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_destinations_tbl      import  load_data_to_dim_destinations_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_destinations_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_destinations_tbl      import  load_data_to_dim_destinations_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_destinations_tbl'
     imported_function = 'load_data_to_dim_destinations_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1119,8 +1119,8 @@ def load_data_to_dim_destinations_table():
 
 @task
 def load_data_to_dim_flights_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_flights_tbl      import  load_data_to_dim_flights_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_flights_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_flights_tbl      import  load_data_to_dim_flights_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_flights_tbl'
     imported_function = 'load_data_to_dim_flights_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1134,8 +1134,8 @@ def load_data_to_dim_flights_table():
 
 @task
 def load_data_to_dim_prices_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_prices_tbl      import  load_data_to_dim_prices_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_prices_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_prices_tbl      import  load_data_to_dim_prices_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_prices_tbl'
     imported_function = 'load_data_to_dim_prices_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1148,8 +1148,8 @@ def load_data_to_dim_prices_table():
 
 @task
 def load_data_to_dim_promotions_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_promotions_tbl      import  load_data_to_dim_promotions_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_promotions_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_promotions_tbl      import  load_data_to_dim_promotions_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_promotions_tbl'
     imported_function = 'load_data_to_dim_promotions_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1163,8 +1163,8 @@ def load_data_to_dim_promotions_table():
 
 @task
 def load_data_to_dim_sales_employees_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_sales_employees_tbl      import  load_data_to_dim_sales_employees_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_sales_employees_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_sales_employees_tbl      import  load_data_to_dim_sales_employees_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_sales_employees_tbl'
     imported_function = 'load_data_to_dim_sales_employees_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1178,9 +1178,85 @@ def load_data_to_dim_sales_employees_table():
 
 @task
 def load_data_to_dim_schedules_table():
-    from dwh_pipelines.L4_dwh_layer.dwh.dim_schedules_tbl      import  load_data_to_dim_schedules_table
-    module_name = 'dwh_pipelines.L4_dwh_layer.dwh.dim_schedules_tbl'
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_schedules_tbl      import  load_data_to_dim_schedules_table
+    module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_schedules_tbl'
     imported_function = 'load_data_to_dim_schedules_table'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+# Add user access layer to the process
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_1():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.avg_ticket_prices_by_year      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.avg_ticket_prices_by_year'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_2():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.ticket_sales_by_age      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.ticket_sales_by_age'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_3():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.top_destinations      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.top_destinations'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_4():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_destination      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_destination'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+# Add reporting channel to the process 
+
+
+@task
+def render_dash_visualizations_for_aggregates():
+    from dwh_pipelines.L4_dwh_layer.reporting_channel.app      import  render_dash_visualizations
+    module_name = 'dwh_pipelines.L4_dwh_layer.reporting_channel.app'
+    imported_function = 'render_dash_visualizations'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
     root_logger.info("")
@@ -1665,6 +1741,33 @@ def run_dwh_layer_flow():
 
 
 
+    query_postgres_dwh_for_aggregate_tbl_1()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 1 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 1 ! ")
+
+
+
+    query_postgres_dwh_for_aggregate_tbl_2()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 2 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 2 ! ")
+
+
+    query_postgres_dwh_for_aggregate_tbl_3()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 3 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 3 ! ")
+
+
+
+    query_postgres_dwh_for_aggregate_tbl_4()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 4 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 4 ! ")
+
+
+    # render_dash_visualizations_for_aggregates()
+    # root_logger.info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
+    # get_run_logger().info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
+
+
 # ============================================== FLOW RUNS ==============================================
 # ====================================================================================================
 
@@ -1681,7 +1784,7 @@ if __name__=="__main__":
     run_raw_layer_flow()
     
 
-    # L2 - Load raw data into staging tables
+    # # L2 - Load raw data into staging tables
     run_staging_layer_flow()
     run_dq_tests_for_staging_layer_flow()
     
