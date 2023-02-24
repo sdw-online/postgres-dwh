@@ -215,8 +215,8 @@ def query_postgres_dwh(postgres_connection):
                                                                             , DATE_PART('year', booking_date) AS booking_year
                                                                         FROM
                                                                             live.dim_flights_tbl f
-                                                                            INNER JOIN live.dim_destinations_tbl d 
-                                                                                ON f.flight_id = d.flight_id 
+                                                                        INNER JOIN live.dim_destinations_tbl d 
+                                                                            ON f.flight_id = d.flight_id 
 
                                                                         GROUP BY 	    d.arrival_city
                                                                                         , DATE_PART('year', booking_date)
