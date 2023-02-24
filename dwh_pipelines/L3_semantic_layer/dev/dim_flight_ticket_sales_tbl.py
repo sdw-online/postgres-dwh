@@ -461,7 +461,7 @@ def load_data_to_dim_flight_ticket_sales_table(postgres_connection):
                                                                                     discount                        NUMERIC(10, 2),
                                                                                     promotion_id                    UUID NOT NULL, 
                                                                                     promotion_name                  VARCHAR NOT NULL, 
-                                                                                    ticket_sales                    VARCHAR NOT NULL,
+                                                                                    ticket_sales                    NUMERIC(10, 2),
                                                                                     ticket_sales_date               DATE NOT NULL
                                                                                     );
         '''
@@ -611,6 +611,7 @@ def load_data_to_dim_flight_ticket_sales_table(postgres_connection):
         # Create table if it doesn't exist in Postgres  
         CREATING_TABLE_PROCESSING_START_TIME    =   time.time()
         cursor.execute(create_dim_flight_ticket_sales_tbl)
+        postgres_connection.commit()
         CREATING_TABLE_PROCESSING_END_TIME  =   time.time()
 
         

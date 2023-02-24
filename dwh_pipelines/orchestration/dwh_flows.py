@@ -1247,6 +1247,44 @@ def query_postgres_dwh_for_aggregate_tbl_4():
     get_run_logger().info("")
 
 
+@task
+def query_postgres_dwh_for_aggregate_tbl_5():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.customer_booking_trend      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.customer_booking_trend'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_6():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_payment_method      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_payment_method'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+@task
+def query_postgres_dwh_for_aggregate_tbl_7():
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_year      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.total_sales_by_year'
+    imported_function = 'query_postgres_dwh'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
 
 
 # Add reporting channel to the process 
@@ -1761,6 +1799,21 @@ def run_dwh_layer_flow():
     query_postgres_dwh_for_aggregate_tbl_4()
     root_logger.info("SUCCESS! Completed creating aggregate table no 4 ! ")
     get_run_logger().info("SUCCESS! Completed creating aggregate table no 4 ! ")
+
+
+    query_postgres_dwh_for_aggregate_tbl_5()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 5 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 5 ! ")
+
+
+    query_postgres_dwh_for_aggregate_tbl_6()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 6 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 6 ! ")
+
+
+    query_postgres_dwh_for_aggregate_tbl_7()
+    root_logger.info("SUCCESS! Completed creating aggregate table no 7 ! ")
+    get_run_logger().info("SUCCESS! Completed creating aggregate table no 7 ! ")
 
 
     # render_dash_visualizations_for_aggregates()

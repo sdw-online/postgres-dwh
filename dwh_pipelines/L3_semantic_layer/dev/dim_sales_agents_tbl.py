@@ -452,7 +452,7 @@ def load_data_to_dim_sales_agents_table(postgres_connection):
         create_dim_sales_agents_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (      
                                                                                     agent_sk                    SERIAL PRIMARY KEY,
                                                                                     id                          UUID NOT NULL UNIQUE,
-                                                                                    commission                  VARCHAR NOT NULL,
+                                                                                    commission                  NUMERIC(10, 2),
                                                                                     email                       VARCHAR NOT NULL,
                                                                                     first_name                  VARCHAR NOT NULL,
                                                                                     last_name                   VARCHAR NOT NULL,
