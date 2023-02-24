@@ -131,24 +131,62 @@ def set_up_access_controls(postgres_connection):
         raw_main_schema                                         =           'main'
         staging_dev_schema                                      =           'dev'
         staging_prod_schema                                     =           'prod'
-            
+
         semantic_dev_schema                                     =           'dev'
         semantic_prod_schema                                    =           'prod'
-            
+
         dwh_reporting_schema                                    =           'reporting'
         dwh_live_schema                                         =           'live'
+
+        schema_by_access = {
+            "raw_db"            :   ["main"],
+            "staging_db"        :   ["dev", "prod"],
+            "semantic_db"       :   ["dev", "prod"],
+            "dwh_db"            :   ["live", "reporting"],
+
+        }
+        db_access_roles = {
+
+            "junior_data_analyst"       : [dwh_db],
+            "senior_data_analyst"       : [dwh_db],
+            "junior_data_engineer"      : [raw_db, staging_db, semantic_db, dwh_db],
+            "senior_data_engineer"      : [raw_db, staging_db, semantic_db, dwh_db],
+            "junior_data_scientist"     : [staging_db, semantic_db, dwh_db],
+            "senior_data_scientist"     : [staging_db, semantic_db, dwh_db],
+
+        }
 
 
         
         # For granting access to the DWH databases 
+
+        
+        ## A. Data analysts
         grant_jda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_analyst; '''
         grant_sda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_analyst; '''
 
-        grant_jde_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {raw_db}, {staging_db}, {semantic_db}, {dwh_db} TO junior_data_engineer; '''
-        grant_sde_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {raw_db}, {staging_db}, {semantic_db}, {dwh_db} TO senior_data_engineer; '''
 
-        grant_jds_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {staging_db}, {semantic_db}, {dwh_db} TO junior_data_scientist; '''
-        grant_sds_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {staging_db}, {semantic_db}, {dwh_db} TO senior_data_scientist; '''
+        ## B. Data engineers
+        grant_jde_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {raw_db} TO junior_data_engineer; '''
+        grant_jde_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO junior_data_engineer; '''
+        grant_jde_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO junior_data_engineer; '''
+        grant_jde_access_to_database_sql_query_4                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_engineer; '''
+        
+        grant_sde_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {raw_db} TO senior_data_engineer; '''
+        grant_sde_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO senior_data_engineer; '''
+        grant_sde_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO senior_data_engineer; '''
+        grant_sde_access_to_database_sql_query_4                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_engineer; '''
+
+
+        ## C. Data scientists 
+        grant_jds_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO junior_data_scientist; '''
+        grant_jds_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO junior_data_scientist; '''
+        grant_jds_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_scientist; '''
+
+        grant_sds_access_to_database_sql_query_1                =           f''' GRANT CONNECT ON DATABASE {staging_db} TO senior_data_scientist; '''
+        grant_sds_access_to_database_sql_query_2                =           f''' GRANT CONNECT ON DATABASE {semantic_db} TO senior_data_scientist; '''
+        grant_sds_access_to_database_sql_query_3                =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_scientist; '''
+
 
 
 
@@ -245,6 +283,8 @@ def set_up_access_controls(postgres_connection):
                    cursor.execute(creating_roles_sql_query)
                    postgres_connection.commit()
                    root_logger.info(f'''Successfully created '{data_role}' role''')
+                #    if data_role == 'junior_data_analyst':
+                       
 
                    root_logger.info(f'===========================================')
                    root_logger.info(f'')
@@ -276,38 +316,109 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
 
+            ## A. Data analysts
             cursor.execute(grant_jda_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'junior_data_analyst' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'''Granted 'junior_data_analyst' role access to connecting to '{dwh_db}' database ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
 
             cursor.execute(grant_sda_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'senior_data_analyst' role access to connecting with the appropriate databases ''')
+            root_logger.info(f'''Granted 'senior_data_analyst' role access to connecting to '{dwh_db}' database ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
 
-            cursor.execute(grant_jde_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting with the appropriate databases ''')
+
+
+            ## B. Data engineers
+            cursor.execute(grant_jde_access_to_database_sql_query_1)
+            root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{raw_db}' database ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
 
-            cursor.execute(grant_sde_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting with the appropriate databases ''')
+            cursor.execute(grant_jde_access_to_database_sql_query_2)
+            root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{staging_db}' database ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
 
-            cursor.execute(grant_jds_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting with the appropriate databases ''')
+            cursor.execute(grant_jde_access_to_database_sql_query_3)
+            root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{semantic_db}' database ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
 
-            cursor.execute(grant_sds_access_to_database_sql_query)
-            root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting with the appropriate databases ''')
+            cursor.execute(grant_jde_access_to_database_sql_query_4)
+            root_logger.info(f'''Granted 'junior_data_engineer' role access to connecting to '{dwh_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            
+            cursor.execute(grant_sde_access_to_database_sql_query_1)
+            root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{raw_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sde_access_to_database_sql_query_2)
+            root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{staging_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sde_access_to_database_sql_query_3)
+            root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{semantic_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sde_access_to_database_sql_query_4)
+            root_logger.info(f'''Granted 'senior_data_engineer' role access to connecting to '{dwh_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+
+
+            ## C. Data scientists 
+            cursor.execute(grant_jds_access_to_database_sql_query_1)
+            root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting to '{staging_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_jds_access_to_database_sql_query_2)
+            root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting to '{semantic_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_jds_access_to_database_sql_query_3)
+            root_logger.info(f'''Granted 'junior_data_scientist' role access to connecting to '{dwh_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+            cursor.execute(grant_sds_access_to_database_sql_query_1)
+            root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting to '{staging_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sds_access_to_database_sql_query_2)
+            root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting to '{semantic_db}' database ''')
+            root_logger.info(f'===========================================')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+            cursor.execute(grant_sds_access_to_database_sql_query_3)
+            root_logger.info(f'''Granted 'senior_data_scientist' role access to connecting to '{dwh_db}' database ''')
             root_logger.info(f'===========================================')
             root_logger.info(f'')
             root_logger.info(f'')
