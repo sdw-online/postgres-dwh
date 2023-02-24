@@ -130,7 +130,6 @@ def create_custom_roles(postgres_connection):
                                        'senior_data_scientist'
                                        ]
         
-        creating_roles_sql_query = f'CREATE ROLE {data_role} NOLOGIN;'
         
         ROLES_EXISTS = True
         
@@ -153,22 +152,63 @@ def create_custom_roles(postgres_connection):
         # ================================================== CREATE CUSTOM ROLES =======================================
 
 
-        
-        for data_role in custom_roles:
-                try:
+        try:
+             
+             for data_role in custom_roles: 
+                checking_if_roles_exist_sql_query                   =       f'''SELECT 1 FROM pg_roles WHERE rolname = '{data_role}' ;'''
+                cursor.execute(checking_if_roles_exist_sql_query)
+                postgres_connection.commit()
+
+                role_exists = cursor.fetchone()
+
+                if role_exists:
+                    root_logger.warning(f'Role "{data_role}" already exists ... Now dropping "{data_role}" role...')
+
+                    drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
+                    cursor.execute(drop_role_sql_query)
+                    postgres_connection.commit()
+                    root_logger.warning(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
+
+                    creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
                     cursor.execute(creating_roles_sql_query)
                     postgres_connection.commit()
 
                     root_logger.info(f'''Successfully created '{data_role}' role''')
+                    root_logger.info(f'===========================================')
+                    root_logger.info(f'')
+                    root_logger.info(f'')
+
+                else:
+                    cursor.execute(creating_roles_sql_query)
+                    postgres_connection.commit()
+
+                    root_logger.info(f'''Successfully created '{data_role}' role''')
+                    root_logger.info(f'===========================================')
+                    root_logger.info(f'')
+                    root_logger.info(f'')
+                     
+
+
+        except psycopg2.Error as e:
+            root_logger.error(e)
+             
+
+        
+        # for data_role in custom_roles:
+        #         try:
+        #             cursor.execute(creating_roles_sql_query)
+        #             postgres_connection.commit()
+
+        #             root_logger.info(f'''Successfully created '{data_role}' role''')
                     
-                except:
-                    root_logger.warning(f'Role "{data_role}" already exists ...')
-                    root_logger.warning(f'===========================================')
-                    root_logger.warning(f'')
-                    root_logger.warning(f'')
+        #         except:
+        #             root_logger.warning(f'Role "{data_role}" already exists ...')
+        #             root_logger.warning(f'===========================================')
+        #             root_logger.warning(f'')
+        #             root_logger.warning(f'')
 
     except psycopg2.Error as e:
-            root_logger.info(e)
+            root_logger.error(e)
         
 
 create_custom_roles(postgres_connection)
