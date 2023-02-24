@@ -127,6 +127,20 @@ def set_up_access_controls(postgres_connection):
                                                                           'junior_data_scientist',
                                                                           'senior_data_scientist'
                                                                           ]
+        
+        raw_main_schema                                         =           'main'
+        staging_dev_schema                                      =           'dev'
+        staging_prod_schema                                     =           'prod'
+            
+        semantic_dev_schema                                     =           'dev'
+        semantic_prod_schema                                    =           'prod'
+            
+        dwh_reporting_schema                                    =           'reporting'
+        dwh_live_schema                                         =           'live'
+
+
+        
+        # For granting access to the DWH databases 
         grant_jda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO junior_data_analyst; '''
         grant_sda_access_to_database_sql_query                  =           f''' GRANT CONNECT ON DATABASE {dwh_db} TO senior_data_analyst; '''
 
@@ -138,6 +152,54 @@ def set_up_access_controls(postgres_connection):
 
 
 
+        # For granting access to viewing metadata on objects within the specified schema 
+
+        ## A. Data analysts
+        grant_jda_access_to_schema_info_sql_query               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_analyst    '''
+        grant_sda_access_to_schema_info_sql_query               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_analyst    '''
+
+
+        ## B. Data engineers
+        grant_jde_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {raw_main_schema} TO junior_data_engineer          '''
+        grant_jde_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO junior_data_engineer       '''
+        grant_jde_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO junior_data_engineer      '''
+        grant_jde_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO junior_data_engineer      '''
+        grant_jde_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO junior_data_engineer     '''
+        grant_jde_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO junior_data_engineer          '''
+        grant_jde_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_engineer     '''
+
+
+        grant_sde_access_to_schema_info_sql_query_1               =           f''' GRANT USAGE ON SCHEMA {raw_main_schema} TO senior_data_engineer          '''
+        grant_sde_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO senior_data_engineer       '''
+        grant_sde_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO senior_data_engineer      '''
+        grant_sde_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO senior_data_engineer      '''
+        grant_sde_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO senior_data_engineer     '''
+        grant_sde_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO senior_data_engineer          '''
+        grant_sde_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_engineer     '''
+
+
+
+        ## C. Data scientists 
+        grant_jds_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO junior_data_scientist       '''
+        grant_jds_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO junior_data_scientist      '''
+        grant_jds_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO junior_data_scientist      '''
+        grant_jds_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO junior_data_scientist     '''
+        grant_jds_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO junior_data_scientist          '''
+        grant_jds_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO junior_data_scientist     '''
+
+
+
+        grant_sds_access_to_schema_info_sql_query_2               =           f''' GRANT USAGE ON SCHEMA {staging_dev_schema} TO senior_data_scientist       '''
+        grant_sds_access_to_schema_info_sql_query_3               =           f''' GRANT USAGE ON SCHEMA {staging_prod_schema} TO senior_data_scientist      '''
+        grant_sds_access_to_schema_info_sql_query_4               =           f''' GRANT USAGE ON SCHEMA {semantic_dev_schema} TO senior_data_scientist      '''
+        grant_sds_access_to_schema_info_sql_query_5               =           f''' GRANT USAGE ON SCHEMA {semantic_prod_schema} TO senior_data_scientist     '''
+        grant_sds_access_to_schema_info_sql_query_6               =           f''' GRANT USAGE ON SCHEMA {dwh_live_schema} TO senior_data_scientist          '''
+        grant_sds_access_to_schema_info_sql_query_7               =           f''' GRANT USAGE ON SCHEMA {dwh_reporting_schema} TO senior_data_scientist     '''
+
+
+
+
+        # For removing access from the DWH databases 
         revoke_jda_access_to_database_sql_query                  =           f''' REVOKE ALL PRIVILEGES ON DATABASE {dwh_db} FROM junior_data_analyst; '''
         
     
@@ -177,7 +239,7 @@ def set_up_access_controls(postgres_connection):
                    drop_role_sql_query  = f''' DROP ROLE {data_role}; '''
                    cursor.execute(drop_role_sql_query)
                    postgres_connection.commit()
-                   root_logger.warning(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
+                   root_logger.info(f'Dropped "{data_role}" successfully ... Now re-creating "{data_role}" role...')
 
                    creating_roles_sql_query                =       f'''CREATE ROLE {data_role} NOLOGIN;'''
                    cursor.execute(creating_roles_sql_query)
@@ -251,8 +313,21 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
 
+        
         except psycopg2.Error as e:
             root_logger.error(e)
+
+
+        
+        # ================================================== GRANT ACCESS TO INFORMATION_SCHEMA DATA =======================================
+
+
+
+
+
+
+        # ================================================== GRANT PRIVILEGES TO ROLES =======================================
+
 
 
 
