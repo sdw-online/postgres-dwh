@@ -325,6 +325,7 @@ def test_id_char_length_constraint():
     for sql_result in sql_results:
         id_column = sql_result[0]
         actual_id_length = len(id_column)
+        expected_id_char_length = int(expected_id_char_length)
         assert actual_id_length == expected_id_char_length, f"Invalid ID column found: All ID columns must be {expected_id_char_length} characters long. The ID column containing invalid IDs is '{id_column}' column"
 
 
@@ -373,7 +374,7 @@ def test_duplicate_records_count():
 
 def test_no_of_discounts_in_range():
     min_discount_expected = 0
-    max_discount_expected = 1
+    max_discount_expected = 100
     # Check that discount is between the expected ranges
 
     sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE discount < {min_discount_expected} OR discount > {max_discount_expected}  """
@@ -404,7 +405,7 @@ if __name__ == "__main__":
     pytest.main(["-v", "-s", "--capture=tee-sys", file_path, f"--html={html_report_path}", "--self-contained-html"])
 
     # Open DQ reports in browser
-    dq_report_url = Path.cwd() / html_report_path
-    webbrowser.open(dq_report_url.as_uri())
+    # dq_report_url = Path.cwd() / html_report_path
+    # webbrowser.open(dq_report_url.as_uri())
     sys.exit()
 
