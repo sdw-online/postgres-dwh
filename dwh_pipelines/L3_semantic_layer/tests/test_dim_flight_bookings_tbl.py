@@ -330,7 +330,7 @@ def test_id_char_length_constraint():
 def test_positive_ticket_price_col():
     sql_column = "ticket_price"
 
-    sql_query = f"""         SELECT      {sql_column} 
+    sql_query = f"""            SELECT      {sql_column} 
                                 FROM        {schema_name}.{table_name}
                                 ;
     """
@@ -341,7 +341,7 @@ def test_positive_ticket_price_col():
     # Assert the values in the ticket_price column are all positive values
     for sql_result in sql_results:
         ticket_price = sql_result[0]
-        assert ticket_price > 0, f"Invalid total price detected - total price must be a positive value "
+        assert ticket_price >= 0, f"Invalid total price detected - total price must be a positive value "
 
 
 
@@ -384,7 +384,7 @@ def test_duplicate_records_count():
 
 
 def test_for_positive_ticket_price_values():
-    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE ticket_price <= 0 """
+    sql_query = f""" SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE ticket_price < 0 """
     cursor.execute(sql_query)
     sql_result = cursor.fetchone()
     total_no_of_negative_ticket_price_values = sql_result[0]

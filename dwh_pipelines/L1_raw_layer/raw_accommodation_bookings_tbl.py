@@ -236,6 +236,7 @@ def load_accommodation_bookings_data_to_raw_table(postgres_connection):
         check_if_data_lineage_fields_are_added_to_tbl   =   f'''        
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
+                                                                    WHERE   table_name      = '{table_name}' 
                                                                         AND     (column_name    = 'created_at'
                                                                         OR      column_name     = 'updated_at' 
                                                                         OR      column_name     = 'source_system' 

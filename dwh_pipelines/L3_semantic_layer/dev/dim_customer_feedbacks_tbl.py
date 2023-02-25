@@ -705,19 +705,19 @@ def load_data_to_dim_customer_feedbacks_table(postgres_connection):
         root_logger.debug(f"")
 
 
-        # Add foreign keys
-        cursor.execute(add_foreign_key_columns)
-        root_logger.debug("")
-        root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
-        root_logger.debug("")
-        cursor.execute(add_fk_constraints_to_table)
-        root_logger.debug("")
-        root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
-        root_logger.debug("")
-        cursor.execute(add_table_joins_to_table)
-        root_logger.debug("")
-        root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
-        root_logger.debug("")
+        # # Add foreign keys
+        # cursor.execute(add_foreign_key_columns)
+        # root_logger.debug("")
+        # root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
+        # root_logger.debug("")
+        # cursor.execute(add_fk_constraints_to_table)
+        # root_logger.debug("")
+        # root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
+        # root_logger.debug("")
+        # cursor.execute(add_table_joins_to_table)
+        # root_logger.debug("")
+        # root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
+        # root_logger.debug("")
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 
         note_1 = """IMPORTANT NOTE: Invest time in understanding the underlying data fields to avoid highlighting the incorrect fields or omitting fields containing confidential information.          """
