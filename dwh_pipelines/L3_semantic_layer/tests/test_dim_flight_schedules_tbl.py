@@ -378,5 +378,19 @@ def run_tests():
 
 
 if __name__=="__main__":
+    
+    # Run DQ tests
     test_result = run_tests()
+    
+    # Create DQ HTML reports
+    from pathlib import Path
+    import webbrowser
+    file_path = os.path.abspath(__file__)
+    current_filepath    =   Path(__file__).stem
+    html_report_path = f'{current_filepath}.html'
+    pytest.main(["-v", "-s", file_path, f"--html={html_report_path}", "--self-contained-html"])
+
+    # Open HTML DQ report
+    # dq_report_url = Path.cwd()/html_report_path
+    # webbrowser.open(dq_report_url.as_uri())
     sys.exit()

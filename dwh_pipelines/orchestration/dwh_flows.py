@@ -1089,10 +1089,10 @@ def load_data_to_dim_customers_table():
 
 
 @task
-def load_data_to_dim_date_table():
-    from dwh_pipelines.L4_dwh_layer.datamarts.dim_date_tbl      import  load_data_to_dim_date_table
+def load_data_to_dim_dates_table():
+    from dwh_pipelines.L4_dwh_layer.datamarts.dim_dates_tbl      import  load_data_to_dim_dates_table
     module_name = 'dwh_pipelines.L4_dwh_layer.datamarts.dim_date_tbl'
-    imported_function = 'load_data_to_dim_date_table'
+    imported_function = 'load_data_to_dim_dates_table'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
     root_logger.info("")
@@ -1733,7 +1733,7 @@ def run_dwh_layer_flow():
 
 
 
-    load_data_to_dim_date_table()
+    load_data_to_dim_dates_table()
     root_logger.info("SUCCESS! Completed loading MDM data into 'dim_date_table'! ")
     get_run_logger().info("SUCCESS! Completed loading MDM data into 'dim_date_table'! ")
 
