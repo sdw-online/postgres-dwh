@@ -116,25 +116,6 @@ def set_up_partitions(postgres_connection):
         
         cursor                                                  =          postgres_connection.cursor()
         active_db_name                                          =          database
-        raw_db                                                  =          config['travel_data_filepath']['RAW_DB']
-        staging_db                                              =          config['travel_data_filepath']['STAGING_DB']
-        semantic_db                                             =          config['travel_data_filepath']['SEMANTIC_DB']
-        dwh_db                                                  =          config['travel_data_filepath']['DWH_DB']
-        custom_roles                                            =          ['junior_data_analyst',
-                                                                          'senior_data_analyst',  
-                                                                          'junior_data_engineer',   
-                                                                          'senior_data_engineer', 
-                                                                          'junior_data_scientist',
-                                                                          'senior_data_scientist'
-                                                                          ]
-        
-        raw_main_schema                                         =           'main'
-        
-        staging_dev_schema                                      =           'dev'
-        staging_prod_schema                                     =           'prod'
-
-        semantic_dev_schema                                     =           'dev'
-        semantic_prod_schema                                    =           'prod'
 
         dwh_reporting_schema                                    =           'reporting'
         dwh_live_schema                                         =           'live'
@@ -156,7 +137,7 @@ def set_up_partitions(postgres_connection):
 
         
 
-        create_parent_table_sql_query = f'''   CREATE TABLE {dwh_reporting_schema}.{parent_table} (
+        create_parent_table = f'''   CREATE TABLE {dwh_reporting_schema}.{parent_table} (
                                                         total_revenue           INTEGER, 
                                                         payment_method          VARCHAR NOT NULL, 
                                                         booking_year            INTEGER
@@ -165,30 +146,30 @@ def set_up_partitions(postgres_connection):
                                                     PARTITION BY LIST   (payment_method);
         '''
 
-        create_partition_sql_query_1 = f'''     CREATE TABLE {child_table_1}
+        create_partition_table_1 = f'''     CREATE TABLE {child_table_1}
                                                     PARTITION OF {dwh_reporting_schema}.{parent_table}
-                                                    FOR VALUES IN ({partition_value_category_1})
+                                                    FOR VALUES IN ('{partition_value_category_1}')
                                                     ;
         ;
         '''
 
-        create_partition_sql_query_2 = f'''    CREATE TABLE {child_table_2}
+        create_partition_table_2 = f'''    CREATE TABLE {child_table_2}
                                                     PARTITION OF {dwh_reporting_schema}.{parent_table}
-                                                    FOR VALUES IN ({partition_value_category_2})
+                                                    FOR VALUES IN ('{partition_value_category_2}')
                                                     ;
         ;
         '''
 
-        create_partition_sql_query_3 = f'''    CREATE TABLE {child_table_3}
+        create_partition_table_3 = f'''    CREATE TABLE {child_table_3}
                                                     PARTITION OF {dwh_reporting_schema}.{parent_table}
-                                                    FOR VALUES IN ({partition_value_category_3})
+                                                    FOR VALUES IN ('{partition_value_category_3}')
                                                     ;
         ;
         '''
 
-        create_partition_sql_query_4 = f'''    CREATE TABLE {child_table_4}
+        create_partition_table_4 = f'''    CREATE TABLE {child_table_4}
                                                     PARTITION OF {dwh_reporting_schema}.{parent_table}
-                                                    FOR VALUES IN ({partition_value_category_4})
+                                                    FOR VALUES IN ('{partition_value_category_4}')
                                                     ;
         ;
         '''
@@ -201,7 +182,7 @@ def set_up_partitions(postgres_connection):
                                                         FROM 
                                                             reporting.total_sales_by_payment_method
                                                         WHERE 
-                                                            payment_method = {partition_value_category_1}
+                                                            payment_method = '{partition_value_category_1}'
                                                             ;       
         '''
 
@@ -213,7 +194,7 @@ def set_up_partitions(postgres_connection):
                                                         FROM 
                                                             reporting.total_sales_by_payment_method
                                                         WHERE 
-                                                            payment_method = {partition_value_category_2}
+                                                            payment_method = '{partition_value_category_2}'
                                                             ;      
         '''
 
@@ -225,7 +206,7 @@ def set_up_partitions(postgres_connection):
                                                         FROM 
                                                             reporting.total_sales_by_payment_method
                                                         WHERE 
-                                                            payment_method = {partition_value_category_3}
+                                                            payment_method = '{partition_value_category_3}'
                                                             ;    
         '''
 
@@ -237,8 +218,25 @@ def set_up_partitions(postgres_connection):
                                                         FROM 
                                                             reporting.total_sales_by_payment_method
                                                         WHERE 
-                                                            payment_method = {partition_value_category_4}
+                                                            payment_method = '{partition_value_category_4}'
                                                             ;       
+        '''
+
+
+        check_if_parent_table_exists_already = f''' SELECT relname FROM pg_class WHERE relname = '{parent_table}' ;
+        '''
+
+
+        drop_partition_table_1 = f'''   DROP TABLE {child_table_1} PARTITION OF {parent_table} ; 
+        '''
+        
+        drop_partition_table_2 = f'''   DROP TABLE {child_table_2} PARTITION OF {parent_table} ; 
+        '''
+        
+        drop_partition_table_3 = f'''   DROP TABLE {child_table_3} PARTITION OF {parent_table} ; 
+        '''
+        
+        drop_partition_table_4 = f'''   DROP TABLE {child_table_4} PARTITION OF {parent_table} ; 
         '''
         
 
@@ -268,55 +266,109 @@ def set_up_partitions(postgres_connection):
             root_logger.info(f'')
             root_logger.info(f'')
 
-            cursor.execute(create_parent_table_sql_query)
-            # postgres_connection.commit()
-            root_logger.info(f'''Successfully created '{parent_table}' parent table, now creating partitions ...   ''')
-            root_logger.info(f'-------------------------------------------------------------')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
         
 
-            cursor.execute(create_partition_sql_query_1)
-            # postgres_connection.commit()
-            root_logger.info(f'''Successfully created '{child_table_1}'  partition table ...  ''')
-            root_logger.info(f'-------------------------------------------------------------')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
+            # try:
+            #     cursor.execute(create_parent_table)
+            #     root_logger.info(f'''Successfully created '{parent_table}' parent table, now creating partitions ...   ''')
+            #     root_logger.info(f'-------------------------------------------------------------')
+            #     root_logger.info(f'')
+            #     root_logger.info(f'')
+            #     root_logger.info(f'')
+            #     root_logger.info(f'')
+
+            # except psycopg2.Error as e: 
+            #     root_logger.info(f"The '{parent_table}' parent table already exists....")
+            #     root_logger.info("")
+            #     root_logger.info(e)
+
+                
+
         
+            try:
+                cursor.execute(create_partition_table_1)
+                root_logger.info(f'''Successfully created '{child_table_1}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+            except psycopg2.Error as e: 
+                root_logger.info(f"The '{child_table_1}' partition table already exists....now dropping and recreating ...")
+                root_logger.info("")
+                cursor.execute(drop_partition_table_1)
+                cursor.execute(create_partition_table_1)
+                root_logger.info(f'''Successfully created '{child_table_1}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
         
 
-            cursor.execute(create_partition_sql_query_2)
-            # postgres_connection.commit()
-            root_logger.info(f'''Successfully created '{child_table_2}'  partition table ...  ''')
-            root_logger.info(f'-------------------------------------------------------------')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
+            try:
+                cursor.execute(create_partition_table_2)
+                root_logger.info(f'''Successfully created '{child_table_2}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+            except psycopg2.Error as e: 
+                root_logger.info(f"The '{child_table_2}' partition table already exists....now dropping and recreating ...")
+                root_logger.info("")
+                cursor.execute(drop_partition_table_2)
+                cursor.execute(create_partition_table_2)
+                root_logger.info(f'''Successfully created '{child_table_2}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+
         
 
-            cursor.execute(create_partition_sql_query_3)
-            # postgres_connection.commit()
-            root_logger.info(f'''Successfully created '{child_table_3}'  partition table ...  ''')
-            root_logger.info(f'-------------------------------------------------------------')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
-        
+            try:
+                cursor.execute(create_partition_table_3)
+                root_logger.info(f'''Successfully created '{child_table_3}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+            except psycopg2.Error as e: 
+                root_logger.info(f"The '{child_table_3}' partition table already exists....now dropping and recreating ...")
+                root_logger.info("")
+                cursor.execute(drop_partition_table_3)
+                cursor.execute(create_partition_table_3)
+                root_logger.info(f'''Successfully created '{child_table_3}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
 
-            cursor.execute(create_partition_sql_query_4)
-            # postgres_connection.commit()
-            root_logger.info(f'''Successfully created '{child_table_4}'  partition table ...  ''')
-            root_logger.info(f'-------------------------------------------------------------')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
-            root_logger.info(f'')
+
+
+            try:
+                cursor.execute(create_partition_table_4)
+                root_logger.info(f'''Successfully created '{child_table_4}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+            except psycopg2.Error as e: 
+                root_logger.info(f"The '{child_table_4}' partition table already exists....now dropping and recreating ...")
+                root_logger.info("")
+                cursor.execute(drop_partition_table_4)
+                cursor.execute(create_partition_table_4)
+                root_logger.info(f'''Successfully created '{child_table_4}'  partition table ...  ''')
+                root_logger.info(f'-------------------------------------------------------------')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
+                root_logger.info(f'')
 
 
 
