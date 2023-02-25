@@ -227,16 +227,16 @@ def set_up_partitions(postgres_connection):
         '''
 
 
-        drop_partition_table_1 = f'''   DROP TABLE {child_table_1} PARTITION OF {parent_table} ; 
+        drop_partition_table_1 = f'''   DROP TABLE IF EXISTS {child_table_1} ; 
         '''
         
-        drop_partition_table_2 = f'''   DROP TABLE {child_table_2} PARTITION OF {parent_table} ; 
+        drop_partition_table_2 = f'''   DROP TABLE IF EXISTS {child_table_2} ; 
         '''
         
-        drop_partition_table_3 = f'''   DROP TABLE {child_table_3} PARTITION OF {parent_table} ; 
+        drop_partition_table_3 = f'''   DROP TABLE IF EXISTS {child_table_3} ; 
         '''
         
-        drop_partition_table_4 = f'''   DROP TABLE {child_table_4} PARTITION OF {parent_table} ; 
+        drop_partition_table_4 = f'''   DROP TABLE IF EXISTS {child_table_4} ; 
         '''
         
 
@@ -267,24 +267,7 @@ def set_up_partitions(postgres_connection):
             root_logger.info(f'')
 
         
-
-            # try:
-            #     cursor.execute(create_parent_table)
-            #     root_logger.info(f'''Successfully created '{parent_table}' parent table, now creating partitions ...   ''')
-            #     root_logger.info(f'-------------------------------------------------------------')
-            #     root_logger.info(f'')
-            #     root_logger.info(f'')
-            #     root_logger.info(f'')
-            #     root_logger.info(f'')
-
-            # except psycopg2.Error as e: 
-            #     root_logger.info(f"The '{parent_table}' parent table already exists....")
-            #     root_logger.info("")
-            #     root_logger.info(e)
-
-                
-
-        
+       
             try:
                 cursor.execute(create_partition_table_1)
                 root_logger.info(f'''Successfully created '{child_table_1}'  partition table ...  ''')
@@ -293,8 +276,9 @@ def set_up_partitions(postgres_connection):
                 root_logger.info(f'')
                 root_logger.info(f'')
                 root_logger.info(f'')
+
             except psycopg2.Error as e: 
-                root_logger.info(f"The '{child_table_1}' partition table already exists....now dropping and recreating ...")
+                root_logger.warning(f"The '{child_table_1}' partition table already exists....now dropping and recreating ...")
                 root_logger.info("")
                 cursor.execute(drop_partition_table_1)
                 cursor.execute(create_partition_table_1)
@@ -314,8 +298,9 @@ def set_up_partitions(postgres_connection):
                 root_logger.info(f'')
                 root_logger.info(f'')
                 root_logger.info(f'')
+
             except psycopg2.Error as e: 
-                root_logger.info(f"The '{child_table_2}' partition table already exists....now dropping and recreating ...")
+                root_logger.warning(f"The '{child_table_2}' partition table already exists....now dropping and recreating ...")
                 root_logger.info("")
                 cursor.execute(drop_partition_table_2)
                 cursor.execute(create_partition_table_2)
@@ -336,8 +321,9 @@ def set_up_partitions(postgres_connection):
                 root_logger.info(f'')
                 root_logger.info(f'')
                 root_logger.info(f'')
+
             except psycopg2.Error as e: 
-                root_logger.info(f"The '{child_table_3}' partition table already exists....now dropping and recreating ...")
+                root_logger.warning(f"The '{child_table_3}' partition table already exists....now dropping and recreating ...")
                 root_logger.info("")
                 cursor.execute(drop_partition_table_3)
                 cursor.execute(create_partition_table_3)
@@ -358,8 +344,9 @@ def set_up_partitions(postgres_connection):
                 root_logger.info(f'')
                 root_logger.info(f'')
                 root_logger.info(f'')
+
             except psycopg2.Error as e: 
-                root_logger.info(f"The '{child_table_4}' partition table already exists....now dropping and recreating ...")
+                root_logger.warning(f"The '{child_table_4}' partition table already exists....now dropping and recreating ...")
                 root_logger.info("")
                 cursor.execute(drop_partition_table_4)
                 cursor.execute(create_partition_table_4)
@@ -373,7 +360,9 @@ def set_up_partitions(postgres_connection):
 
 
             root_logger.info(f'-------------------------------------------------------------')
+            root_logger.info(f'-------------------------------------------------------------')
             root_logger.info(f'Now inserting data into partition tables...')
+            root_logger.info(f'-------------------------------------------------------------')
             root_logger.info(f'-------------------------------------------------------------')
             root_logger.info(f'')
             root_logger.info(f'')
