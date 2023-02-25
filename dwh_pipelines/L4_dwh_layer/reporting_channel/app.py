@@ -126,6 +126,9 @@ def render_dash_visualizations(postgres_connection):
         sql_query_2                         =      f'''SELECT * FROM {active_schema_name}.ticket_sales_by_age   ;   '''
         sql_query_3                         =      f'''SELECT * FROM {active_schema_name}.top_destinations ;    '''
         sql_query_4                         =      f'''SELECT * FROM {active_schema_name}.total_sales_by_destination ;  '''
+        sql_query_5                         =      f'''SELECT * FROM {active_schema_name}.customer_booking_trend ;  '''
+        sql_query_6                         =      f'''SELECT * FROM {active_schema_name}.total_sales_by_payment_method ;  '''
+        sql_query_7                         =      f'''SELECT * FROM {active_schema_name}.total_sales_by_year ;  '''
         sql_alchemy_engine                  =       create_engine(f'postgresql://{username}:{password}@{host}:{port}/{database}')
         data_warehouse_layer                =      'DWH - UAL'
         

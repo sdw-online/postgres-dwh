@@ -420,12 +420,6 @@ def load_data_to_dim_accommodation_bookings_table(postgres_connection):
 
 
 
-
-
-        # # Rename 'id' to 'accommodation_old_id'
-        # temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
-
-
         # print(temp_df)
         # print(temp_df.columns)
         

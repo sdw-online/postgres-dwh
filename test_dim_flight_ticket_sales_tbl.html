@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <title>test_stg_accommodation_bookings_tbl.html</title>
+    <title>test_dim_flight_ticket_sales_tbl.html</title>
     <style>body {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -438,8 +438,8 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
     notFoundMessage.hidden = !allRowsHidden;
 }
 </script>
-    <h1>test_stg_accommodation_bookings_tbl.html</h1>
-    <p>Report generated on 25-Feb-2023 at 11:02:04 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <h1>test_dim_flight_ticket_sales_tbl.html</h1>
+    <p>Report generated on 25-Feb-2023 at 12:40:45 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
     <h2>Environment</h2>
     <table id="environment">
       <tr>
@@ -458,8 +458,8 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
         <td>Python</td>
         <td>3.10.9</td></tr></table>
     <h2>Summary</h2>
-    <p>14 tests ran in 0.65 seconds. </p>
-    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">14 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <p>11 tests ran in 0.21 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">10 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">1 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
     <h2>Results</h2>
     <table id="results-table">
       <thead id="results-table-head">
@@ -470,11 +470,20 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
           <th class="sortable links" col="links">Links</th></tr>
         <tr hidden="true" id="not-found-message">
           <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_no_of_discounts_in_range</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">def test_no_of_discounts_in_range():<br/>        min_discount_expected = 0<br/>        max_discount_expected = 1<br/>        # Check that discount is between the expected ranges<br/>    <br/>        sql_query = f&quot;&quot;&quot; SELECT COUNT(*) FROM {schema_name}.{table_name} WHERE discount &lt; {min_discount_expected} OR discount &gt; {max_discount_expected}  &quot;&quot;&quot;<br/>        cursor.execute(sql_query)<br/>    <br/>        sql_result = cursor.fetchone()<br/>        total_no_of_discounts = sql_result[0]<br/>&gt;       assert total_no_of_discounts == 0, f&quot;There are {total_no_of_discounts} ticket sales that are not between {min_discount_expected} and {max_discount_expected}. &quot;<br/><span class="error">E       AssertionError: There are 279 ticket sales that are not between 0 and 1. </span><br/><span class="error">E       assert 279 == 0</span><br/><br/>dwh_pipelines\L3_semantic_layer\tests\test_dim_flight_ticket_sales_tbl.py:384: AssertionError<br/></div></td></tr></tbody>
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_database_connection</td>
-          <td class="col-duration">0.13</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_database_connection</td>
+          <td class="col-duration">0.07</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -482,7 +491,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_schema_existence</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_schema_existence</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
@@ -491,7 +500,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_columns_existence</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_columns_existence</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
@@ -500,7 +509,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_table_existence</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_table_existence</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
@@ -509,7 +518,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_column_data_types</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_column_data_types</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
@@ -518,34 +527,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_empty_values_in_table</td>
-          <td class="col-duration">0.06</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="empty log">No log output captured.</div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_null_values_in_table</td>
-          <td class="col-duration">0.08</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="empty log">No log output captured.</div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_date_formatting_constraint</td>
-          <td class="col-duration">0.22</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="empty log">No log output captured.</div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_check_in_date_before_check_out_date</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_empty_values_in_table</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
@@ -554,7 +536,16 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_confirmation_code_formatting_constraint</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_null_values_in_table</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_date_formatting_constraint</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
@@ -563,7 +554,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_payment_method_col_values</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_id_char_length_constraint</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
@@ -572,25 +563,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_status_col_values</td>
-          <td class="col-duration">0.00</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="empty log">No log output captured.</div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_id_char_length_constraint</td>
-          <td class="col-duration">0.00</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="empty log">No log output captured.</div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">dwh_pipelines/L2_staging_layer/tests/test_stg_accommodation_bookings_tbl.py::test_duplicate_records_count</td>
+          <td class="col-name">dwh_pipelines/L3_semantic_layer/tests/test_dim_flight_ticket_sales_tbl.py::test_duplicate_records_count</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
         <tr>
