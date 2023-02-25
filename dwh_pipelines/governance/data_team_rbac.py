@@ -241,7 +241,7 @@ def set_up_access_controls(postgres_connection):
 
         # For granting table ownership to specific roles
         table_1                             =           'avg_ticket_prices_by_year'
-        table_2                             =           'ticket_sales_by_age'
+        table_2                             =           'flight_bookings_by_age'
         table_3                             =           'top_destination'
         table_4                             =           'total_sales_by_destination'
         grant_ownership_rights_to_sde       =           f''' ALTER TABLE {dwh_reporting_schema}.{table_1} OWNER TO senior_data_analyst ; '''

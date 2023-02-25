@@ -66,7 +66,7 @@ def generate_travel_data():
   NO_OF_TICKET_PRICES                   =       70
   NO_OF_FLIGHT_BOOKINGS                 =       10000
   NO_OF_FLIGHT_DESTINATIONS             =       300
-  NO_OF_FLIGHT_TICKET_SALES             =       1000
+  NO_OF_FLIGHT_TICKET_SALES             =       10000
   NO_OF_FLIGHT_PROMOS_AND_DEALS         =       6000
   NO_OF_SALES_AGENTS                    =       300
   NO_OF_ACCOMMODATION_BOOKINGS          =       4000
@@ -346,7 +346,7 @@ def generate_travel_data():
             'customer_id' : random.choice(customer_info_df['customer_id']),
             'flight_id' : random.choice(flight_schedules_df['flight_id']),
             'ticket_price' : random.randint(0, 700),
-            'booking_date': fake.date_this_decade(),
+            'booking_date': random.choice(pd.date_range(start='2012-01-01', end='2022-12-31')),
             'payment_method': random.choice(['Credit card', 'Debit card', 'PayPal', 'Bank transfer']),
             'confirmation_code': ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
             'checked_in': random.choice(['Yes', 'No'])

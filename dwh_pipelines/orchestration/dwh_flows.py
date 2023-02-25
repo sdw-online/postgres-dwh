@@ -1209,8 +1209,8 @@ def query_postgres_dwh_for_aggregate_tbl_1():
 
 @task
 def query_postgres_dwh_for_aggregate_tbl_2():
-    from dwh_pipelines.L4_dwh_layer.user_access_layer.ticket_sales_by_age      import  query_postgres_dwh
-    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.ticket_sales_by_age'
+    from dwh_pipelines.L4_dwh_layer.user_access_layer.flight_bookings_by_age      import  query_postgres_dwh
+    module_name = 'dwh_pipelines.L4_dwh_layer.user_access_layer.flight_bookings_by_age'
     imported_function = 'query_postgres_dwh'
     root_logger.info("")
     root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
@@ -1830,18 +1830,18 @@ if __name__=="__main__":
     
 
     # L0 - Generate data
-    # run_data_generation_flow()
+    run_data_generation_flow()
 
 
-    # # L1 - Extract source data into raw tables 
-    # run_raw_layer_flow()
+    # L1 - Extract source data into raw tables 
+    run_raw_layer_flow()
     
 
-    # # # L2 - Load raw data into staging tables
-    # run_staging_layer_flow()
-    # run_dq_tests_for_staging_layer_flow()
+    # # L2 - Load raw data into staging tables
+    run_staging_layer_flow()
+    run_dq_tests_for_staging_layer_flow()
     
-    # run_stg_prod_env_creation_flow()
+    run_stg_prod_env_creation_flow()
 
 
     # L3 - Load staging data into MDM tables
