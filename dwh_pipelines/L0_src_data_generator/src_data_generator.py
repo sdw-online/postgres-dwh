@@ -59,6 +59,9 @@ def generate_travel_data():
 
 
   # Establish the relevant constants for generating the synthetic travel data 
+  START_DATE                            =       "2020-01-01"
+  END_DATE                              =       "2022-12-31"
+
 
   NO_OF_CUSTOMER_INFO_ROWS              =       1500
   NO_OF_FLIGHT_SCHEDULES                =       300
@@ -70,6 +73,7 @@ def generate_travel_data():
   NO_OF_FLIGHT_PROMOS_AND_DEALS         =       6000
   NO_OF_SALES_AGENTS                    =       300
   NO_OF_ACCOMMODATION_BOOKINGS          =       4000
+
 
 
   LOCATIONS = ['Paris', 'Rome', 'Barcelona', 'Amsterdam', 'London', 'New York', 'Sydney', 'Bali', 'Maldives', 'Tokyo',
@@ -187,8 +191,6 @@ def generate_travel_data():
 
 
 
-  customer_info_records = []
-
   def load_customer_info_records_via_generator():
     for i in range(NO_OF_CUSTOMER_INFO_ROWS):
 
@@ -225,7 +227,6 @@ def generate_travel_data():
       customer_info_df_to_json = customer_info_df.to_json(orient="records", default_handler=str)
       customer_info_df_to_json = json.loads(customer_info_df_to_json)
       customer_info_file.write(json.dumps(customer_info_df_to_json, indent=4, sort_keys=True)) 
-
     
 
  
@@ -249,8 +250,6 @@ def generate_travel_data():
   FLIGHT_SCHEDULES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
-
-  flight_schedules = []
   
   def load_flight_schedules_via_generator():
     for i in range(NO_OF_FLIGHT_SCHEDULES):
@@ -266,17 +265,24 @@ def generate_travel_data():
         yield flight_schedule
 
 
-  flight_schedules_df = pd.DataFrame(load_flight_schedules_via_generator())
-    # root_logger.info(flight_schedules_df)
+
+  src_file_path = os.path.join(DATASETS_LOCATION_PATH, 'flight_schedules.json')
+ 
+  
+  if os.path.exists(src_file_path):
+    with open(src_file_path, 'r') as json_file:
+        flight_schedules = [json.loads(line) for line in json_file]
+  else:
+      flight_schedules = []
+
+  with open(src_file_path, 'a') as json_file:
+      for schedule in load_flight_schedules_via_generator():
+          flight_schedules.append(schedule)
+          json.dump(schedule, json_file, default=str, indent=5)
+          json_file.write(',')
+          json_file.write('\n')
 
 
-     # Write dataframe to JSON file
-  with open(f'{DATASETS_LOCATION_PATH}/flight_schedules.json', 'w') as flight_schedules_file:
-      flight_schedules_df_to_json = flight_schedules_df.to_json(orient="records", default_handler=str)
-      flight_schedules_df_to_json = json.loads(flight_schedules_df_to_json)
-      flight_schedules_file.write(json.dumps(flight_schedules_df_to_json, indent=4, sort_keys=True)) 
-
-    
 
  
 
@@ -298,8 +304,6 @@ def generate_travel_data():
   TICKET_PRICES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
-
-  ticket_prices = []
 
   def load_ticket_prices_via_generator():
     for i in range(NO_OF_TICKET_PRICES):
@@ -336,8 +340,6 @@ def generate_travel_data():
   FLIGHT_BOOKINGS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
-
-  flight_bookings = []
   
   def load_ticket_prices_via_generator():
     for i in range(NO_OF_FLIGHT_BOOKINGS):
@@ -382,9 +384,6 @@ def generate_travel_data():
   
 
 
-
-  customer_feedbacks = []
-
   def load_customer_feedbacks_via_generator():
     for i in range(NO_OF_CUSTOMER_FEEDBACKS):
         customer_feedback = {
@@ -423,10 +422,6 @@ def generate_travel_data():
   SALES_AGENTS_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
-  
-
-  # List of sales agents
-  agents = []
   
   def load_sales_agents_via_generator():
     for i in range(NO_OF_SALES_AGENTS):
@@ -483,7 +478,6 @@ def generate_travel_data():
   fake = Faker()
   
 
-  flight_destinations = []
   
   def load_flight_destinations_via_generator():
     for i in range(NO_OF_FLIGHT_DESTINATIONS):
@@ -559,7 +553,6 @@ def generate_travel_data():
   FLIGHT_TICKET_SALES_PROCESSING_START_TIME = time.time()
   fake = Faker()
 
-  flight_ticket_sales = []
   
   def load_flight_ticket_sales_via_generator():
     for i in range(NO_OF_FLIGHT_TICKET_SALES):
@@ -610,7 +603,6 @@ def generate_travel_data():
   accommodation_options = ['Drayton Manners Hotel', 'Hannah Wilson Hotel', 'Ladberry Sapphire Hotel', 'D.Q Hotel', 'Royal Baked Beans Hotel', 'Breakfast Abroad Hotel', 'Benny Toast Hotel', 'Test DWH Hotel']
   check_in_date = random.choice(pd.date_range(start='2012-01-01', end='2022-12-31'))
 
-  accommodation_bookings = []
   
   def load_accommodation_bookings_via_generator():
     for i in range(NO_OF_ACCOMMODATION_BOOKINGS):
