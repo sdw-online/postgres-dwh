@@ -112,7 +112,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 def render_dash_visualizations(postgres_connection):
@@ -123,9 +123,12 @@ def render_dash_visualizations(postgres_connection):
         active_schema_name                  =      'reporting'
         active_db_name                      =       database
         sql_query_1                         =      f'''SELECT * FROM {active_schema_name}.avg_ticket_prices_by_year ;   '''
-        sql_query_2                         =      f'''SELECT * FROM {active_schema_name}.ticket_sales_by_age   ;   '''
+        sql_query_2                         =      f'''SELECT * FROM {active_schema_name}.flight_bookings_by_age   ;   '''
         sql_query_3                         =      f'''SELECT * FROM {active_schema_name}.top_destinations ;    '''
         sql_query_4                         =      f'''SELECT * FROM {active_schema_name}.total_sales_by_destination ;  '''
+        sql_query_5                         =      f'''SELECT * FROM {active_schema_name}.customer_booking_trend ;  '''
+        sql_query_6                         =      f'''SELECT * FROM {active_schema_name}.total_sales_by_payment_method ;  '''
+        sql_query_7                         =      f'''SELECT * FROM {active_schema_name}.total_sales_by_year ;  '''
         sql_alchemy_engine                  =       create_engine(f'postgresql://{username}:{password}@{host}:{port}/{database}')
         data_warehouse_layer                =      'DWH - UAL'
         
@@ -148,12 +151,12 @@ def render_dash_visualizations(postgres_connection):
         
 
         avg_ticket_prices_by_year_df                =       pd.read_sql(sql_query_1, con=sql_alchemy_engine)
-        ticket_sales_by_age_df                      =       pd.read_sql(sql_query_2, con=sql_alchemy_engine)
+        flight_bookings_by_age_df                      =       pd.read_sql(sql_query_2, con=sql_alchemy_engine)
         top_destinations_df                         =       pd.read_sql(sql_query_3, con=sql_alchemy_engine)
         total_sales_by_destination_df               =       pd.read_sql(sql_query_4, con=sql_alchemy_engine)
 
         # Commit the changes made in Postgres 
-        postgres_connection.commit()
+        # postgres_connection.commit()
 
 
         # Create Dash app 
@@ -172,7 +175,7 @@ def render_dash_visualizations(postgres_connection):
 
             html.Div([
                 dcc.Graph(
-                    figure=px.bar(ticket_sales_by_age_df, x="age", y="no_of_bookings", title="Number of Bookings by Age")
+                    figure=px.bar(flight_bookings_by_age_df, x="age", y="no_of_bookings", title="Number of Bookings by Age")
                     )            
             ]),
 

@@ -63,16 +63,17 @@ def generate_travel_data():
   END_DATE                              =       "2022-12-31"
 
 
-  NO_OF_CUSTOMER_INFO_ROWS              =       150
-  NO_OF_FLIGHT_SCHEDULES                =       30
-  NO_OF_CUSTOMER_FEEDBACKS              =       20
-  NO_OF_TICKET_PRICES                   =       7
-  NO_OF_FLIGHT_BOOKINGS                 =       100
-  NO_OF_FLIGHT_DESTINATIONS             =       30
-  NO_OF_FLIGHT_TICKET_SALES             =       100
-  NO_OF_FLIGHT_PROMOS_AND_DEALS         =       600
-  NO_OF_SALES_AGENTS                    =       30
-  NO_OF_ACCOMMODATION_BOOKINGS          =       400
+  NO_OF_CUSTOMER_INFO_ROWS              =       1500
+  NO_OF_FLIGHT_SCHEDULES                =       300
+  NO_OF_CUSTOMER_FEEDBACKS              =       200
+  NO_OF_TICKET_PRICES                   =       70
+  NO_OF_FLIGHT_BOOKINGS                 =       10000
+  NO_OF_FLIGHT_DESTINATIONS             =       300
+  NO_OF_FLIGHT_TICKET_SALES             =       10000
+  NO_OF_FLIGHT_PROMOS_AND_DEALS         =       6000
+  NO_OF_SALES_AGENTS                    =       300
+  NO_OF_ACCOMMODATION_BOOKINGS          =       4000
+
 
 
   LOCATIONS = ['Paris', 'Rome', 'Barcelona', 'Amsterdam', 'London', 'New York', 'Sydney', 'Bali', 'Maldives', 'Tokyo',
@@ -347,7 +348,7 @@ def generate_travel_data():
             'customer_id' : random.choice(customer_info_df['customer_id']),
             'flight_id' : random.choice(flight_schedules_df['flight_id']),
             'ticket_price' : random.randint(0, 700),
-            'booking_date': fake.date_this_decade(),
+            'booking_date': random.choice(pd.date_range(start='2012-01-01', end='2022-12-31')),
             'payment_method': random.choice(['Credit card', 'Debit card', 'PayPal', 'Bank transfer']),
             'confirmation_code': ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
             'checked_in': random.choice(['Yes', 'No'])

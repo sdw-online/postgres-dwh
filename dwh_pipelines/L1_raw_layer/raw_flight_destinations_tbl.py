@@ -112,7 +112,7 @@ with open(flight_destinations_path, 'r') as flight_destinations_file:
     
     try:
         flight_destinations_data = json.load(flight_destinations_file)
-        flight_destinations_data = flight_destinations_data[0:100]
+        # flight_destinations_data = flight_destinations_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(flight_destinations_data)}'")
 
@@ -128,7 +128,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 def load_flight_destinations_data_to_raw_table(postgres_connection):
     try:
@@ -877,7 +877,7 @@ def load_flight_destinations_data_to_raw_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 

@@ -107,7 +107,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 
@@ -189,7 +189,7 @@ def query_postgres_dwh(postgres_connection):
                 root_logger.error(f"=================================================================================================")
                 root_logger.debug(f"")
 
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
         except psycopg2.Error as e:
             print(e)
@@ -491,7 +491,7 @@ def query_postgres_dwh(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 

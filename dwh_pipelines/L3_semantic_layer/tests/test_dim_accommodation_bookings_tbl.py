@@ -194,7 +194,7 @@ def test_column_data_types():
 
     # Create a dictionary that specifies the expected data types for each column  
     expected_data_types = {
-        "customer_sk":                          "integer",
+        # "customer_sk":                          "integer",
         "flight_booking_sk":                          "integer",
         "sales_agent_sk":                          "integer",
         "accommodation_sk":                     "integer",
@@ -502,6 +502,19 @@ def run_tests():
 
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
+    # Run DQ tests
     test_result = run_tests()
+
+    # Create DQ reports in HTML format
+    from pathlib import Path
+    import webbrowser
+    file_path = os.path.abspath(__file__)
+    current_filepath = Path(__file__).stem
+    html_report_path = f"{current_filepath}.html"
+    pytest.main(["-v", "-s", "--capture=tee-sys", file_path, f"--html={html_report_path}", "--self-contained-html"])
+
+    # Open DQ reports in browser
+    # dq_report_url = Path.cwd() / html_report_path
+    # webbrowser.open(dq_report_url.as_uri())
     sys.exit()

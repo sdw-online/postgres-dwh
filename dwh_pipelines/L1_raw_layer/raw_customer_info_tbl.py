@@ -112,7 +112,7 @@ with open(customer_info_path, 'r') as customer_info_file:
     
     try:
         customer_info_data = json.load(customer_info_file)
-        customer_info_data = customer_info_data[0:100]
+        # customer_info_data = customer_info_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(customer_info_data)}'")
 
@@ -128,7 +128,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 def load_customer_info_data_to_raw_table(postgres_connection):
     try:
@@ -943,7 +943,7 @@ def load_customer_info_data_to_raw_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 

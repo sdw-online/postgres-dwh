@@ -112,7 +112,7 @@ with open(accommodation_bookings_path, 'r') as accommodation_bookings_file:
     
     try:
         accommodation_bookings_data = json.load(accommodation_bookings_file)
-        accommodation_bookings_data = accommodation_bookings_data[0:100]
+        # accommodation_bookings_data = accommodation_bookings_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(accommodation_bookings_data)}'")
 
@@ -128,7 +128,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 
@@ -236,6 +236,7 @@ def load_accommodation_bookings_data_to_raw_table(postgres_connection):
         check_if_data_lineage_fields_are_added_to_tbl   =   f'''        
                                                                     SELECT * 
                                                                     FROM    information_schema.columns 
+                                                                    WHERE   table_name      = '{table_name}' 
                                                                         AND     (column_name    = 'created_at'
                                                                         OR      column_name     = 'updated_at' 
                                                                         OR      column_name     = 'source_system' 
@@ -917,7 +918,7 @@ def load_accommodation_bookings_data_to_raw_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 

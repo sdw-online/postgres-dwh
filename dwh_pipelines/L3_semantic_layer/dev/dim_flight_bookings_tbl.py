@@ -111,7 +111,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 
@@ -204,7 +204,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
                 root_logger.error(f"=================================================================================================")
                 root_logger.debug(f"")
 
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
         except psycopg2.Error as e:
             print(e)
@@ -217,7 +217,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
                                                 ;   
             '''
             cursor.execute(drop_postgres_fdw_extension)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -237,7 +237,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
             '''
             
             cursor.execute(import_postgres_fdw)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -256,7 +256,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
                                                 ;
             '''
             cursor.execute(create_foreign_server)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -276,7 +276,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
             '''
 
             cursor.execute(map_fdw_user_to_local_user)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
 
             root_logger.info("")
@@ -305,7 +305,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
             '''
 
             cursor.execute(import_foreign_schema)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
             
             root_logger.info("")
@@ -343,7 +343,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
             '''
 
             cursor.execute(get_list_of_column_names)
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
             list_of_column_names = cursor.fetchall()
             column_names = [sql_result[0] for sql_result in list_of_column_names]
@@ -399,37 +399,6 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
 
 
 
-
-        
-
-        
-
-
-        # # ================================================== TRANSFORM DATA FRAME  =======================================
-        
-        """ Convert the business rules into code logic to reflect the true state of business events    """
-
-        # # Filter date columns to only display dates between 2012 and 2022
-
-        # temp_df['booking_date']     = pd.to_datetime(temp_df['booking_date'])
-        # temp_df['check_in_date']    = pd.to_datetime(temp_df['check_in_date'])
-        # temp_df['check_out_date']   = pd.to_datetime(temp_df['check_out_date'])
-
-        # temp_df = temp_df   [( temp_df['booking_date']      >=  '2012-01-01' )      &    (temp_df['booking_date']      <=  '2022-12-31'  )]
-        # temp_df = temp_df   [( temp_df['check_in_date']     >=  '2012-01-01' )      &    (temp_df['check_in_date']     <=  '2022-12-31'  )]
-        # temp_df = temp_df   [( temp_df['check_out_date']    >=  '2012-01-01' )      &    (temp_df['check_out_date']    <=  '2022-12-31'  )]
-
-
-
-
-
-        # # Rename 'id' to 'accommodation_old_id'
-        # temp_df = temp_df.rename(columns={'id': 'accommodation_old_id'})
-
-
-        # print(temp_df)
-        # print(temp_df.columns)
-        
         # Write results to temp file for data validation checks 
         with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
             temp_results_file_df_to_json = temp_df.to_json(orient="records")
@@ -716,18 +685,18 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
 
 
         # Add foreign keys
-        cursor.execute(add_foreign_key_columns)
-        root_logger.debug("")
-        root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
-        root_logger.debug("")
-        cursor.execute(add_fk_constraints_to_table)
-        root_logger.debug("")
-        root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
-        root_logger.debug("")
-        cursor.execute(add_table_joins_to_table)
-        root_logger.debug("")
-        root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
-        root_logger.debug("")
+        # cursor.execute(add_foreign_key_columns)
+        # root_logger.debug("")
+        # root_logger.info(f"Successfully added foreign key columns to '{table_name}'  ")
+        # root_logger.debug("")
+        # cursor.execute(add_fk_constraints_to_table)
+        # root_logger.debug("")
+        # root_logger.info(f"Successfully added foreign key constraints to '{table_name}'  ")
+        # root_logger.debug("")
+        # cursor.execute(add_table_joins_to_table)
+        # root_logger.debug("")
+        # root_logger.info(f"Successfully joined '{table_name}' to other foreign tables.  ")
+        # root_logger.debug("")
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 
@@ -1157,7 +1126,7 @@ def load_data_to_dim_flight_bookings_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 

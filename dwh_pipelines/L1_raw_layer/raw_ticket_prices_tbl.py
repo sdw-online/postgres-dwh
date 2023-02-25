@@ -112,7 +112,7 @@ with open(ticket_prices_path, 'r') as ticket_prices_file:
     
     try:
         ticket_prices_data = json.load(ticket_prices_file)
-        ticket_prices_data = ticket_prices_data[0:100]
+        # ticket_prices_data = ticket_prices_data[0:100]
         root_logger.info(f"Successfully located '{src_file}'")
         root_logger.info(f"File type: '{type(ticket_prices_data)}'")
 
@@ -128,7 +128,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 def load_ticket_prices_data_to_raw_table(postgres_connection):
     try:
@@ -875,7 +875,7 @@ def load_ticket_prices_data_to_raw_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 

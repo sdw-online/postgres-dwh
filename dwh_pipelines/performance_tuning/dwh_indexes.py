@@ -1,6 +1,5 @@
 import os 
 import psycopg2
-from psycopg2 import errors
 import configparser
 from pathlib import Path
 import logging, coloredlogs
@@ -107,7 +106,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 def set_up_access_controls(postgres_connection):
@@ -188,7 +187,7 @@ def set_up_access_controls(postgres_connection):
             root_logger.info(f'')
 
             cursor.execute(create_index_sql_query_1)
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.info(f'''Successfully created index '{index_1}'  index for table '{table_1}' table on '{column_1}' column   ''')
             root_logger.info(f'-------------------------------------------------------------')
             root_logger.info(f'')
@@ -198,7 +197,7 @@ def set_up_access_controls(postgres_connection):
         
 
             cursor.execute(create_index_sql_query_2)
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.info(f'''Successfully created index '{index_2}'  index for table '{table_1}' table on '{column_2}' column   ''')
             root_logger.info(f'-------------------------------------------------------------')
             root_logger.info(f'')
@@ -208,7 +207,7 @@ def set_up_access_controls(postgres_connection):
         
 
             cursor.execute(create_index_sql_query_3)
-            postgres_connection.commit()
+            # postgres_connection.commit()
             root_logger.info(f'''Successfully created index '{index_3}'  index for table '{table_2}' table on '{column_3}' column   ''')
             root_logger.info(f'-------------------------------------------------------------')
             root_logger.info(f'')
@@ -228,14 +227,11 @@ set_up_access_controls(postgres_connection)
 
 
 
-
 # Miscellaneous scripts
 
 '''
 
 -- Check if indexes exist
 SELECT * FROM pg_indexes WHERE schemaname != 'pg_catalog'
-
-
 
 '''

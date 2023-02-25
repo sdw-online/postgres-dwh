@@ -111,32 +111,56 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
+postgres_connection.set_session(autocommit=True)
 
 
 
-
-def load_data_to_dim_date_table(postgres_connection):
+def load_data_to_dim_dates_table(postgres_connection):
     try:
         
         # Set up constants
+        # active_schema_name              =   'live'
+        # active_db_name                  =    database
+        # src_table_name                  =   'dim_dates_tbl'
+        # table_name                      =   'dim_date_tbl'
+        # data_warehouse_layer            =   'DWH - DATAMART'
+        # source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
+        # row_counter                     =   0 
+        # column_index                    =   0 
+        # total_null_values_in_table      =   0 
+        # successful_rows_upload_count    =   0 
+        # failed_rows_upload_count        =   0 
+        # CURRENT_TIMESTAMP               =   datetime.now()
+        # start_date                      =   datetime(2000, 1, 1)
+        # end_date                        =   datetime(2030, 12, 31)
+        # active_schema_name              =   'dev'
+        # active_db_name                  =    database
+        # src_table_name                  =   'None'
+        # table_name                      =   'dim_dates_tbl'
+        # data_warehouse_layer            =   'SEMANTIC'
+        # source_system                   =   ['SDW - Custom Code']
+        # row_counter                     =   0 
+        # column_index                    =   0 
+        # total_null_values_in_table      =   0 
+        # successful_rows_upload_count    =   0 
+        # failed_rows_upload_count        =   0 
+        
+
+        # Set up constants
         CURRENT_TIMESTAMP               =   datetime.now()
-        fdw_extension                   =   'postgres_fdw'
-        foreign_server                  =   'dwh_db_server'
-        fdw_user                        =   username
-        # fdw_user                        =   'fdw_user'
-        src_db_name                     =   'semantic_db'
-        src_schema_name                 =   'prod'
+        start_date                      =   datetime(2000, 1, 1)
+        end_date                        =   datetime(2030, 12, 31)
         active_schema_name              =   'live'
         active_db_name                  =    database
-        src_table_name                  =   'dim_dates_tbl'
-        table_name                      =   'dim_date_tbl'
+        table_name                      =   'dim_dates_tbl'
         data_warehouse_layer            =   'DWH - DATAMART'
-        source_system                   =   ['CRM', 'ERP', 'Mobile App', 'Website', '3rd party apps', 'Company database']
         row_counter                     =   0 
         column_index                    =   0 
         total_null_values_in_table      =   0 
         successful_rows_upload_count    =   0 
         failed_rows_upload_count        =   0 
+        source_system                   =   'None'
+        src_table_name                  =   'None'
         
 
 
@@ -204,210 +228,40 @@ def load_data_to_dim_date_table(postgres_connection):
                 root_logger.error(f"=================================================================================================")
                 root_logger.debug(f"")
 
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
         except psycopg2.Error as e:
             print(e)
 
-
-
-        # Drop extension postgres_fdw if it exists 
+            
         try:
-            drop_postgres_fdw_extension = f'''  DROP EXTENSION {fdw_extension} CASCADE
-                                                ;   
-            '''
-            cursor.execute(drop_postgres_fdw_extension)
-            postgres_connection.commit()
+            # Create a date dimension data frame
+
+            dates       =   pd.date_range(start=start_date, end=end_date, freq='D')
 
 
-            root_logger.info("")
-            root_logger.info(f"Successfully DROPPED the '{fdw_extension}' extension. Now advancing to re-importing the extension...")
-            root_logger.info("")
-
+            # Add columns for various date attributes
+            dates_df     =   pd.DataFrame({'full_date'               :   dates,
+                                            'day_of_week'           :   dates.dayofweek,
+                                            'day_number_in_month'   :   dates.day,
+                                            'day_number_overall'    :   dates.dayofyear,
+                                            'week_number_in_year'   :   dates.weekofyear,
+                                            'month_number'          :   dates.month,
+                                            'month_name'            :   dates.strftime('%B'),
+                                            'year_number'           :   dates.year,
+                                            'is_weekend'            :   (dates.dayofweek >= 5).astype(int),
+                                            'is_holiday'            :   0}
+                            )
             
-        except psycopg2.Error as e:
-            print(e)
-
-        
-
-        # Create the postgres_fdw extension  
-        try:
-            import_postgres_fdw = f'''    CREATE EXTENSION {fdw_extension}
-                                                ;   
-            '''
-            
-            cursor.execute(import_postgres_fdw)
-            postgres_connection.commit()
-
-
-            root_logger.info("")
-            root_logger.info(f"Successfully IMPORTED the '{fdw_extension}' extension. Now advancing to creating the foreign server...")
-            root_logger.info("")
-        except psycopg2.Error as e:
-            print(e)
-
-
-
-        # Create the foreign server
-        try: 
-            create_foreign_server = f'''    CREATE SERVER {foreign_server}
-                                                FOREIGN DATA WRAPPER {fdw_extension}
-                                                OPTIONS (host '{host}', dbname '{src_db_name}', port '{port}')
-                                                ;
-            '''
-            cursor.execute(create_foreign_server)
-            postgres_connection.commit()
-
-
-            root_logger.info("")
-            root_logger.info(f"Successfully CREATED the '{foreign_server}' foreign server. Now advancing to user mapping stage...")
-            root_logger.info("")
-        except psycopg2.Error as e:
-            print(e)
-
-
-        
-        # Create the user mapping between the fdw_user and local user 
-        try:
-            map_fdw_user_to_local_user = f'''       CREATE USER MAPPING FOR {username}
-                                                        SERVER {foreign_server}
-                                                        OPTIONS (user '{fdw_user}', password '{password}')
-                                                        ;
-            '''
-
-            cursor.execute(map_fdw_user_to_local_user)
-            postgres_connection.commit()
-
-
-            root_logger.info("")
-            root_logger.info(f"Successfully mapped the '{fdw_user}' fdw user to the '{username}' local user. ")
-            root_logger.info("")
-
-            root_logger.info("")
-            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
-            root_logger.info("")
-            root_logger.info(f"You should now be able to create and interact with the virtual tables that mirror the actual tables from the '{src_db_name}' database. ")
-            root_logger.info("")
-            root_logger.info("-------------------------------------------------------------------------------------------------------------------------------------------")
-            root_logger.info("")
-        except psycopg2.Error as e:
-            print(e)
-
-
-
-        # Import the foreign schema from the previous layer's source table 
-        try:
-            import_foreign_schema = f'''    IMPORT FOREIGN SCHEMA "{src_schema_name}"
-                                                LIMIT TO ({src_table_name})
-                                                FROM SERVER {foreign_server}
-                                                INTO {active_schema_name}
-                                                ;
-            '''
-
-            cursor.execute(import_foreign_schema)
-            postgres_connection.commit()
-
-            
-            root_logger.info("")
-            root_logger.info(f"Successfully imported the '{src_table_name}' table into '{active_db_name}' database . ")
-            root_logger.info("")
-
- 
-        except psycopg2.Error as e:
-            print(e)
-            root_logger.error("")
-            root_logger.error(f"Unable to import the '{src_table_name}' table into '{active_db_name}' database . ")
-            root_logger.error("")
-
-
-
-
-        # ================================================== EXTRACT DATA FROM SOURCE POSTGRES TABLE ==================================================
-            
-        # Extract non-data lineage columns from raw table 
-        try:
-            data_lineage_columns = ['created_at',    
-                                    'updated_at',    
-                                    'source_system', 
-                                    'source_file',   
-                                    'load_timestamp',
-                                    'dwh_layer']
-            
-            desired_sql_columns = []
-            
-
-            get_list_of_column_names    =   f'''            SELECT      column_name 
-                                                            FROM        information_schema.columns 
-                                                            WHERE       table_name = '{src_table_name}'
-                                                            ORDER BY    ordinal_position 
-            '''
-
-            cursor.execute(get_list_of_column_names)
-            postgres_connection.commit()
-
-            list_of_column_names = cursor.fetchall()
-            column_names = [sql_result[0] for sql_result in list_of_column_names]
-            
-
-            total_desired_sql_columns_added = 0
-            for column_name in column_names:
-                if column_name not in data_lineage_columns:
-                    total_desired_sql_columns_added += 1
-                    desired_sql_columns.append(column_name)
-                    root_logger.info(f''' {total_desired_sql_columns_added}:    Added column '{column_name}' to desired columns list...  ''')
-            root_logger.info('')
-            root_logger.info(f''' COMPLETED: Successfully added {total_desired_sql_columns_added}/{len(list_of_column_names)} columns to desired SQL columns list. The remaining {(len(list_of_column_names)  - total_desired_sql_columns_added )} columns not included were data lineage columns to be added later via ALTER command. ''')
-            root_logger.info('')
-            root_logger.info('')
-            # root_logger.info(f'{desired_sql_columns}')
-            
-        except psycopg2.Error as e:
-            print(e)
-
-
-
-        # Pull sales_agents_tbl data from dwh tables in Postgres database 
-        try:
-            fetch_dim_dates_tbl = f'''     SELECT { ', '.join(desired_sql_columns) } FROM {active_schema_name}.{src_table_name};  
-            '''
-            root_logger.debug(fetch_dim_dates_tbl)
-            root_logger.info("")
-            root_logger.info(f"Successfully IMPORTED the '{src_table_name}' virtual table from the '{foreign_server}' server into the '{active_schema_name}' schema for '{database}' database. Now advancing to data cleaning stage...")
-            root_logger.info("")
-
-
-            # Execute SQL command to interact with Postgres database
-            cursor.execute(fetch_dim_dates_tbl)
-
-            # Extract header names from cursor's description
-            postgres_table_headers = [header[0] for header in cursor.description]
-
-
-            # Execute script 
-            postgres_table_results = cursor.fetchall()
-            
-
-            # Use Postgres results to create data frame for sales_agents_tbl
-            sales_agents_tbl_df = pd.DataFrame(data=postgres_table_results, columns=postgres_table_headers)
-
-
-            # Create temporary data frame     
-            temp_df = sales_agents_tbl_df
+            temp_df = dates_df
+            root_logger.debug(temp_df)
 
         except psycopg2.Error as e:
             print(e)
 
 
-        # Write results to temp file for data validation checks 
-        with open(f'{DATASETS_LOCATION_PATH}/temp_results.json', 'w') as temp_results_file:
-            temp_results_file_df_to_json = temp_df.to_json(orient="records")
-            temp_results_file.write(json.dumps(json.loads(temp_results_file_df_to_json), indent=4, sort_keys=True)) 
+        # ================================================== LOAD STAGING DATA TO SEMANTIC TABLE =======================================
 
-        
-
-
-        # ================================================== LOAD MDM DATA TO DWH TABLE =======================================
-        
 
         # Set up SQL statements for table deletion and validation check  
         delete_dim_dates_tbl_if_exists     =   f''' DROP TABLE IF EXISTS {active_schema_name}.{table_name} CASCADE;
@@ -417,22 +271,21 @@ def load_data_to_dim_date_table(postgres_connection):
         '''
 
         # Set up SQL statements for table creation and validation check 
-        create_dim_dates_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
-                                                                        SELECT 
-                                                                            date_id,
-                                                                            full_date,
-                                                                            day_of_week ,
-                                                                            day_number_in_month ,
-                                                                            day_number_overall,
-                                                                            week_number_in_year,
-                                                                            month_number,
-                                                                            month_name,
-                                                                            year_number,
-                                                                            is_weekend,
-                                                                            is_holiday
-                                                                        FROM {active_schema_name}.{src_table_name}
+        create_dim_dates_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  (
+                                                                date_id                    SERIAL PRIMARY KEY,
+                                                                full_date                   DATE NOT NULL,
+                                                                day_of_week                 INTEGER NOT NULL,
+                                                                day_number_in_month         INTEGER NOT NULL,
+                                                                day_number_overall          INTEGER NOT NULL,
+                                                                week_number_in_year         INTEGER NOT NULL,
+                                                                month_number                INTEGER NOT NULL,
+                                                                month_name                  VARCHAR(20) NOT NULL,
+                                                                year_number                 INTEGER NOT NULL,
+                                                                is_weekend                  INTEGER NOT NULL,
+                                                                is_holiday                  INTEGER NOT NULL
+                                                                        );
         '''
- 
+
         check_if_dim_dates_tbl_exists  =   f'''       SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}' );
         '''
 
@@ -465,6 +318,36 @@ def load_data_to_dim_date_table(postgres_connection):
                                                                               
         '''
         
+        check_total_row_count_before_insert_statement   =   f'''   SELECT COUNT(*) FROM {active_schema_name}.{table_name}
+        '''
+
+        # Set up SQL statements for records insert and validation check
+        insert_dates_data  =   f'''                       INSERT INTO {active_schema_name}.{table_name} (     
+                                                                                                full_date, 
+                                                                                                day_of_week, 
+                                                                                                day_number_in_month, 
+                                                                                                day_number_overall, 
+                                                                                                week_number_in_year, 
+                                                                                                month_number, 
+                                                                                                month_name, 
+                                                                                                year_number, 
+                                                                                                is_weekend, 
+                                                                                                is_holiday,
+                                                                                                created_at,
+                                                                                                updated_at,
+                                                                                                source_system,
+                                                                                                source_file,
+                                                                                                load_timestamp,
+                                                                                                dwh_layer
+                                                                                            )
+                                                                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                                                                                                );
+        '''
+
+        check_total_row_count_after_insert_statement    =   f'''        SELECT COUNT(*) FROM {active_schema_name}.{table_name}
+        '''
+
+
         
         count_total_no_of_columns_in_table  =   f'''            SELECT          COUNT(column_name) 
                                                                 FROM            information_schema.columns 
@@ -481,7 +364,6 @@ def load_data_to_dim_date_table(postgres_connection):
         '''
 
         
-
 
         # Delete table if it exists in Postgres
         DELETING_SCHEMA_PROCESSING_START_TIME   =   time.time()
@@ -571,7 +453,66 @@ def load_data_to_dim_date_table(postgres_connection):
 
 
 
-    
+        # Add insert rows to table 
+        ROW_INSERTION_PROCESSING_START_TIME     =   time.time()
+        cursor.execute(check_total_row_count_before_insert_statement)
+        sql_result = cursor.fetchone()[0]
+        root_logger.info(f"Rows before SQL insert in Postgres: {sql_result} ")
+        root_logger.debug(f"")
+
+
+        for index, row in temp_df.iterrows():
+            values = (
+                row['full_date'], 
+                row['day_of_week'], 
+                row['day_number_in_month'], 
+                row['day_number_overall'], 
+                row['week_number_in_year'], 
+                row['month_number'], 
+                row['month_name'], 
+                row['year_number'], 
+                row['is_weekend'], 
+                row['is_holiday'],
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP,
+                random.choice(source_system),
+                src_table_name,
+                CURRENT_TIMESTAMP,
+                data_warehouse_layer
+            )
+
+            cursor.execute(insert_dates_data, values)
+
+
+            # Validate if each row inserted into the table exists 
+            if cursor.rowcount == 1:
+                row_counter += 1
+                successful_rows_upload_count += 1
+                root_logger.debug(f'---------------------------------')
+                root_logger.info(f'INSERT SUCCESS: Uploaded dates record no {row_counter} ')
+                root_logger.debug(f'---------------------------------')
+            else:
+                row_counter += 1
+                failed_rows_upload_count +=1
+                root_logger.error(f'---------------------------------')
+                root_logger.error(f'INSERT FAILED: Unable to insert dates record no {row_counter} ')
+                root_logger.error(f'---------------------------------')
+
+
+        
+        ROW_INSERTION_PROCESSING_END_TIME   =   time.time()
+
+
+        ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME   =   time.time()
+        cursor.execute(check_total_row_count_after_insert_statement)
+        ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME     =   time.time()
+
+
+        total_rows_in_table = cursor.fetchone()[0]
+        root_logger.info(f"Rows after SQL insert in Postgres: {total_rows_in_table} ")
+        root_logger.debug(f"")
+
+
 
         # ======================================= SENSITIVE COLUMN IDENTIFICATION =======================================
 
@@ -684,7 +625,8 @@ def load_data_to_dim_date_table(postgres_connection):
 
         cursor.execute(count_total_no_of_unique_records_in_table)
         total_unique_records_in_table = cursor.fetchone()[0]
-        
+        total_duplicate_records_in_table = total_rows_in_table - total_unique_records_in_table
+
 
         cursor.execute(get_list_of_column_names)
         list_of_column_names = cursor.fetchall()
@@ -716,6 +658,11 @@ def load_data_to_dim_date_table(postgres_connection):
         EXECUTION_TIME_FOR_ADDING_DATA_LINEAGE_VAL_CHECK     =   (ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_END_TIME  -       ADDING_DATA_LINEAGE_VAL_CHECK_PROCESSING_START_TIME     )   * 1000
 
 
+        EXECUTION_TIME_FOR_ROW_INSERTION                     =   (ROW_INSERTION_PROCESSING_END_TIME                  -       ROW_INSERTION_PROCESSING_START_TIME                     )   * 1000
+
+
+        EXECUTION_TIME_FOR_ROW_COUNT                         =   (ROW_COUNT_VAL_CHECK_PROCESSING_END_TIME            -       ROW_COUNT_VAL_CHECK_PROCESSING_START_TIME               )   * 1000
+
 
 
 
@@ -736,9 +683,43 @@ def load_data_to_dim_date_table(postgres_connection):
         root_logger.info(f'Data warehouse layer:                        {data_warehouse_layer} ')
         root_logger.info(f'')
         root_logger.info(f'')
+        root_logger.info(f'Number of rows in table:                     {total_rows_in_table} ')
         root_logger.info(f'Number of columns in table:                  {total_columns_in_table} ')
         root_logger.info(f'')
 
+
+        if successful_rows_upload_count == total_rows_in_table:
+            root_logger.info(f'Successful records uploaded total :          {successful_rows_upload_count} / {total_rows_in_table}   ')
+            root_logger.info(f'Failed/Errored records uploaded total:       {failed_rows_upload_count} / {total_rows_in_table}       ')
+            root_logger.info(f'')
+            root_logger.info(f'Successful records uploaded % :              {(successful_rows_upload_count / total_rows_in_table) * 100}    ')
+            root_logger.info(f'Failed/Errored records uploaded %:           {(failed_rows_upload_count/total_rows_in_table) * 100}       ')
+            root_logger.info(f'')
+        else:
+            root_logger.warning(f'Successful records uploaded total :          {successful_rows_upload_count} / {total_rows_in_table}   ')
+            root_logger.warning(f'Failed/Errored records uploaded total:       {failed_rows_upload_count} / {total_rows_in_table}       ')
+            root_logger.warning(f'')
+            root_logger.warning(f'Successful records uploaded % :              {(successful_rows_upload_count / total_rows_in_table) * 100}    ')
+            root_logger.warning(f'Failed/Errored records uploaded %:           {(failed_rows_upload_count/total_rows_in_table) * 100}       ')
+            root_logger.warning(f'')
+
+
+        if total_unique_records_in_table == total_rows_in_table:
+            root_logger.info(f'Number of unique records:                    {total_unique_records_in_table} / {total_rows_in_table}')
+            root_logger.info(f'Number of duplicate records:                 {total_duplicate_records_in_table} / {total_rows_in_table}')
+            root_logger.info(f'')
+            root_logger.info(f'Unique records %:                            {(total_unique_records_in_table / total_rows_in_table) * 100} ')
+            root_logger.info(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
+            root_logger.info(f'')
+        
+        else:
+            root_logger.warning(f'Number of unique records:                    {total_unique_records_in_table} / {total_rows_in_table}')
+            root_logger.warning(f'Number of duplicate records:                 {total_duplicate_records_in_table} / {total_rows_in_table}')
+            root_logger.warning(f'')
+            root_logger.warning(f'Unique records %:                            {(total_unique_records_in_table / total_rows_in_table) * 100} ')
+            root_logger.warning(f'Duplicate records %:                         {(total_duplicate_records_in_table / total_rows_in_table)  * 100} ')
+            root_logger.warning(f'')
+        
 
         for column_name in column_names:
             cursor.execute(f'''
@@ -884,6 +865,35 @@ def load_data_to_dim_date_table(postgres_connection):
 
 
 
+        if (EXECUTION_TIME_FOR_ROW_INSERTION > 1000) and (EXECUTION_TIME_FOR_ROW_INSERTION < 60000):
+            root_logger.info(f'9. Execution time for INSERTING rows to table:  {EXECUTION_TIME_FOR_ROW_INSERTION} ms ({  round   (EXECUTION_TIME_FOR_ROW_INSERTION  /   1000, 2)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_ROW_INSERTION >= 60000):
+            root_logger.info(f'9. Execution time for INSERTING rows to table:  {EXECUTION_TIME_FOR_ROW_INSERTION} ms ({  round   (EXECUTION_TIME_FOR_ROW_INSERTION  /   1000, 2)} secs)   ({  round ((EXECUTION_TIME_FOR_ROW_INSERTION  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'9. Execution time for INSERTING rows to table:  {EXECUTION_TIME_FOR_ROW_INSERTION} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
+
+        if (EXECUTION_TIME_FOR_ROW_COUNT > 1000) and (EXECUTION_TIME_FOR_ROW_COUNT < 60000):
+            root_logger.info(f'10. Execution time for COUNTING uploaded rows to table:  {EXECUTION_TIME_FOR_ROW_COUNT} ms ({  round   (EXECUTION_TIME_FOR_ROW_COUNT  /   1000, 2)} secs)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        elif (EXECUTION_TIME_FOR_ROW_COUNT >= 60000):
+            root_logger.info(f'10. Execution time for COUNTING uploaded rows to table:  {EXECUTION_TIME_FOR_ROW_COUNT} ms ({  round   (EXECUTION_TIME_FOR_ROW_COUNT  /   1000, 2)} secs)    ({  round ((EXECUTION_TIME_FOR_ROW_COUNT  /   1000) / 60,  4)   } min)      ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+        else:
+            root_logger.info(f'10. Execution time for COUNTING uploaded rows to table:  {EXECUTION_TIME_FOR_ROW_COUNT} ms ')
+            root_logger.info(f'')
+            root_logger.info(f'')
+
+
 
         root_logger.info(f'')
         root_logger.info('================================================')
@@ -891,10 +901,36 @@ def load_data_to_dim_date_table(postgres_connection):
 
         # Add conditional statements for data profile metrics 
 
-        if failed_rows_upload_count > 0:
+        if successful_rows_upload_count != total_rows_in_table:
+            if successful_rows_upload_count == 0:
+                root_logger.error(f"ERROR: No records were upload to '{table_name}' table....")
+                raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
+            else:
+                root_logger.error(f"ERROR: There are only {successful_rows_upload_count} records upload to '{table_name}' table....")
+                raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
+        
+
+        elif failed_rows_upload_count > 0:
             root_logger.error(f"ERROR: A total of {failed_rows_upload_count} records failed to upload to '{table_name}' table....")
             raise ImportError("Trace filepath to highlight the root cause of the missing rows...")
         
+
+        elif total_unique_records_in_table != total_rows_in_table:
+            root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} duplicated records in the uploads for '{table_name}' table....")
+            raise ImportError("Trace filepath to highlight the root cause of the duplicated rows...")
+
+
+        elif total_duplicate_records_in_table > 0:
+            root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} duplicated records in the uploads for '{table_name}' table....")
+            raise ImportError("Trace filepath to highlight the root cause of the duplicated rows...")
+        
+
+        elif total_null_values_in_table > 0:
+            root_logger.error(f"ERROR: There are {total_duplicate_records_in_table} NULL values in '{table_name}' table....")
+            raise ImportError("Examine table to highlight the columns with the NULL values - justify if these fields should contain NULLs ...")
+
+    
+
         else:
             root_logger.debug("")
             root_logger.info("DATA VALIDATION SUCCESS: All general DQ checks passed! ")
@@ -906,7 +942,7 @@ def load_data_to_dim_date_table(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 
@@ -929,5 +965,5 @@ def load_data_to_dim_date_table(postgres_connection):
 
 
 
-load_data_to_dim_date_table(postgres_connection)
+load_data_to_dim_dates_table(postgres_connection)
 

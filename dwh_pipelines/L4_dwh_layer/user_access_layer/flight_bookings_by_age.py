@@ -107,7 +107,7 @@ postgres_connection = psycopg2.connect(
                 user        =   username,
                 password    =   password,
         )
-
+postgres_connection.set_session(autocommit=True)
 
 
 
@@ -118,7 +118,7 @@ def query_postgres_dwh(postgres_connection):
         
         active_schema_name              =   'reporting'
         active_db_name                  =    database
-        table_name                      =   'ticket_sales_by_age'
+        table_name                      =   'flight_bookings_by_age'
         data_warehouse_layer            =   'DWH - UAL'
         column_index                    =   0 
         total_null_values_in_table      =   0 
@@ -189,7 +189,7 @@ def query_postgres_dwh(postgres_connection):
                 root_logger.error(f"=================================================================================================")
                 root_logger.debug(f"")
 
-            postgres_connection.commit()
+            # postgres_connection.commit()
 
         except psycopg2.Error as e:
             print(e)
@@ -211,13 +211,12 @@ def query_postgres_dwh(postgres_connection):
         create_aggregate_tbl = f'''                CREATE TABLE IF NOT EXISTS {active_schema_name}.{table_name}  AS
                                                                         SELECT
                                                                             c.age as age,
-                                                                            COUNT(s.*) AS no_of_bookings
+                                                                            COUNT(f.*) AS no_of_bookings
                                                                         FROM 
-                                                                            live.fact_sales_tbl s
-                                                                            JOIN live.dim_customers_tbl c ON s.customer_id = c.customer_id
-                                                                        WHERE 
-                                                                            DATE_PART('year', ticket_sales_date) = 2022
-                                                                            AND age > 18 
+                                                                            live.dim_flights_tbl f
+                                                                            JOIN live.dim_customers_tbl c ON f.customer_id = c.customer_id
+                                                                        WHERE
+                                                                            age >= 18 
                                                                         GROUP BY
                                                                             c.age
                                                                         ORDER BY 
@@ -490,7 +489,7 @@ def query_postgres_dwh(postgres_connection):
 
         # Commit the changes made in Postgres 
         root_logger.info("Now saving changes made by SQL statements to Postgres DB....")
-        postgres_connection.commit()
+        # postgres_connection.commit()
         root_logger.info("Saved successfully, now terminating cursor and current session....")
 
 
