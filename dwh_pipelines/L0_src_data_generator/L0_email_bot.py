@@ -14,13 +14,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# ===================================== SETTING UP LOG FILE ATTACHMENTS ===================================== 
-
 
 current_filepath    =   Path(__file__).stem
+SMTP_PORT           =   587
+SMTP_SERVER         =   "smtp.gmail.com"
 CURRENT_TIMESTAMP   =   datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 EMAIL_ADDRESS       =   os.getenv("SENDER")
 EMAIL_PASSWORD      =   os.getenv("EMAIL_PASSWORD")
+SENDER = "Postgres Data Warehouse Program - SDW"
+body_main_subject = "extracting the travel data from the source systems"
+body = f"""Hi Stephen, 
+See attached the logs for {body_main_subject}. 
+"""
 
 
 L0_LOG_DIRECTORY = os.getenv("L0_LOG_DIRECTORY")
@@ -39,7 +44,23 @@ def get_log_filepaths(log_directory):
             log_filepaths.append(log_filepath)
     return log_filepaths
 
+# Create function for attaching log files to email 
+def attach_log_files_to_email(message, log_filepaths):
+    for log_file in log_filepaths:
+        with open(log_file, 'rb') as file:
+            log_attachment = MIMEBase('application', 'octet-stream')
+            log_attachment.set_payload(file.read())
+            encoders.encode_base64(log_attachment)
+            log_attachment.add_header('Content-Disposition', f'attachment; filename="{os.path.basename(log_file)}"')
+            message.attach(log_attachment)
+            # print(f'Test:  {log_attachment} ')
+  
 
+  
+
+# ===================================== SETTING UP LOG FILE ATTACHMENTS ===================================== 
+
+   
 # Get directory paths for log files
 data_gen_log_directory = get_log_filepaths(L0_LOG_DIRECTORY)
 
@@ -55,30 +76,14 @@ for log_file in data_gen_log_directory:
 
 # Set up constants for email 
 message = MIMEMultipart()
-message["From"] = "Postgres Data Warehouse Program - SDW"
+message["From"] = SENDER
 message["To"] = EMAIL_ADDRESS
 message["Subject"] = f"L0 - Travel Data Generation Log - {CURRENT_TIMESTAMP}"
 
 
 # Add body to the email message
-body_main_subject = "extracting the travel data from the source systems"
-body = f"""Hi Stephen, 
-See attached the logs for {body_main_subject}. 
-"""
 message.attach(MIMEText(body, "plain"))
 
-
-
-# Create function for attaching log files to email 
-def attach_log_files_to_email(message, log_filepaths):
-    for log_file in log_filepaths:
-        with open(log_file, 'rb') as file:
-            log_attachment = MIMEBase('application', 'octet-stream')
-            log_attachment.set_payload(log_file.read())
-            encoders.encode_base64(log_attachment)
-            log_attachment.add_header('Content-Disposition', f'attachment; filename="{os.path.basename(log_file)}"')
-            message.attach(log_attachment)
-            
 
 # Attach log files to email
 attach_log_files_to_email(message, data_gen_log_directory)
