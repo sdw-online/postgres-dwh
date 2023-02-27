@@ -19,7 +19,7 @@ load_dotenv()
 current_filepath    =   Path(__file__).stem
 
 SMTP_PORT           =   587
-SMTP_HOST_SERVER         =   "smtp.gmail.com"
+SMTP_HOST_SERVER    =   "smtp.gmail.com"
 CURRENT_TIMESTAMP   =   datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 EMAIL_ADDRESS       =   os.getenv("SENDER")
 EMAIL_PASSWORD      =   os.getenv("EMAIL_PASSWORD")
@@ -32,7 +32,7 @@ L2_LOG_DIRECTORY    =   os.getenv("L2_LOG_DIRECTORY")
 L3_LOG_DIRECTORY    =   os.getenv("L3_LOG_DIRECTORY")
 L4_LOG_DIRECTORY    =   os.getenv("L4_LOG_DIRECTORY")
 
-body_main_subject   =   "extracting the travel data from the source systems"
+body_main_subject   =   "loading data from raw tables into the staging tables of the Postgres data warehouse"
 body                =   f"""Hi Stephen, 
 
 See attached the logs for {body_main_subject}. 
@@ -70,10 +70,10 @@ def attach_log_files_to_email(message, log_filepaths):
 
    
 # Get directory paths for log files
-data_gen_log_directory = get_log_filepaths(L0_LOG_DIRECTORY)
+staging_layer_log_directory = get_log_filepaths(L2_LOG_DIRECTORY)
 
 log_file_counter = 0
-for log_file in data_gen_log_directory:
+for log_file in staging_layer_log_directory:
     log_file_counter += 1
     print('')
     print(f'Log file {log_file_counter}: {log_file} ')
@@ -86,7 +86,7 @@ for log_file in data_gen_log_directory:
 message = MIMEMultipart()
 message["From"] = SENDER
 message["To"] = EMAIL_ADDRESS
-message["Subject"] = f"L0 - Travel Data Generation Log - {CURRENT_TIMESTAMP}"
+message["Subject"] = f"L2 - Staging Layer Log Files - {CURRENT_TIMESTAMP}"
 
 
 # Add body to the email message
@@ -94,7 +94,7 @@ message.attach(MIMEText(body, "plain"))
 
 
 # Attach log files to email
-attach_log_files_to_email(message, data_gen_log_directory)
+attach_log_files_to_email(message, staging_layer_log_directory)
 
 
 
