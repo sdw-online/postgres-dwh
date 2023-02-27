@@ -128,7 +128,7 @@ This stage is also useful for assessing the tables, columns and rows that contai
 
 My focus at this layer is to clean the data and shape it into a format suitable for adding business rules. This is done by first outlining the transformation specifications for each table and then setting up their data quality checks to test the constraints placed on the data.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677508359417/d674eed8-2999-4f21-bf69-0720a0264bd9.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677508359417/d674eed8-2999-4f21-bf69-0720a0264bd9.png)
 
 Once I've specified the transformation strategy, I convert my transformation intents into Python logic, which will carry the heavy-lifting transformations for this project. SQL will simply be used for creating tables and inserting data from the raw tables into staging tables.
 
