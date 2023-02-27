@@ -17,7 +17,7 @@ load_dotenv()
 
 current_filepath    =   Path(__file__).stem
 SMTP_PORT           =   587
-SMTP_SERVER         =   "smtp.gmail.com"
+SMTP_HOST_SERVER         =   "smtp.gmail.com"
 CURRENT_TIMESTAMP   =   datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 EMAIL_ADDRESS       =   os.getenv("SENDER")
 EMAIL_PASSWORD      =   os.getenv("EMAIL_PASSWORD")
@@ -88,20 +88,22 @@ message.attach(MIMEText(body, "plain"))
 # Attach log files to email
 attach_log_files_to_email(message, data_gen_log_directory)
 
-print(f'File path: {current_filepath} ')
-print(f'Sender: {message["From"]}')
-print(f'Recipient: {message["To"]} ')
-print(f'Subject: {message["Subject"]}')
+# print(f'File path: {current_filepath} ')
+# print(f'Sender: {message["From"]}')
+# print(f'Recipient: {message["To"]} ')
+# print(f'Subject: {message["Subject"]}')
 
 
 
-# ===================================== xxxxxxxxxxxxxx ===================================== 
+# ===================================== SENDING EMAIL MESSAGE ===================================== 
 
 
 
-# with smtplib.SMTP(host="smtp.gmail.com", port=587) as smtp:
-#     smtp.ehlo()
-#     smtp.starttls()
-#     smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+with smtplib.SMTP(host=SMTP_HOST_SERVER, port=SMTP_PORT) as smtp:
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+    smtp.send_message(message)
+    print('Message sent successfully. ')
 
 
