@@ -103,7 +103,8 @@ From the raw to data warehouse layer I include data profiling metrics that displ
 
 Here's what they look like for generating travel data for this project:
 
-%[https://youtu.be/soI8m1B2y3g] 
+
+[![](https://markdown-videos.deta.dev/youtube/soI8m1B2y3g)](https://youtu.be/soI8m1B2y3g) 
 
 If there are any unusual behaviours between processes I can point that out from the data profile metrics and troubleshoot them accordingly.
 
@@ -120,7 +121,7 @@ If there are any unusual behaviours between processes I can point that out from 
 
 The main objective here is to get the source data pulled (or copied) into this section. This means no transformations will be applied at this stage because the data needs to be as close to its original state as possible in a tabular format.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677507737420/184026a5-81e2-482b-9c01-be413ab8f69d.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677507737420/184026a5-81e2-482b-9c01-be413ab8f69d.png)
 
 This stage is also useful for assessing the tables, columns and rows that contain any sensitive data that could compromise the privacy of any person or entity connected to the business if not treated appropriately, so I've pointed them out for all tables and laid out the treatment I've adopted in the DWH at the data governance section.
 
@@ -128,7 +129,7 @@ This stage is also useful for assessing the tables, columns and rows that contai
 
 My focus at this layer is to clean the data and shape it into a format suitable for adding business rules. This is done by first outlining the transformation specifications for each table and then setting up their data quality checks to test the constraints placed on the data.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677508359417/d674eed8-2999-4f21-bf69-0720a0264bd9.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677508359417/d674eed8-2999-4f21-bf69-0720a0264bd9.png)
 
 Once I've specified the transformation strategy, I convert my transformation intents into Python logic, which will carry the heavy-lifting transformations for this project. SQL will simply be used for creating tables and inserting data from the raw tables into staging tables.
 
@@ -136,7 +137,8 @@ After the DQ tests are complete, the main database used will serve as the develo
 
 Here is what the DQ tests and report look like in real-time:
 
-%[https://youtu.be/nrKeXpgWSVs] 
+
+[![](https://markdown-videos.deta.dev/youtube/nrKeXpgWSVs)](https://youtu.be/nrKeXpgWSVs) 
 
 The PROD environment will be the ideal environment used for any reporting and analysis, while the DEV will be used for data scientists and analysts to run their tests and experiments.
 
@@ -146,7 +148,7 @@ At this layer, the cleaned data is framed and tested to form the single version 
 
 To kick-start this section a DEV database is created. Then I create empty semantic tables in the database. After that, the staging data is loaded into the semantic tables using foreign data wrappers, and then the business rules are added to the semantic tables. Then a date dimension table is created to add granularity down to the day level.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510285406/c85d0ec6-9603-4ac3-bdf2-08d0080df18c.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510285406/c85d0ec6-9603-4ac3-bdf2-08d0080df18c.png)
 
 The DEV database is replicated after the DQ tests are completed, where the replica will serve as the production database, for similar reasons stated in the last layer.
 
@@ -158,7 +160,7 @@ The MDM tables in the PROD database will serve as the single version of truth (S
 
 Here is where the data from the SVOT is available for the target users to perform their intended operations, such as reporting, analysis, investigations and audits, among others.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510300184/e7f6a3d1-edc4-4bbc-bda0-b20681fabb8c.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510300184/e7f6a3d1-edc4-4bbc-bda0-b20681fabb8c.png)
 
 The first step is to apply dimensional modelling to the data available. This is done by outlining the relationships between different tables (or entities) and then joining the entities together to form facts and dimensions.
 
@@ -172,7 +174,7 @@ This stage is for visualizing the data from the previous stage.
 
 I plug the aggregate tables into the visualization modules to create the visuals that answer the relevant questions the stakeholders may have. I use Plotly-Dash to create a simple interactive dashboard to demonstrate how a BI tool can easily plug into Postgres:
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677519154148/2cbd71aa-6515-4199-b553-74523dde2a03.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677519154148/2cbd71aa-6515-4199-b553-74523dde2a03.png)
 
 # Governance layer
 
@@ -243,7 +245,7 @@ An orchestration section is needed for managing how each DWH task will be execut
 
 I use `prefect orion start` command in the terminal to access the tasks and flow runs for each DWH activity in the UI, which displays the workflows like this:
 
-%[https://youtu.be/blAhdR6NySk] 
+[![](https://markdown-videos.deta.dev/youtube/blAhdR6NySk)](https://youtu.be/blAhdR6NySk) 
 
 # Conclusion
 
