@@ -5,6 +5,7 @@ import configparser
 import pandas as pd
 from dash import dcc
 from dash import html
+import dash_bootstrap_components as dbc
 from pathlib import Path
 import logging, coloredlogs
 import plotly.express as px 
@@ -160,37 +161,79 @@ def render_dash_visualizations(postgres_connection):
 
 
         # Create Dash app 
-        app = dash.Dash(__name__)
+        app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 
-        # Create the layout for the Dash app
-        app.layout = html.Div([
-            html.H1("Flight Booking Data"),
-
-            html.Div([
-                dcc.Graph(
+        # Create graphs for dashboard
+        graph_1 = dcc.Graph(
                     figure=px.scatter(avg_ticket_prices_by_year_df, x="booking_year", y="arrival_city", size="avg_ticket_price", color="arrival_city", title="Average Ticket Prices by Destination and Year")
                     )
-            ]),
-
-            html.Div([
-                dcc.Graph(
+        
+        graph_2 = dcc.Graph(
                     figure=px.bar(flight_bookings_by_age_df, x="age", y="no_of_bookings", title="Number of Bookings by Age")
-                    )            
-            ]),
+                    )
+        
+        graph_3 = dcc.Graph(
+                    figure=px.treemap(top_destinations_df, path=['destination'], values="no_of_bookings", color="no_of_bookings", color_continuous_scale="Blues", title="Top Destinations")
+                    )  
 
-            html.Div([
-                dcc.Graph(
+        graph_4 = dcc.Graph(
                     figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings", title="Top 10 Most Booked Destinations")
                     )
-            ]),
-
-            html.Div([
-                dcc.Graph(
+        
+        graph_5 = dcc.Graph(
                     figure=px.scatter(total_sales_by_destination_df, x="booking_year", y="arrival_city", size="total_sales", color="arrival_city", title="Total Sales by Destination and Year")
                     )
-                ])
-        ])
+        
+        graph_6 = dcc.Graph(
+                    figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings", title="Top 10 Most Booked Destinations")
+                    )
+
+        # Create the layout for the Dash app
+        app.layout = html.Div(
+             [
+             
+             dbc.Row(
+                dbc.Col(
+             html.H1("Flight Booking Data")
+                )
+             ),
+             dbc.Row(
+                dbc.Col(
+             html.H1("")
+                )
+             ),
+             
+             dbc.Row(
+                dbc.Col(
+             html.H1("")
+                )
+             ),
+             dbc.Row(
+             [
+               dbc.Col(
+             [html.H4("Number of Bookings by Age"),
+                    graph_2],
+                ),
+                dbc.Col(
+             [html.H4("Top Destinations"),
+                    graph_3],
+                ),
+             ]
+             ),
+
+             dbc.Row(
+                dbc.Col(
+             [html.H4("Top 10 Most Booked Destinations"),
+                graph_6]
+                ),
+
+             )
+
+
+
+            ]
+        )
 
 
         root_logger.info(f'')
