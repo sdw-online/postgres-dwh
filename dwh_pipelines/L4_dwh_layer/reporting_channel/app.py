@@ -212,11 +212,11 @@ def render_dash_visualizations(postgres_connection):
              dbc.Row(
              [
                dbc.Col(
-             [html.H4("Number of Bookings by Age"),
+             [html.H2("Number of Bookings by Age"),
                     graph_2],
                 ),
                 dbc.Col(
-             [html.H4("Top Destinations"),
+             [html.H2("Top Destinations"),
                     graph_3],
                 ),
              ]
@@ -224,13 +224,24 @@ def render_dash_visualizations(postgres_connection):
 
              dbc.Row(
                 dbc.Col(
-             [html.H4("Top 10 Most Booked Destinations"),
+             [html.H2("Top 10 Most Booked Destinations"),
                 graph_6]
                 ),
-
-             )
-
-
+             ),
+             dbc.Row([
+                dbc.Col(
+             html.Div(""), align="start"
+                ),
+                
+                dbc.Col(
+             html.Div(""), align="middle"
+                ),
+                
+                dbc.Col(
+             html.H2("Made by SDW 🚀"), align="end"
+                )]
+                
+             ),
 
             ]
         )
