@@ -146,7 +146,7 @@ At this layer, the cleaned data is framed and tested to form the single version 
 
 To kick-start this section a DEV database is created. Then I create empty semantic tables in the database. After that, the staging data is loaded into the semantic tables using foreign data wrappers, and then the business rules are added to the semantic tables. Then a date dimension table is created to add granularity down to the day level.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510285406/c85d0ec6-9603-4ac3-bdf2-08d0080df18c.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510285406/c85d0ec6-9603-4ac3-bdf2-08d0080df18c.png)
 
 The DEV database is replicated after the DQ tests are completed, where the replica will serve as the production database, for similar reasons stated in the last layer.
 
@@ -158,7 +158,7 @@ The MDM tables in the PROD database will serve as the single version of truth (S
 
 Here is where the data from the SVOT is available for the target users to perform their intended operations, such as reporting, analysis, investigations and audits, among others.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510300184/e7f6a3d1-edc4-4bbc-bda0-b20681fabb8c.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677510300184/e7f6a3d1-edc4-4bbc-bda0-b20681fabb8c.png)
 
 The first step is to apply dimensional modelling to the data available. This is done by outlining the relationships between different tables (or entities) and then joining the entities together to form facts and dimensions.
 
@@ -172,7 +172,7 @@ This stage is for visualizing the data from the previous stage.
 
 I plug the aggregate tables into the visualization modules to create the visuals that answer the relevant questions the stakeholders may have. I use Plotly-Dash to create a simple interactive dashboard to demonstrate how a BI tool can easily plug into Postgres:
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677519154148/2cbd71aa-6515-4199-b553-74523dde2a03.png align="center")
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677519154148/2cbd71aa-6515-4199-b553-74523dde2a03.png)
 
 # Governance layer
 
@@ -243,7 +243,7 @@ An orchestration section is needed for managing how each DWH task will be execut
 
 I use `prefect orion start` command in the terminal to access the tasks and flow runs for each DWH activity in the UI, which displays the workflows like this:
 
-%[https://youtu.be/blAhdR6NySk] 
+[![](https://markdown-videos.deta.dev/youtube/blAhdR6NySk)](https://youtu.be/blAhdR6NySk) 
 
 # Conclusion
 
