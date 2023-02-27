@@ -120,7 +120,7 @@ If there are any unusual behaviours between processes I can point that out from 
 
 The main objective here is to get the source data pulled (or copied) into this section. This means no transformations will be applied at this stage because the data needs to be as close to its original state as possible in a tabular format.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677507737420/184026a5-81e2-482b-9c01-be413ab8f69d.png align="center")
+![raw-to-staging](https://cdn.hashnode.com/res/hashnode/image/upload/v1677507737420/184026a5-81e2-482b-9c01-be413ab8f69d.png)
 
 This stage is also useful for assessing the tables, columns and rows that contain any sensitive data that could compromise the privacy of any person or entity connected to the business if not treated appropriately, so I've pointed them out for all tables and laid out the treatment I've adopted in the DWH at the data governance section.
 
