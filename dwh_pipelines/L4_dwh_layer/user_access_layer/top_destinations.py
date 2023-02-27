@@ -220,7 +220,7 @@ def query_postgres_dwh(postgres_connection):
                                                                             d.arrival_city
                                                                         ORDER BY 
                                                                             no_of_bookings DESC
-                                                                        LIMIT 10
+                                                                        LIMIT 20
 
         '''
  

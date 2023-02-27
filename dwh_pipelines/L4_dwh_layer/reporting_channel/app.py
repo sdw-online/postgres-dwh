@@ -5,6 +5,7 @@ import configparser
 import pandas as pd
 from dash import dcc
 from dash import html
+import dash_bootstrap_components as dbc
 from pathlib import Path
 import logging, coloredlogs
 import plotly.express as px 
@@ -160,37 +161,60 @@ def render_dash_visualizations(postgres_connection):
 
 
         # Create Dash app 
-        app = dash.Dash(__name__)
+        app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+
+        # Create graphs for dashboard
+        graph_1 = dcc.Graph(
+                    figure=px.scatter(avg_ticket_prices_by_year_df, x="booking_year", y="arrival_city", size="avg_ticket_price", color="arrival_city", title="Average Ticket Prices by Destination and Year")
+                    )
+        
+        graph_2 = dcc.Graph(
+                    figure=px.bar(flight_bookings_by_age_df, x="age", y="no_of_bookings", title="Number of Bookings by Age")
+                    )
+        
+        graph_3 = dcc.Graph(
+                    figure=px.treemap(top_destinations_df, path=['destination'], values="no_of_bookings", color="no_of_bookings", color_continuous_scale="Blues", title="Top Destinations (Test)")
+                    )  
+
+        graph_4 = dcc.Graph(
+                    figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings", title="Top 10 Most Booked Destinations")
+                    )
+        
+        graph_5 = dcc.Graph(
+                    figure=px.scatter(total_sales_by_destination_df, x="booking_year", y="arrival_city", size="total_sales", color="arrival_city", title="Total Sales by Destination and Year")
+                    )
 
 
         # Create the layout for the Dash app
-        app.layout = html.Div([
-            html.H1("Flight Booking Data"),
+        app.layout = html.Div(
+             [
+             
+             dbc.Row(
+             html.Br()
+             ),
 
-            html.Div([
-                dcc.Graph(
-                    figure=px.scatter(avg_ticket_prices_by_year_df, x="booking_year", y="arrival_city", size="avg_ticket_price", color="arrival_city", title="Average Ticket Prices by Destination and Year")
-                    )
-            ]),
-
-            html.Div([
-                dcc.Graph(
-                    figure=px.bar(flight_bookings_by_age_df, x="age", y="no_of_bookings", title="Number of Bookings by Age")
-                    )            
-            ]),
-
-            html.Div([
-                dcc.Graph(
-                    figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings", title="Top 10 Most Booked Destinations")
-                    )
-            ]),
-
-            html.Div([
-                dcc.Graph(
-                    figure=px.scatter(total_sales_by_destination_df, x="booking_year", y="arrival_city", size="total_sales", color="arrival_city", title="Total Sales by Destination and Year")
-                    )
-                ])
-        ])
+             dbc.Row(
+                dbc.Col(
+             html.H1("Flight Booking Data")
+                )
+             ),
+             dbc.Row(
+             [
+               dbc.Col(
+                    graph_2,
+                ),
+                dbc.Col(
+                    graph_3,
+                ),
+                dbc.Col(
+                    html.Div("The second of three columns"),
+                    width={"size": 3, "order": 5},
+                ),
+             ]
+             )
+            ]
+        )
 
 
         root_logger.info(f'')
