@@ -174,7 +174,7 @@ def render_dash_visualizations(postgres_connection):
                     )
         
         graph_3 = dcc.Graph(
-                    figure=px.treemap(top_destinations_df, path=['destination'], values="no_of_bookings", color="no_of_bookings", color_continuous_scale="Blues", title="Top Destinations (Test)")
+                    figure=px.treemap(top_destinations_df, path=['destination'], values="no_of_bookings", color="no_of_bookings", color_continuous_scale="Blues", title="Top Destinations")
                     )  
 
         graph_4 = dcc.Graph(
@@ -184,35 +184,54 @@ def render_dash_visualizations(postgres_connection):
         graph_5 = dcc.Graph(
                     figure=px.scatter(total_sales_by_destination_df, x="booking_year", y="arrival_city", size="total_sales", color="arrival_city", title="Total Sales by Destination and Year")
                     )
-
+        
+        graph_6 = dcc.Graph(
+                    figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings", title="Top 10 Most Booked Destinations")
+                    )
 
         # Create the layout for the Dash app
         app.layout = html.Div(
              [
              
              dbc.Row(
-             html.Br()
-             ),
-
-             dbc.Row(
                 dbc.Col(
              html.H1("Flight Booking Data")
                 )
              ),
              dbc.Row(
+                dbc.Col(
+             html.H1("")
+                )
+             ),
+             
+             dbc.Row(
+                dbc.Col(
+             html.H1("")
+                )
+             ),
+             dbc.Row(
              [
                dbc.Col(
-                    graph_2,
+             [html.H4("Number of Bookings by Age"),
+                    graph_2],
                 ),
                 dbc.Col(
-                    graph_3,
-                ),
-                dbc.Col(
-                    html.Div("The second of three columns"),
-                    width={"size": 3, "order": 5},
+             [html.H4("Top Destinations"),
+                    graph_3],
                 ),
              ]
+             ),
+
+             dbc.Row(
+                dbc.Col(
+             [html.H4("Top 10 Most Booked Destinations"),
+                graph_6]
+                ),
+
              )
+
+
+
             ]
         )
 
