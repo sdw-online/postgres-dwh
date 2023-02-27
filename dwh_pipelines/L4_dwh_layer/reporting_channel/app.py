@@ -170,11 +170,11 @@ def render_dash_visualizations(postgres_connection):
                     )
         
         graph_2 = dcc.Graph(
-                    figure=px.bar(flight_bookings_by_age_df, x="age", y="no_of_bookings", title="Number of Bookings by Age")
+                    figure=px.bar(flight_bookings_by_age_df, x="age", y="no_of_bookings")
                     )
         
         graph_3 = dcc.Graph(
-                    figure=px.treemap(top_destinations_df, path=['destination'], values="no_of_bookings", color="no_of_bookings", color_continuous_scale="Blues", title="Top Destinations")
+                    figure=px.treemap(top_destinations_df, path=['destination'], values="no_of_bookings", color="no_of_bookings", color_continuous_scale="Blues")
                     )  
 
         graph_4 = dcc.Graph(
@@ -186,7 +186,7 @@ def render_dash_visualizations(postgres_connection):
                     )
         
         graph_6 = dcc.Graph(
-                    figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings", title="Top 10 Most Booked Destinations")
+                    figure=px.bar(top_destinations_df, x="destination", y="no_of_bookings")
                     )
 
         # Create the layout for the Dash app
