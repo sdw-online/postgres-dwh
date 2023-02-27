@@ -16,24 +16,24 @@ load_dotenv()
 
 
 # Set up constants 
-current_filepath    =   Path(__file__).stem
+current_filepath            =   Path(__file__).stem
 
-SMTP_PORT           =   587
-SMTP_HOST_SERVER         =   "smtp.gmail.com"
-CURRENT_TIMESTAMP   =   datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-EMAIL_ADDRESS       =   os.getenv("SENDER")
-EMAIL_PASSWORD      =   os.getenv("EMAIL_PASSWORD")
-SENDER              =   "Postgres Data Warehouse Program - SDW"
+SMTP_PORT                   =   587
+SMTP_HOST_SERVER            =   "smtp.gmail.com"
+CURRENT_TIMESTAMP           =   datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+EMAIL_ADDRESS               =   os.getenv("SENDER")
+EMAIL_PASSWORD              =   os.getenv("EMAIL_PASSWORD")
+SENDER                      =   "Postgres Data Warehouse Program - SDW"
 
 
-L0_LOG_DIRECTORY    =   os.getenv("L0_LOG_DIRECTORY")
-L1_LOG_DIRECTORY    =   os.getenv("L1_LOG_DIRECTORY")
-L2_LOG_DIRECTORY    =   os.getenv("L2_LOG_DIRECTORY")
-L3_LOG_DIRECTORY    =   os.getenv("L3_LOG_DIRECTORY")
-L4_LOG_DIRECTORY    =   os.getenv("L4_LOG_DIRECTORY")
+L0_LOG_DIRECTORY            =   os.getenv("L0_LOG_DIRECTORY")
+L1_LOG_DIRECTORY            =   os.getenv("L1_LOG_DIRECTORY")
+L2_LOG_DIRECTORY            =   os.getenv("L2_LOG_DIRECTORY")
+L3_LOG_DIRECTORY            =   os.getenv("L3_LOG_DIRECTORY")
+L4_LOG_DIRECTORY            =   os.getenv("L4_LOG_DIRECTORY")
 
-body_main_subject   =   "extracting the travel data from the source systems"
-body                =   f"""Hi Stephen, 
+body_main_subject           =   "extracting the travel data from the source systems"
+body                        =   f"""Hi Stephen, 
 
 See attached the logs for {body_main_subject}. 
 
@@ -83,10 +83,10 @@ for log_file in data_gen_log_directory:
 # ===================================== SETTING UP EMAIL MESSAGE ===================================== 
 
 # Set up constants for email 
-message = MIMEMultipart()
-message["From"] = SENDER
-message["To"] = EMAIL_ADDRESS
-message["Subject"] = f"L0 - Travel Data Generation Log - {CURRENT_TIMESTAMP}"
+message                 =   MIMEMultipart()
+message["From"]         =   SENDER
+message["To"]           =   EMAIL_ADDRESS
+message["Subject"]      =   f"L0 - Travel Data Generation Log - {CURRENT_TIMESTAMP}"
 
 
 # Add body to the email message
@@ -100,12 +100,17 @@ attach_log_files_to_email(message, data_gen_log_directory)
 
 # ===================================== SENDING EMAIL MESSAGE ===================================== 
 
-with smtplib.SMTP(host=SMTP_HOST_SERVER, port=SMTP_PORT) as smtp:
-    smtp.ehlo()
-    smtp.starttls()
-    smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-    smtp.send_message(message)
-    print('Message sent successfully. ')
-    print()
+
+def send_email():
+    with smtplib.SMTP(host=SMTP_HOST_SERVER, port=SMTP_PORT) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(message)
+        print('Message sent successfully. ')
+        print()
+
+
+send_email()
 
 

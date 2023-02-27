@@ -100,10 +100,14 @@ attach_log_files_to_email(message, semantic_layer_log_directory)
 
 # ===================================== SENDING EMAIL MESSAGE ===================================== 
 
-with smtplib.SMTP(host=SMTP_HOST_SERVER, port=SMTP_PORT) as smtp:
-    smtp.ehlo()
-    smtp.starttls()
-    smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-    smtp.send_message(message)
-    print('Message sent successfully. ')
-    print()
+def send_email():
+    with smtplib.SMTP(host=SMTP_HOST_SERVER, port=SMTP_PORT) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(message)
+        print('Message sent successfully. ')
+        print()
+
+
+send_email()

@@ -71,6 +71,46 @@ def generate_synthetic_travel_data():
 
 
 
+@task
+def get_log_filepaths_for_L0():
+    from dwh_pipelines.L0_src_data_generator.L0_email_bot import  get_log_filepaths
+    module_name = 'dwh_pipelines.L0_src_data_generator.L0_email_bot'
+    imported_function = 'get_log_filepaths'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def attach_logs_to_email_for_L0():
+    from dwh_pipelines.L0_src_data_generator.L0_email_bot import  attach_log_files_to_email
+    module_name = 'dwh_pipelines.L0_src_data_generator.L0_email_bot'
+    imported_function = 'attach_log_files_to_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def send_logs_via_email_for_L0():
+    from dwh_pipelines.L0_src_data_generator.L0_email_bot import  send_email
+    module_name = 'dwh_pipelines.L0_src_data_generator.L0_email_bot'
+    imported_function = 'send_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
 
 # # ============================================== 1. RAW LAYER ============================================== 
 
@@ -215,6 +255,50 @@ def load_data_to_raw_ticket_prices_tbl():
     get_run_logger().info("")
 
 
+
+
+
+
+
+@task
+def get_log_filepaths_for_L1():
+    from dwh_pipelines.L1_raw_layer.L1_email_bot import  get_log_filepaths
+    module_name = 'dwh_pipelines.L1_raw_layer.L1_email_bot'
+    imported_function = 'get_log_filepaths'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def attach_logs_to_email_for_L1():
+    from dwh_pipelines.L1_raw_layer.L1_email_bot import  attach_log_files_to_email
+    module_name = 'dwh_pipelines.L1_raw_layer.L1_email_bot'
+    imported_function = 'attach_log_files_to_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def send_logs_via_email_for_L1():
+    from dwh_pipelines.L1_raw_layer.L1_email_bot import  send_email
+    module_name = 'dwh_pipelines.L1_raw_layer.L1_email_bot'
+    imported_function = 'send_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
 
 
 
@@ -633,6 +717,52 @@ def create_prod_environment_for_staging_layer():
     get_run_logger().info("")
     
 
+
+
+@task
+def get_log_filepaths_for_L2():
+    from dwh_pipelines.L2_staging_layer.L2_email_bot import  get_log_filepaths
+    module_name = 'dwh_pipelines.L2_staging_layer.L2_email_bot'
+    imported_function = 'get_log_filepaths'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def attach_logs_to_email_for_L2():
+    from dwh_pipelines.L2_staging_layer.L2_email_bot import  attach_log_files_to_email
+    module_name = 'dwh_pipelines.L2_staging_layer.L2_email_bot'
+    imported_function = 'attach_log_files_to_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def send_logs_via_email_for_L2():
+    from dwh_pipelines.L2_staging_layer.L2_email_bot import  send_email
+    module_name = 'dwh_pipelines.L2_staging_layer.L2_email_bot'
+    imported_function = 'send_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
 # # ============================================== 3. SEMANTIC LAYER ============================================== 
 
 # Set up tasks for semantic layer
@@ -1043,6 +1173,50 @@ def create_prod_environment_for_semantic_layer():
     
 
 
+@task
+def get_log_filepaths_for_L3():
+    from dwh_pipelines.L3_semantic_layer.L3_email_bot import  get_log_filepaths
+    module_name = 'dwh_pipelines.L3_semantic_layer.L3_email_bot'
+    imported_function = 'get_log_filepaths'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def attach_logs_to_email_for_L3():
+    from dwh_pipelines.L3_semantic_layer.L3_email_bot import  attach_log_files_to_email
+    module_name = 'dwh_pipelines.L3_semantic_layer.L3_email_bot'
+    imported_function = 'attach_log_files_to_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
+@task
+def send_logs_via_email_for_L3():
+    from dwh_pipelines.L3_semantic_layer.L3_email_bot import  send_email
+    module_name = 'dwh_pipelines.L3_semantic_layer.L3_email_bot'
+    imported_function = 'send_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+
 # # ============================================== 4. DATA WAREHOUSE LAYER ============================================== 
 
 # Set up tasks for dwh layer
@@ -1305,7 +1479,48 @@ def render_dash_visualizations_for_aggregates():
 
 
 
+    
 
+
+@task
+def get_log_filepaths_for_L4():
+    from dwh_pipelines.L4_dwh_layer.L4_email_bot import  get_log_filepaths
+    module_name = 'dwh_pipelines.L4_dwh_layer.L4_email_bot'
+    imported_function = 'get_log_filepaths'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def attach_logs_to_email_for_L4():
+    from dwh_pipelines.L4_dwh_layer.L4_email_bot import  attach_log_files_to_email
+    module_name = 'dwh_pipelines.L4_dwh_layer.L4_email_bot'
+    imported_function = 'attach_log_files_to_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
+
+
+
+@task
+def send_logs_via_email_for_L4():
+    from dwh_pipelines.L4_dwh_layer.L4_email_bot import  send_email
+    module_name = 'dwh_pipelines.L4_dwh_layer.L4_email_bot'
+    imported_function = 'send_email'
+    root_logger.info("")
+    root_logger.info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    root_logger.info("")
+    get_run_logger().info("")
+    get_run_logger().info(f"Now importing '{imported_function}' function from '{module_name}' module...")
+    get_run_logger().info("")
 
 
 
@@ -1322,7 +1537,21 @@ def render_dash_visualizations_for_aggregates():
 # Set up sub-flow for generating travel data 
 @flow(name="Generate travel data", flow_run_name="generate_travel_data_flow")
 def run_data_generation_flow():
-    return generate_synthetic_travel_data()
+    generate_synthetic_travel_data()
+    root_logger.info("SUCCESS! Completed generating data for travel! ")
+    get_run_logger().info("SUCCESS! Completed generating data for travel! ")
+
+    get_log_filepaths_for_L0()
+    root_logger.info("SUCCESS! Got log files for L0 ")
+    get_run_logger().info("SUCCESS! Got log files for L0 ")
+
+    attach_logs_to_email_for_L0()
+    root_logger.info("SUCCESS! Attached log files for L0 ")
+    get_run_logger().info("SUCCESS! Attached log files for L0 ")
+
+    send_logs_via_email_for_L0()
+    root_logger.info("SUCCESS! Sent logs via email for L0 ")
+    get_run_logger().info("SUCCESS! Sent logs via email for L0 ")
 
 
 
@@ -1405,6 +1634,18 @@ def run_raw_layer_flow():
 
 
 
+
+    get_log_filepaths_for_L1()
+    root_logger.info("SUCCESS! Got log files for L1 ")
+    get_run_logger().info("SUCCESS! Got log files for L1 ")
+
+    attach_logs_to_email_for_L1()
+    root_logger.info("SUCCESS! Attached log files for L1 ")
+    get_run_logger().info("SUCCESS! Attached log files for L1 ")
+
+    send_logs_via_email_for_L1()
+    root_logger.info("SUCCESS! Sent logs via email for L1 ")
+    get_run_logger().info("SUCCESS! Sent logs via email for L1 ")
 
 
 
@@ -1549,6 +1790,8 @@ def run_dq_tests_for_staging_layer_flow():
 
 
 
+
+
 # Set up sub-flow for creating PROD environment for staging layer 
 @flow(name="Create PROD environment for staging layer", flow_run_name="creating_staging_prod_env_flow")
 def run_stg_prod_env_creation_flow():
@@ -1558,6 +1801,17 @@ def run_stg_prod_env_creation_flow():
     get_run_logger().info("SUCCESS! Completed creating a PRODUCTION environment for STAGING layer. ")
 
 
+    get_log_filepaths_for_L2()
+    root_logger.info("SUCCESS! Got log files for L2 ")
+    get_run_logger().info("SUCCESS! Got log files for L2 ")
+
+    attach_logs_to_email_for_L2()
+    root_logger.info("SUCCESS! Attached log files for L2 ")
+    get_run_logger().info("SUCCESS! Attached log files for L2 ")
+
+    send_logs_via_email_for_L2()
+    root_logger.info("SUCCESS! Sent logs via email for L2 ")
+    get_run_logger().info("SUCCESS! Sent logs via email for L2 ")
 
 
 # # ============================================== 3. SEMANTIC LAYER ============================================== 
@@ -1709,6 +1963,18 @@ def run_semantic_prod_env_creation_flow():
 
 
 
+    get_log_filepaths_for_L3()
+    root_logger.info("SUCCESS! Got log files for L3 ")
+    get_run_logger().info("SUCCESS! Got log files for L3 ")
+
+    attach_logs_to_email_for_L3()
+    root_logger.info("SUCCESS! Attached log files for L3 ")
+    get_run_logger().info("SUCCESS! Attached log files for L3 ")
+
+    send_logs_via_email_for_L3()
+    root_logger.info("SUCCESS! Sent logs via email for L3 ")
+    get_run_logger().info("SUCCESS! Sent logs via email for L3 ")
+
 # # ============================================== 4. DATA WAREHOUSE LAYER ============================================== 
 
 # Set up sub-flow for executing tasks in data warehouse layer 
@@ -1819,6 +2085,20 @@ def run_dwh_layer_flow():
     # render_dash_visualizations_for_aggregates()
     # root_logger.info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
     # get_run_logger().info("SUCCESS! Now rendering Dash visualizations for aggregate tables ! ")
+
+
+
+    get_log_filepaths_for_L4()
+    root_logger.info("SUCCESS! Got log files for L4 ")
+    get_run_logger().info("SUCCESS! Got log files for L4 ")
+
+    attach_logs_to_email_for_L4()
+    root_logger.info("SUCCESS! Attached log files for L4 ")
+    get_run_logger().info("SUCCESS! Attached log files for L4 ")
+
+    send_logs_via_email_for_L4()
+    root_logger.info("SUCCESS! Sent logs via email for L4 ")
+    get_run_logger().info("SUCCESS! Sent logs via email for L4 ")
 
 
 # ============================================== FLOW RUNS ==============================================
