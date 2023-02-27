@@ -103,7 +103,8 @@ From the raw to data warehouse layer I include data profiling metrics that displ
 
 Here's what they look like for generating travel data for this project:
 
-%[https://youtu.be/soI8m1B2y3g] 
+
+[![](https://markdown-videos.deta.dev/youtube/soI8m1B2y3g)](https://youtu.be/soI8m1B2y3g) 
 
 If there are any unusual behaviours between processes I can point that out from the data profile metrics and troubleshoot them accordingly.
 
@@ -136,7 +137,8 @@ After the DQ tests are complete, the main database used will serve as the develo
 
 Here is what the DQ tests and report look like in real-time:
 
-%[https://youtu.be/nrKeXpgWSVs] 
+] 
+[![](https://markdown-videos.deta.dev/youtube/nrKeXpgWSVs)](https://youtu.be/nrKeXpgWSVs) 
 
 The PROD environment will be the ideal environment used for any reporting and analysis, while the DEV will be used for data scientists and analysts to run their tests and experiments.
 
