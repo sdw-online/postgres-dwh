@@ -105,5 +105,6 @@ with smtplib.SMTP(host=SMTP_HOST_SERVER, port=SMTP_PORT) as smtp:
     smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
     smtp.send_message(message)
     print('Message sent successfully. ')
+    print()
 
 
