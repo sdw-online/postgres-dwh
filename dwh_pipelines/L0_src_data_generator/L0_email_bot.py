@@ -24,6 +24,7 @@ CURRENT_TIMESTAMP           =   datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 EMAIL_ADDRESS               =   os.getenv("SENDER")
 EMAIL_PASSWORD              =   os.getenv("EMAIL_PASSWORD")
 SENDER                      =   "Postgres Data Warehouse Program - SDW"
+RECIPIENT                   =   os.getenv("RECIPIENT")
 
 
 L0_LOG_DIRECTORY            =   os.getenv("L0_LOG_DIRECTORY")
@@ -85,7 +86,7 @@ for log_file in data_gen_log_directory:
 # Set up constants for email 
 message                 =   MIMEMultipart()
 message["From"]         =   SENDER
-message["To"]           =   EMAIL_ADDRESS
+message["To"]           =   RECIPIENT
 message["Subject"]      =   f"L0 - Travel Data Generation Log - {CURRENT_TIMESTAMP}"
 
 

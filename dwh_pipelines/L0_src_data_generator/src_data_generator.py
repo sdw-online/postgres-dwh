@@ -60,10 +60,10 @@ def generate_travel_data():
 
   # Establish the relevant constants for generating the synthetic travel data 
 
-  NO_OF_CUSTOMER_INFO_ROWS              =       1500
+  NO_OF_CUSTOMER_INFO_ROWS              =       1000
   NO_OF_FLIGHT_SCHEDULES                =       300
   NO_OF_CUSTOMER_FEEDBACKS              =       200
-  NO_OF_TICKET_PRICES                   =       70
+  NO_OF_TICKET_PRICES                   =       20
   NO_OF_FLIGHT_BOOKINGS                 =       10000
   NO_OF_FLIGHT_DESTINATIONS             =       300
   NO_OF_FLIGHT_TICKET_SALES             =       10000

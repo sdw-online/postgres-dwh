@@ -24,6 +24,7 @@ CURRENT_TIMESTAMP   =   datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 EMAIL_ADDRESS       =   os.getenv("SENDER")
 EMAIL_PASSWORD      =   os.getenv("EMAIL_PASSWORD")
 SENDER              =   "Postgres Data Warehouse Program - SDW"
+RECIPIENT           =   os.getenv("RECIPIENT")
 
 
 L0_LOG_DIRECTORY    =   os.getenv("L0_LOG_DIRECTORY")
@@ -84,9 +85,9 @@ for log_file in staging_layer_log_directory:
 
 # Set up constants for email 
 message = MIMEMultipart()
-message["From"] = SENDER
-message["To"] = EMAIL_ADDRESS
-message["Subject"] = f"L2 - Staging Layer Log Files - {CURRENT_TIMESTAMP}"
+message["From"]         =   SENDER
+message["To"]           =   RECIPIENT
+message["Subject"]      =   f"L2 - Staging Layer Log Files - {CURRENT_TIMESTAMP}"
 
 
 # Add body to the email message
